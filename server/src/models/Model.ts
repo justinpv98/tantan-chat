@@ -14,7 +14,6 @@ NOTE: Object.entries should be O(n) for most objects since Node utilizes V8.
 TODO: Test extensively.
 */
 
-
 /*
 / Types
 */
@@ -22,7 +21,7 @@ type Options = {
   select?: string[];
   as?: { [key: string]: string };
   where?: WhereClause;
-  set: object;
+  set?: object;
   limit?: number | false;
   offset?: number | false;
   orderBy?: OrderByColumn[];
@@ -100,7 +99,7 @@ class Model<T> {
     this.modelName = modelName;
   }
 
-  save<T>(config: Options) {
+  async save(config?: Options) {
     const { as, returning } = this.#assignDefaults(config);
 
     let insertColumns: string | string[] = [];
@@ -123,12 +122,12 @@ class Model<T> {
     const unformattedQuery = [insertStatement, returningClause];
     const query = this.#constructQuery(unformattedQuery, ...insertValues);
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T = rows.length ? rows[0] : null;
+    return data;
   }
 
-  findById<T>(id: number, config: Options | undefined) {
+  async findById(id: number, config: Options | undefined) {
     const { select, as } = this.#assignDefaults(config);
 
     const selectStatement = this.#composeSelectStatement(select, as);
@@ -139,12 +138,12 @@ class Model<T> {
 
     const query = this.#constructQuery(unformattedQuery, id);
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T = rows.length ? rows[0] : null;
+    return data;
   }
 
-  findAll<T>(config: Options) {
+  async findAll(config: Options) {
     const { select, as, where, orderBy, limit, offset } =
       this.#assignDefaults(config);
 
@@ -163,12 +162,12 @@ class Model<T> {
     ];
     const query = this.#constructQuery(unformattedQuery, ...whereValues);
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T[] = rows.length ? rows : null;
+    return data;
   }
 
-  updateById<T>(id: number, config: Options) {
+  async updateById(id: number, config: Options) {
     const { set } = this.#assignDefaults(config);
 
     const updateStatement = `UPDATE "${this.modelName}" `;
@@ -182,12 +181,12 @@ class Model<T> {
 
     const query = this.#constructQuery(unformattedQuery, ...setValues, id);
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T = rows.length ? rows : null;
+    return data;
   }
 
-  updateAll<T>(config: Options) {
+  async updateAll(config: Options) {
     const { set, where } = this.#assignDefaults(config);
 
     const updateStatement = `UPDATE "${this.modelName}"  `;
@@ -205,47 +204,54 @@ class Model<T> {
       ...whereValues
     );
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T[] = rows.length ? rows : null;
+    return data;
   }
 
-  deleteById<T>(id: number, config: Options) {
+  async deleteById(id: number, config: Options) {
     const { returning, as } = this.#assignDefaults(config);
 
     const deleteStatement = `DELETE FROM "${this.modelName}" `;
     const whereClause = `WHERE id = %L `;
-    let returningClause: string = this.#composeReturningClause(returning, as);
+    let returningClause = "";
+
+    if (returning) {
+      returningClause = this.#composeReturningClause(returning, as);
+    }
 
     const unformattedQuery = [deleteStatement, whereClause, returningClause];
 
     const query = this.#constructQuery(unformattedQuery, id);
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T | number = rows.length ? rows[0] : null;
+    return data;
   }
 
-  deleteAll<T>(config: Options) {
+  async deleteAll(config: Options) {
     const { where, returning, as } = this.#assignDefaults(config);
 
     const deleteStatement = `DELETE FROM "${this.modelName}" `;
     const [whereClause, whereValues] = this.#composeWhereClause(where);
-    let returningClause: string = this.#composeReturningClause(returning, as);
+    let returningClause = "";
+
+    if (returning) {
+      returningClause = this.#composeReturningClause(returning, as);
+    }
 
     const unformattedQuery = [deleteStatement, whereClause, returningClause];
 
     const query = this.#constructQuery(unformattedQuery, ...whereValues);
 
-    const { rows } = pool.query(query);
-    const data = rows.length ? rows[0] : null;
-    return data as T;
+    const { rows } = await pool.query(query);
+    const data: T | number = rows.length ? rows : null;
+    return data;
   }
 
   /*
   / Utilities
  */
-
 
   // Assigns defaults to config object
   #assignDefaults(config: Options | undefined) {
@@ -266,7 +272,6 @@ class Model<T> {
     return Array(columns.length - 1).fill("%L");
   }
 
-
   #composeOrderByClause(columns: OrderByColumn[]) {
     if (columns.length === 0) return "";
 
@@ -274,7 +279,7 @@ class Model<T> {
 
     columns.forEach((columnEntry) => {
       for (const [column, direction] of Object.entries(columnEntry)) {
-        const isLastEntry = columns[columns.length - 1][column]
+        const isLastEntry = columns[columns.length - 1][column];
         if (isLastEntry) {
           statement += column + " " + direction + " ";
         } else {
@@ -354,7 +359,6 @@ class Model<T> {
     let notValues = [];
     let individualStatementsArray: string[][] = [];
     let individualValues = [];
-
 
     // Assigns each key to the appropriate logical statement array
     keys.forEach((key) => {
@@ -448,7 +452,10 @@ class Model<T> {
     return [clause, values] as [string, any[]];
   }
 
-  #formatLogicalExpressions(expressions: string[][], logicalOperator: "AND" | "OR") {
+  #formatLogicalExpressions(
+    expressions: string[][],
+    logicalOperator: "AND" | "OR"
+  ) {
     if (expressions.length === 0) return "";
     const formatted = expressions.map((array, index) => {
       if (array.length === 1) {
