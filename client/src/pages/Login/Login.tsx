@@ -19,7 +19,7 @@ import {
   TextInput,
 } from "@/features/ui";
 
-const image = new URL("../../assets/chat1.webp", import.meta.url).href;
+const image = new URL("../../assets/chat2.webp", import.meta.url).href;
 
 export default function Login() {
   const { login, message } = useAuth();
@@ -42,7 +42,6 @@ export default function Login() {
   });
 
   async function onSubmitForm(data: loginData) {
-    console.log(data)
     login(data);
   }
 
@@ -54,9 +53,9 @@ export default function Login() {
       <Box as="main" css={{ width: "100%", "@lg": { width: "40vw" } }}>
         <FormContainer onSubmit={handleSubmit(onSubmitForm)}>
           <Box css={{ marginBlockEnd: "$150" }}>
-            <Heading as="h1">Log In</Heading>
+            <Heading as="h1" css={{marginBottom: "$012"}}>Log In</Heading>
             <Text color="lowContrast">
-              Need an account? <Link to="/">Create one here</Link>
+              Need an account? <Link to="/register">Create one here</Link>
             </Text>
           </Box>
           <Controller
@@ -97,6 +96,7 @@ export default function Login() {
                 value={value}
                 ref={ref}
                 name="password"
+                css={{marginBlockEnd: "$250"}}
               />
             )}
             name="password"
@@ -114,14 +114,12 @@ export default function Login() {
 const ImageContainer = styled(Box, {
   display: "none",
   "@lg": {
-    display: "block",
+    display: "flex",
     position: "sticky",
     width: "60vw",
     height: "100vh",
   },
 });
-
-const eeput = styled("input", {});
 
 const FormContainer = styled("form", {
   margin: "0 auto",

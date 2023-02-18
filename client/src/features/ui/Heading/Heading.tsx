@@ -1,4 +1,5 @@
 import { styled } from "@/stitches.config";
+import { CSS } from "@stitches/react";
 
 
 import React from 'react'
@@ -8,13 +9,14 @@ type HeadingSize = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | undefined
 type Props = {
   as?: HeadingSize;
   children?: React.ReactNode;
+  css?: CSS;
   size?: HeadingSize;
 }
 
-export default function Heading({as, children, size, ...rest}: Props) {
+export default function Heading({as, children, css, size, ...rest}: Props) {
   const headingSize: HeadingSize = size ? size : as;
   return (
-    <_Heading as={as} size={headingSize} {...rest}>{children}</_Heading>
+    <_Heading as={as} css={css} size={headingSize} {...rest}>{children}</_Heading>
   )
 }
 const _Heading = styled("h3", {
