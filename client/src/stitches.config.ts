@@ -2,6 +2,34 @@ import { createStitches } from "@stitches/react";
 import type { PropertyValue } from "@stitches/react";
 import * as tokens from "./constants/designTokens";
 
+export type MediaBreakpoints =
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "motion"
+  | "highContrast";
+
+export type Spaces =
+  | "$025"
+  | "$050"
+  | "$075"
+  | "$087"
+  | "$100"
+  | "$112"
+  | "$125"
+  | "$150"
+  | "$175"
+  | "$200"
+  | "$225"
+  | "$250"
+  | "$275"
+  | "$300"
+  | "$350"
+  | "$400"
+  | "$450"
+  | "$500";
+
 export const { styled, css, globalCss, theme, createTheme } = createStitches({
   theme: {
     colors: {
@@ -35,7 +63,7 @@ export const { styled, css, globalCss, theme, createTheme } = createStitches({
     lg: `(min-width: ${tokens.breakpoints.lg})`,
     xl: `(min-width: ${tokens.breakpoints.xl})`,
     motion: "(prefers-reduced-motion)",
-    highContrast: "(-ms-high-contrast: active), (forced-colors: actve)"
+    highContrast: "(forced-colors: active)",
   },
   utils: {
     px: (value: PropertyValue<"padding">) => ({
@@ -61,23 +89,25 @@ export const { styled, css, globalCss, theme, createTheme } = createStitches({
   },
 });
 
-export const darkTheme = createTheme({ colors: { ...tokens.darkColors, ...tokens.darkTheme } });
+export const darkTheme = createTheme({
+  colors: { ...tokens.darkColors, ...tokens.darkTheme },
+});
 
 export const globalStyles = globalCss({
   "*": {
     boxSizing: "border-box",
     margin: 0,
     padding: 0,
-    "-webkit-tap-highlight-color": "transparent", /* for removing the highlight */
-
+    "-webkit-tap-highlight-color":
+      "transparent" /* for removing the highlight */,
 
     "&:focus:not(:focus-visible)": {
-      outline: "none"
+      outline: "none",
     },
-  
+
     "&:focus-visible": {
-      outline: '2px solid $primary',
-      borderRadius: "4px"
+      outline: "2px solid $primary",
+      borderRadius: "4px",
     },
   },
   "::-webkit-scrollbar": {
@@ -87,7 +117,7 @@ export const globalStyles = globalCss({
     "-webkit-font-smoothing": "antialiased",
     textRendering: "optimizeLegibility",
     textSizeAdjust: "100%",
-    background: "$background"
+    background: "$background",
   },
   body: {
     fontFamily: "$plusjakarta",

@@ -47,16 +47,17 @@ export const darkTheme = {
     error: "$red9",
     success: "$green9",
     background: "$sage1",
-    disabled: "$sage2",
+    disabled: "$sage4",
     onPrimary: "$sage12",
     onError: "$sage12",
     onSuccess: "$sage12",
     onBackground: "$sage12",
-    onDisabled: "$sage4",
+    onDisabled: "$sage7",
   };
 
 export const fontSizes = {
   "050": "0.5rem",
+  "062": "0.625rem",
   "075": "0.75rem",
   "087": "0.875rem",
   "100": "1rem",
@@ -97,6 +98,7 @@ export const shadows = {};
 export const sizes = {
   "025": "0.25rem",
   "050": "0.5rem",
+  "062": "0.625rem",
   "075": "0.75rem",
   "087": "0.875rem",
   "100": "1rem",
@@ -132,6 +134,7 @@ export const spaces = {
   "012": "0.125rem",
   "025": "0.25rem",
   "050": "0.5rem",
+  "062": "0.625rem",
   "075": "0.75rem",
   "087": "0.875rem",
   "100": "1rem",
@@ -158,12 +161,12 @@ export const theme = {
   error: "$red9",
   success: "$green9",
   background: "$sage1",
-  disabled: "$sage2",
+  disabled: "$sage4",
   onPrimary: "$sage1",
   onError: "$sage1",
   onSuccess: "$sage1",
   onBackground: "$sage12",
-  onDisabled: "$sage4",
+  onDisabled: "$sage7",
 };
 
 
