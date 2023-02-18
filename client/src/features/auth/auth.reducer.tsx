@@ -2,11 +2,11 @@ import { Action } from "@/types/reducer";
 import { AuthActionTypes } from "./auth.context";
 
 type State = {
-  id: string;
+  id: string | number;
   email: string;
   username: string;
   profile_picture: object;
-  status: string;
+  status: string | number;
   message: string;
   loading: boolean;
 };
