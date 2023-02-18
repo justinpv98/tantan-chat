@@ -106,7 +106,7 @@ class Model<T> {
     let insertValues = [];
 
     for (const [column, value] of Object.entries(this)) {
-      if (column !== "modelName") {
+      if (column !== "modelName" && value) {
         insertColumns.push(column);
         insertValues.push(value);
       }
@@ -117,6 +117,7 @@ class Model<T> {
 
     const insertStatement = `INSERT INTO "${this.modelName}" (${insertColumns}) VALUES (${insertPlaceholders}) `;
     let returningClause: string = this.#composeReturningClause(returning, as);
+
 
     /* Query Construction */
     const unformattedQuery = [insertStatement, returningClause];
@@ -162,9 +163,11 @@ class Model<T> {
     ];
     const query = this.#constructQuery(unformattedQuery, ...whereValues);
 
+
     const { rows } = await pool.query(query);
     const data: T[] = rows.length ? rows : null;
     return data;
+    
   }
 
   async updateById(id: number, config: Options) {
@@ -269,7 +272,7 @@ class Model<T> {
 
   // Creates placeholders from the number of columns
   #createPlaceholders(columns: any[]) {
-    return Array(columns.length - 1).fill("%L");
+    return Array(columns.length).fill("%L");
   }
 
   #composeOrderByClause(columns: OrderByColumn[]) {
@@ -460,8 +463,8 @@ class Model<T> {
     const formatted = expressions.map((array, index) => {
       if (array.length === 1) {
         return index < array.length - 1
-          ? `${array[0]} = $L AND`
-          : `${array[0]} = $L`;
+          ? `${array[0]} = %L AND`
+          : `${array[0]} = %L`;
       } else {
         const operator = array[1];
         return `${array[0]} ${operators[operator]} %L`;

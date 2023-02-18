@@ -4,21 +4,21 @@ import argon2 from "argon2";
 import Model from "./Model";
 
 export type UserSchema = {
-  id?: number;
+  id?: string;
   email?: string;
   username?: string;
   password?: string;
   profile_picture?: {};
-  status?: number;
+  status?: string;
 };
 
 export class User extends Model<UserSchema> {
-  id?: number;
+  id?: string;
   email?: string;
   username?: string;
   password?: string;
   profile_picture?: {};
-  status?: number;
+  status?: string;
 
   constructor(config?: UserSchema) {
     super("user");

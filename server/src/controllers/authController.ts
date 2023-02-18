@@ -11,6 +11,7 @@ const checkSession = asyncHandler(async (req: Request, res: Response) => {
 
   // If there is a session (i.e. user exists), send user
   if (session?.user) {
+    logger.info(`${session.user.id} has refreshed their session.`)
     res.status(200).json(session.user);
   } else {
     res.sendStatus(204);
