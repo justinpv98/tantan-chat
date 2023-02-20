@@ -3,14 +3,29 @@ import { Navigate } from "react-router-dom";
 import { PrivateRoute, RestrictedRoute } from "@/features/navigation";
 
 /* Elements */
-import { Login, Register } from "@/pages";
+import { Friends, Home, Login, Register } from "@/pages";
 import { Layout } from "@/features/ui";
-import { IconProps } from "@/features/ui//Icon/Icon";
+import { IconProps } from "@/features/ui/Icon/Icon";
 
 const routes = [
   {
     path: "/",
-    element: <RestrictedRoute redirectPath="/app" />,
+    element: (
+      <PrivateRoute redirectPath="/login">
+        <Layout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: ":id?",
+        element: <Home />,
+      },
+      { path: "friends/:id?", element: <Friends /> },
+    ],
+  },
+  {
+    path: "/",
+    element: <RestrictedRoute redirectPath="/" />,
     children: [
       { path: "home", element: <Navigate to="/login" /> },
       {
@@ -23,30 +38,16 @@ const routes = [
       },
     ],
   },
-  {
-    path: "app",
-    element: (
-      <PrivateRoute redirectPath="/login">
-        <Layout />
-      </PrivateRoute>
-    ),
-    children: [
-      {
-        path: ":id?",
-        element: <p>test</p>,
-      },
-      { path: "friends/:id?", element: <p>friends</p> },
-    ],
-  },
+
 ];
 
 export const navRoutes: NavRoutes[] = [
   {
-    path: "/app",
+    path: "/",
     icon: "chat-bubble-oval-left",
   },
   {
-    path: "/app/friends",
+    path: "/friends",
     icon: "users",
   },
 ];

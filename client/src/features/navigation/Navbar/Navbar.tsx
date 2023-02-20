@@ -30,36 +30,38 @@ export default function Navbar({}: Props) {
               />
             );
           })}
-          <Popover
-          side="top"
-            css={{
-              borderRadius: "$round",
-              display: "block",
-              width: "$275",
-              height: "$275",
-              backgroundColor: "$sage4",
-            
-              "@lg": {
-                display: "none",
-              },
-            }}
-            trigger={<Avatar />}
-          />
+          <li>
+            <Popover
+              side="top"
+              css={{
+                borderRadius: "$round",
+                display: "block",
+                width: "$275",
+                height: "$275",
+                backgroundColor: "$sage4",
+
+                "@lg": {
+                  display: "none",
+                },
+              }}
+              trigger={<Avatar size={250} />}
+            />
+          </li>
         </NavigationWrapper>
         <Popover
-        side="right"
+          side="right"
           css={{
             display: "none",
             borderRadius: "$round",
             width: "$275",
             height: "$275",
-            backgroundColor: "$sage4",
+            backgroundColor: "$sage3",
 
             "@lg": {
               display: "block",
             },
           }}
-          trigger={<Avatar />}
+          trigger={<Avatar size={250} />}
         />
       </SideNavigation>
       <Outlet />
@@ -67,7 +69,7 @@ export default function Navbar({}: Props) {
   );
 }
 
-const NavigationWrapper = styled("div", {
+const NavigationWrapper = styled("ul", {
   display: "flex",
   justifyContent: "evenly",
   width: "100%",

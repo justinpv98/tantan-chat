@@ -3,21 +3,22 @@ import { styled } from "@/stitches.config";
 import { CSS, VariantProps } from "@stitches/react";
 
 import Icon from "../Icon/Icon";
-import Image from "../Image/Image";
 
 type Props = {
   css?: CSS;
   name?: string;
-  size?: VariantProps<typeof Root>["size"] & (number);
+  size?: VariantProps<typeof Root>["size"] & number;
   src?: string;
 };
 
-export default function Avatar({ css, name, size = 175, src }: Props) {
+export default function Avatar({ css, name, size = 200, src }: Props) {
+  const fallbackSize = ((size * 16) / 100) * 0.625;
+
   return (
     <Root css={css} size={size}>
       <AvatarPrimitive.Image src={src} alt={name} />
       <Fallback delayMs={50}>
-        <Icon icon="user" size={size * 16 / 100} />
+        <Icon icon="user" size={fallbackSize} />
       </Fallback>
     </Root>
   );
@@ -28,7 +29,7 @@ const Fallback = styled(AvatarPrimitive.Fallback, {
   height: "100%",
   display: "flex",
   alignItems: "center",
-  backgroundColor: "$sage4",
+  backgroundColor: "$sage3",
   justifyContent: "center",
   color: "$sage11",
   fontSize: 15,
@@ -63,6 +64,14 @@ const Root = styled(AvatarPrimitive.Root, {
       200: {
         width: "$200",
         height: "$200",
+      },
+      225: {
+        width: "$225",
+        height: "$225",
+      },
+      250: {
+        width: "$250",
+        height: "$250",
       },
     },
   },

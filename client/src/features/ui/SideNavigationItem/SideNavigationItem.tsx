@@ -2,23 +2,27 @@ import React from "react";
 import { styled } from "@/stitches.config";
 import { NavLink } from "react-router-dom";
 
-import Icon, {IconProps} from "../Icon/Icon";
+import Icon, { IconProps } from "../Icon/Icon";
 
 type Props = { icon?: IconProps["icon"]; path: string };
 
-export default function SideNavigationItem({icon, path}: Props) {
+export default function SideNavigationItem({ icon, path }: Props) {
   return (
-    <Link  to={path} end>
-      <Icon icon={icon} />
-    </Link>
+    <li>
+      <Link to={path} end>
+        <Icon icon={icon} />
+      </Link>
+    </li>
   );
 }
 
 export const Link = styled(NavLink, {
-  background: "transparent",
+  display: "block",
+  width: "100%",
+  height: "100%",
   padding: "$050 $062",
   color: "$sage11",
-  backgroundColor: "$sage4",
+  backgroundColor: "$sage3",
   borderRadius: "$round",
   transition: "color cubic-bezier(0.16, 1, 0.3, 1) 250ms",
 
@@ -28,7 +32,7 @@ export const Link = styled(NavLink, {
   },
 
   "&:hover:not(.active)": {
-    backgroundColor: "$sage4",
+    backgroundColor: "$sage3",
     color: "$sage12",
     transition: "color cubic-bezier(0.16, 1, 0.3, 1) 250ms",
   },

@@ -17,7 +17,7 @@ export default function Popover({ css, children, side = "top", sideOffset = 5, t
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
-        <Button transparent css={{ padding: 0, ...css }}>
+        <Button transparent css={{ padding: 0,  ...css }}>
           {trigger}
         </Button>
       </PopoverPrimitive.Trigger>
