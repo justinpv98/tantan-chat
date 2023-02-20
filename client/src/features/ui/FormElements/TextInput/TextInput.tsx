@@ -1,6 +1,6 @@
-import React, { useState, useEffect, forwardRef } from "react";
+import React, { useState, useEffect, useId, forwardRef } from "react";
 import { styled } from "@/stitches.config";
-import { nanoid } from "nanoid";
+
 
 import Box from "../../Box/Box";
 import Button from "../../Button/Button";
@@ -81,10 +81,11 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     /* based on wpds */
     const [errorId, setErrorId] = useState<string>();
     const [helperId, setHelperId] = useState<string>();
+    const accessibilityId = useId();
 
     useEffect(() => {
-      setErrorId("input-error-" + nanoid(6));
-      setHelperId("input-helper-" + nanoid(6));
+      setErrorId("input-error-" + accessibilityId);
+      setHelperId("input-helper-" + accessibilityId);
     }, []);
 
     function handleOnBlur(e: React.FocusEvent<HTMLInputElement>) {

@@ -111,6 +111,9 @@ const _Flex = styled("div", {
       end: {
         justifyContent: "flex-end",
       },
+      evenly: {
+        justifyContent: "space-evenly",
+      },
       between: {
         justifyContent: "space-between",
       },

@@ -1,6 +1,6 @@
 import { Fragment } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import withAuth from "../auth/hoc/withAuth";
+import { Navigate, Outlet, useParams } from "react-router-dom";
+import { withAuth } from "@/features/auth";
 
 type Props = {
   isAuth: boolean;
@@ -10,8 +10,12 @@ type Props = {
 
 function PrivateRoute({ isAuth, redirectPath = "/login", children }: Props) {
   // prevents unauthorized users from seeing certain pages
+  const { chatId } = useParams();
+
+  const chatParam = chatId ? `/${chatId}` : "";
+
   if (!isAuth) {
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to={redirectPath + chatParam} replace />;
   }
   return <Fragment>{children ? children : <Outlet />}</Fragment>;
 }
