@@ -111,13 +111,14 @@ const Button = styled("button", {
       true: {
         backgroundColor: "inherit",
         color: "inherit",
-        paddingBlock: "$075"
+        paddingBlock: "$075",
+        "&:hover": { color: "$green11" },
       },
     },
     outlined: {
       true: {
         background: "none",
-        border: "1px soli",
+        border: "1px solid",
       },
       false: {},
     },

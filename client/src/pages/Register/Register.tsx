@@ -43,7 +43,6 @@ export default function Register() {
   });
 
   async function onSubmitForm(data: registerData) {
-    console.log(data);
     signUp(data);
   }
 
@@ -55,7 +54,7 @@ export default function Register() {
       <Box as="main" css={{ width: "100%", "@lg": { width: "40vw" } }}>
         <FormContainer onSubmit={handleSubmit(onSubmitForm)}>
           <Box css={{ marginBlockEnd: "$150" }}>
-            <Heading as="h1">Sign Up</Heading>
+            <Heading as="h1" css={{marginBottom: "$012"}}>Sign Up</Heading>
             <Text color="lowContrast">
               Join us for free or <Link to="/login">log in here</Link>
             </Text>
@@ -119,6 +118,7 @@ export default function Register() {
                 value={value}
                 ref={ref}
                 name="password"
+                css={{marginBlockEnd: "$250"}}
               />
             )}
             name="password"
@@ -136,14 +136,12 @@ export default function Register() {
 const ImageContainer = styled(Box, {
   display: "none",
   "@lg": {
-    display: "block",
+    display: "flex",
     position: "sticky",
     width: "60vw",
     height: "100vh",
   },
 });
-
-const eeput = styled("input", {});
 
 const FormContainer = styled("form", {
   margin: "0 auto",

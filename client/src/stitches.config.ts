@@ -126,6 +126,10 @@ export const globalStyles = globalCss({
   a: {
     color: "$primary",
   },
+  li: {
+    listStyle: "none",
+    padding: 0
+  },
   ".sr-only": {
     border: "0 !important",
     clip: "rect(1px, 1px, 1px, 1px) !important" /* 1 */,

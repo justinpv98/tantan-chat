@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import withAuth from "../auth/hoc/withAuth";
+import { withAuth } from "@/features/auth";
 
 type Props = {
   isAuth: boolean;
@@ -7,8 +7,14 @@ type Props = {
   children: React.ReactNode;
 };
 
-function RestrictedRoute({ isAuth, redirectPath = "/messages", children }: Props) {
+function RestrictedRoute({
+  isAuth,
+  redirectPath = "/messages",
+  children,
+}: Props) {
   // prevents logged in users from seeing certain pages
+
+
   if (isAuth) {
     return <Navigate to={redirectPath} replace />;
   }
