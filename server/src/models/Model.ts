@@ -128,7 +128,7 @@ class Model<T> {
     return data;
   }
 
-  async findById(id: number, config: Options | undefined) {
+  async findById(id: string | number, config?: Options | undefined) {
     const { select, as } = this.#assignDefaults(config);
 
     const selectStatement = this.#composeSelectStatement(select, as);
@@ -170,7 +170,7 @@ class Model<T> {
     
   }
 
-  async updateById(id: number, config: Options) {
+  async updateById(id: string | number, config?: Options) {
     const { set } = this.#assignDefaults(config);
 
     const updateStatement = `UPDATE "${this.modelName}" `;
@@ -212,7 +212,7 @@ class Model<T> {
     return data;
   }
 
-  async deleteById(id: number, config: Options) {
+  async deleteById(id: string | number, config?: Options) {
     const { returning, as } = this.#assignDefaults(config);
 
     const deleteStatement = `DELETE FROM "${this.modelName}" `;
@@ -226,6 +226,7 @@ class Model<T> {
     const unformattedQuery = [deleteStatement, whereClause, returningClause];
 
     const query = this.#constructQuery(unformattedQuery, id);
+
 
     const { rows } = await pool.query(query);
     const data: T | number = rows.length ? rows[0] : null;

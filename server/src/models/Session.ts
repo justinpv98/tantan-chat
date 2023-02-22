@@ -1,13 +1,13 @@
 import Model from "./Model";
 
 
-type SessionData = {
+type SessionSchema = {
     sid?: string;
     sess?: string;
     expires?: string;
 }
 
-class Session extends Model<SessionData> {
+class Session extends Model<SessionSchema> {
     constructor(){
         super("session");
     }

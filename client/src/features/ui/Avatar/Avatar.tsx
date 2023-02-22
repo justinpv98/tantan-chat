@@ -73,6 +73,10 @@ const Root = styled(AvatarPrimitive.Root, {
         width: "$250",
         height: "$250",
       },
+      300: {
+        width: "$300",
+        height: "$300",
+      },
     },
   },
 });

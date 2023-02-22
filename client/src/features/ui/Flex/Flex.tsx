@@ -4,9 +4,10 @@ import { styled } from "@/stitches.config";
 import { CSS, VariantProps } from "@stitches/react";
 
 type ExtraProps = {
-  as?: React.ElementType
+  as?: React.ElementType;
   children?: React.ReactNode;
   css?: CSS;
+  onClick?: () => {};
   testId?: string;
 };
 
@@ -15,11 +16,12 @@ export default function Flex({
   children,
   css,
   gap,
+  onClick,
   testId,
   ...rest
 }: VariantProps<typeof _Flex> & ExtraProps) {
   return (
-    <_Flex as={as} css={css} data-testid={testId} {...rest}>
+    <_Flex as={as} css={css} data-testid={testId} onClick={onClick} {...rest}>
       {children}
     </_Flex>
   );
@@ -73,7 +75,7 @@ const _Flex = styled("div", {
     },
     gap: {
       1: {
-        gap: "$025",
+        gap: "4px",
       },
       2: {
         gap: "$050",
@@ -96,10 +98,9 @@ const _Flex = styled("div", {
     },
     inline: {
       true: {
-        display: "inline-flex"
-      }, false: {
-
-      }
+        display: "inline-flex",
+      },
+      false: {},
     },
     justify: {
       start: {
@@ -133,9 +134,7 @@ const _Flex = styled("div", {
   defaultVariants: {
     align: "stretch",
     direction: "row",
-    flex: "shrink",
     justify: "start",
     wrap: "noWrap",
   },
 });
-

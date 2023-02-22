@@ -15,6 +15,7 @@ import errorHandler from "@/middleware/errorHandler";
 
 // Routes
 import authRoutes from "@/routes/authRoutes";
+import userRoutes from "@/routes/userRoutes";
 
 const app = express();
 const server = http.createServer(app);
@@ -39,6 +40,8 @@ useScheduler();
 
 // Routing
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+
 
 // Error handling middleware
 app.use(errorHandler);

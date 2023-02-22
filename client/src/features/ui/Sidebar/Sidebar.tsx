@@ -1,22 +1,28 @@
 import React from "react";
 import { styled } from "@/stitches.config";
-import { VariantProps } from "@stitches/react";
+import { CSS } from "@stitches/react";
 
 import { HeadingProps } from "../Heading/Heading";
 
-import Box from "../Box/Box";
 import Heading from "../Heading/Heading";
 
 type Props = {
   children?: React.ReactNode;
+  css: CSS;
   title?: string;
-  titleAlignment?: HeadingProps['align'];
+  titleAlignment?: HeadingProps["align"];
 };
 
-export default function Sidebar({ children, title, titleAlignment = "start", ...rest }: Props) {
+export default function Sidebar({
+  children,
+  css,
+  title,
+  titleAlignment = "start",
+  ...rest
+}: Props) {
   return (
-    <Container {...rest}>
-      <Heading as="h2" size="h3" align={titleAlignment} css={{"px": "$100"}}>
+    <Container css={css} {...rest}>
+      <Heading as="h2" size="h3" align={titleAlignment} css={{ px: "$200" }}>
         {title}
       </Heading>
       {children}

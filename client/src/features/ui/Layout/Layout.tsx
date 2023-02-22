@@ -21,7 +21,7 @@ export default function Layout({}: Props) {
     <LayoutContainer>
       <Navbar />
       {id ? (
-        <Chat onClickMore={toggleRightMenu} />
+        <Chat id={id} onClickMore={toggleRightMenu} />
       ) : (
         <Flex
           as="main"

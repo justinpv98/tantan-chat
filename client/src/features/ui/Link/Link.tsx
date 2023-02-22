@@ -16,6 +16,7 @@ export default function Link({ children, css, external, to, ...rest }: Props) {
   return (
     <_Link
       as={linkType}
+      css={css}
       target={external ? "blank" : undefined}
       href={external ? to : undefined}
       to={!external ? to : undefined}
