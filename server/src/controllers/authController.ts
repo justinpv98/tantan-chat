@@ -11,7 +11,7 @@ const checkSession = asyncHandler(async (req: Request, res: Response) => {
 
   // If there is a session (i.e. user exists), send user
   if (session?.user) {
-    logger.info(`${session.user.id} has refreshed their session.`)
+    logger.info(`User #${session.user.id} has refreshed their session.`)
     res.status(200).json(session.user);
   } else {
     res.sendStatus(204);
@@ -56,8 +56,8 @@ const register = asyncHandler(async (req: Request, res: Response) => {
     throw new Error();
   }
 
-  let newUser = new User({ email, username, password: hash });
-  const user = await newUser.save();
+  let user = new User({ email, username, password: hash });
+  await user.save()
 
   // If the new user is created successfully,
   if (user && user !== null) {

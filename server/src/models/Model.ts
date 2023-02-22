@@ -125,7 +125,8 @@ class Model<T> {
 
     const { rows } = await pool.query(query);
     const data: T = rows.length ? rows[0] : null;
-    return data;
+
+    Object.assign(this, data);
   }
 
   async findById(id: string | number, config?: Options | undefined) {

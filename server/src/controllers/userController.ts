@@ -8,7 +8,7 @@ import { Request, Response } from "express-serve-static-core";
 // @access  Private
 const searchUsers = asyncHandler(async (req: Request, res: Response) => {
   const { username } = req.query;
-
+  
   const userQuery = await UserModel.findAll({
     select: ["id", "username", "profile_picture", "status"],
     where: { username: { like: username + "%" } },
