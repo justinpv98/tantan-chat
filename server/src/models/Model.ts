@@ -95,6 +95,7 @@ const defaultOptions: Options = {
 
 class Model<T> {
   modelName: string;
+  
   constructor(modelName: string) {
     this.modelName = modelName;
   }
@@ -107,7 +108,7 @@ class Model<T> {
 
     for (const [column, value] of Object.entries(this)) {
       if (column !== "modelName" && value) {
-        insertColumns.push(column);
+        insertColumns.push('"' + column + '"');
         insertValues.push(value);
       }
     }
@@ -122,6 +123,8 @@ class Model<T> {
     /* Query Construction */
     const unformattedQuery = [insertStatement, returningClause];
     const query = this.#constructQuery(unformattedQuery, ...insertValues);
+
+    console.log(query);
 
     const { rows } = await pool.query(query);
     const data: T = rows.length ? rows[0] : null;
@@ -465,11 +468,11 @@ class Model<T> {
     const formatted = expressions.map((array, index) => {
       if (array.length === 1) {
         return index < array.length - 1
-          ? `${array[0]} = %L AND`
-          : `${array[0]} = %L`;
+          ? `"${array[0]}" = %L AND`
+          : `"${array[0]}" = %L`;
       } else {
         const operator = array[1];
-        return `${array[0]} ${operators[operator]} %L`;
+        return `"${array[0]}" ${operators[operator]} %L`;
       }
     });
 

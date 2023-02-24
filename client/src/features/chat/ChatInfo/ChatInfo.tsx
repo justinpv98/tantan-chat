@@ -1,23 +1,25 @@
 import { styled } from "@/stitches.config";
 
-import { Avatar, Box, Button, Flex, Heading, Icon, Text } from "@/features/ui";
+// Types
+import { Participant } from "@/hooks/useGetConversation/useGetConversation";
+
+// Components
+import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";
 
 type Props = {
+  info?: Participant,
   onClickMore: () => void;
 };
 
-export default function ChatInfo({ onClickMore }: Props) {
+export default function ChatInfo({ info, onClickMore }: Props) {
   return (
     <Container as="header">
       <Flex align="center">
         <Avatar size={250}/>
         <Flex direction="column" css={{ marginLeft: "$050" }}>
           <Heading as="h1" size="h6">
-            Name
+            {info && info.username}
           </Heading>
-          <Text color="lowContrast" size="sm">
-            @Username
-          </Text>
         </Flex>
       </Flex>
       <Box css={{color: "$sage11"}}>

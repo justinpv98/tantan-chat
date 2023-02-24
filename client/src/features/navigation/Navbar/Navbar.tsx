@@ -3,6 +3,7 @@ import { useParams, Outlet } from "react-router-dom";
 import { styled } from "@/stitches.config";
 import { navRoutes } from "@/constants/routes";
 
+// Components
 import {
   Avatar,
   Box,
@@ -24,7 +25,11 @@ export default function Navbar({}: Props) {
           {navRoutes.map((route) => {
             return (
               <SideNavigationItem
-                path={route.path + (id ? `/${id}` : "")}
+                path={
+                  route.path +
+                  (route.path === "/" ? "" : "/") +
+                  (id ? `c/${id}` : "")
+                }
                 icon={route.icon}
                 key={route.path}
               />

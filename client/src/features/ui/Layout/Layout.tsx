@@ -2,26 +2,46 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
+// Hooks
+import { useAuth, useCreateConversation, useGetConversation } from "@/hooks";
+
+// Components
 import { Navbar } from "@/features/navigation";
 import { Chat, ChatRightMenu } from "@/features/chat";
 import Flex from "../Flex/Flex";
 import Text from "../Text/Text";
 
-type Props = {};
 
-export default function Layout({}: Props) {
-  const { id } = useParams();
+export default function Layout() {
+  const { id: targetId } = useParams();
   const [showRightMenu, setShowRightMenu] = useState(false);
 
   function toggleRightMenu() {
     setShowRightMenu(!showRightMenu);
   }
 
+  const { id: userId } = useAuth();
+  const { data: conversationId } = useCreateConversation(
+    targetId || "",
+    !!targetId
+  );
+  const { data: conversationData } = useGetConversation(
+    conversationId,
+    !!conversationId
+  );
+
+  let chatInfo;
+  if (conversationData?.type === "dm") {
+    chatInfo = conversationData.participants.filter(
+      (participant) => participant.id !== userId
+    )[0];
+  }
+
   return (
     <LayoutContainer>
       <Navbar />
-      {id ? (
-        <Chat id={id} onClickMore={toggleRightMenu} />
+      {conversationData ? (
+        <Chat info={chatInfo} onClickMore={toggleRightMenu} />
       ) : (
         <Flex
           as="main"
@@ -34,7 +54,7 @@ export default function Layout({}: Props) {
           </Text>
         </Flex>
       )}
-      {id && showRightMenu && <ChatRightMenu />}
+      {conversationData && showRightMenu && <ChatRightMenu info={chatInfo} />}
     </LayoutContainer>
   );
 }

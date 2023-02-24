@@ -5,11 +5,11 @@ import queryKeys from "@/constants/queryKeys";
 type QueryKey = [string, { query: string }];
 
 export type UserData = {
-    id: number;
-    username: string;
-    profile_picture: {} | null;
-    status: number;
-  };
+  id: string;
+  username: string;
+  profile_picture: {} | null;
+  status: string;
+};
 
 export async function fetchUsers({ queryKey }: QueryFunctionContext<QueryKey>) {
   // eslint-disable-next-line no-unused-vars
@@ -23,5 +23,5 @@ export async function fetchUsers({ queryKey }: QueryFunctionContext<QueryKey>) {
 }
 
 export default function useSearchUsers(query: string, enabled: boolean) {
-  return useQuery([queryKeys.SEARCH_USERS, { query }], fetchUsers, {enabled});
+  return useQuery([queryKeys.SEARCH_USERS, { query }], fetchUsers, { enabled });
 }

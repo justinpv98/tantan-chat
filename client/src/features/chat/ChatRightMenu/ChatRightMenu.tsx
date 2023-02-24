@@ -1,13 +1,19 @@
-import React from "react";
 import { styled } from "@/stitches.config";
 
-import { Flex, Heading, Sidebar } from "@/features/ui";
+// Types
+import { Participant } from "@/hooks/useGetConversation/useGetConversation";
 
-type Props = {};
+// Components
+import { Flex, Sidebar } from "@/features/ui";
 
-export default function ChatRightMenu({}: Props) {
+
+type Props = {
+  info?: Participant;
+};
+
+export default function ChatRightMenu({ info }: Props) {
   return (
-    <Sidebar title="Name" titleAlignment="center" aria-live="polite">
+    <Sidebar title={info?.username} titleAlignment="center" aria-live="polite">
       <Flex
         direction="column"
         align="center"

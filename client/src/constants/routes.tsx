@@ -17,10 +17,11 @@ const routes = [
     ),
     children: [
       {
-        path: ":id?",
+        path: "/",
         element: <Home />,
+        children: [{path: "c/:id", element: <Home />}]
       },
-      { path: "friends/:id?", element: <Friends /> },
+      { path: "friends", element: <Friends />, children: [{path: "c/:id", element: <Friends />}]  },
     ],
   },
   {

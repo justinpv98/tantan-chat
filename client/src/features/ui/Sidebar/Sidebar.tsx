@@ -2,13 +2,15 @@ import React from "react";
 import { styled } from "@/stitches.config";
 import { CSS } from "@stitches/react";
 
+// Types
 import { HeadingProps } from "../Heading/Heading";
 
+// Components
 import Heading from "../Heading/Heading";
 
 type Props = {
   children?: React.ReactNode;
-  css: CSS;
+  css?: CSS;
   title?: string;
   titleAlignment?: HeadingProps["align"];
 };

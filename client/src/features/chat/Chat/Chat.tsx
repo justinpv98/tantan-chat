@@ -1,17 +1,17 @@
-import { useEffect } from "react";
 
+// Components
 import { Flex } from "@/features/ui";
 import ChatConversation from "../ChatConversation/ChatConversation";
 import ChatInfo from "../ChatInfo/ChatInfo";
 import ChatMessageBar from "../ChatMessageBar/ChatMessageBar";
 
 type Props = {
-  id: string; //id of user that you're talking to
+  info: any; //id of user that is being talked to from perspective of client
   onClickMore: () => void;
 };
 
-export default function Chat({ onClickMore, id }: Props) {
-  useEffect(() => {}, [id]);
+export default function Chat({ onClickMore, info }: Props) {
+
 
   return (
     <Flex
@@ -19,7 +19,7 @@ export default function Chat({ onClickMore, id }: Props) {
       direction="column"
       css={{ width: "100%", maxHeight: "100vh" }}
     >
-      <ChatInfo onClickMore={onClickMore} />
+      <ChatInfo info={info} onClickMore={onClickMore} />
       <ChatConversation />
       <ChatMessageBar />
     </Flex>
