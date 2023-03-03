@@ -3,6 +3,7 @@ import corsOptions from "./cors/corsOptions";
 
 const env = process.env.NODE_ENV || "dev";
 
+
 dotenv.config();
 
 const config = {

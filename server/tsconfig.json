@@ -15,6 +15,7 @@
       "module": "commonjs",
       "pretty": true,
       "sourceMap": true,
+      "skipLibCheck": true,
       "outDir": "dist",
       "allowJs": true,
       "noEmit": false,

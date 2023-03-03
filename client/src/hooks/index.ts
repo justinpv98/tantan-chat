@@ -3,3 +3,4 @@ export {default as useCreateConversation } from "./useCreateConversation/useCrea
 export {default as useDebouncedValue } from "./useDebounce/useDebouncedValue";
 export {default as useGetConversation } from "./useGetConversation/useGetConversation";
 export {default as useSearchUsers } from "./useSearchUsers/useSearchUsers";
+export {default as useSocket } from "./useSocket/useSocket";

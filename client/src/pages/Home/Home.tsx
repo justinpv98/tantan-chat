@@ -1,39 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCreateConversation, useDebouncedValue, useSearchUsers } from "@/hooks";
+import {
+  useAuth,
+  useCreateConversation,
+  useDebouncedValue,
+  useSearchUsers,
+  useSocket
+} from "@/hooks";
 
 // Components
 import { Flex, SearchInput, Sidebar } from "@/features/ui";
 import { UserItem } from "@/features/navigation";
 
-type Props = {};
+export default function Home() {
+  const navigate = useNavigate();
+  const { id: userId } = useAuth();
+  const socket = useSocket();
 
-export default function Home({}: Props) {
-  // target id to find conversation from searched user
-  const [targetId, setTargetId] = useState("");
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
-  const navigate = useNavigate();
-
   const debouncedQuery = useDebouncedValue(query, 300);
-
-  const {
-    data: conversationId,
-    isSuccess,
-    isRefetching,
-  } = useCreateConversation(targetId, !!targetId);
 
   const { data: userData } = useSearchUsers(
     debouncedQuery,
     Boolean(debouncedQuery)
   );
 
-  useEffect(() => {
-    if ((isRefetching && conversationId) || (isSuccess && conversationId)) {
-      navigate(`/c/${targetId}`);
-    }
-  }, [targetId, conversationId]);
+  const { mutate } = useCreateConversation(onCreateConversationSuccess);
 
+
+  // Search functions
   function handleBlurSearch(isSearching: boolean) {
     if (!isSearching) {
       setQuery("");
@@ -41,14 +37,23 @@ export default function Home({}: Props) {
     setSearching(isSearching);
   }
 
-  function onUserItemClick(userId: string) {
+  // Conversation functions
+  async function onUserItemClick(userId: string) {
+    mutate(userId);
     setQuery("");
     setSearching(false);
-    setTargetId(userId);
+  }
+
+  function onCreateConversationSuccess(targetId: string) {
+    socket.emit("createConversation", targetId)
+    navigate(`/c/${targetId}`);
   }
 
   return (
-    <Sidebar css={{ borderLeft: "none" }} title="Chats">
+    <Sidebar
+      css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
+      title="Chats"
+    >
       <SearchInput
         handleBlur={handleBlurSearch}
         handleChange={setQuery}
@@ -59,13 +64,15 @@ export default function Home({}: Props) {
           direction="column"
           css={{ gap: "$0", marginTop: "$075", padding: "$100 $050" }}
         >
-          {userData?.map((user) => (
-            <UserItem
-              user={user}
-              key={user.id}
-              onClick={() => onUserItemClick(user.id)}
-            />
-          ))}
+          {userData
+            ?.filter((user) => user.id !== userId)
+            .map((user) => (
+              <UserItem
+                user={user}
+                key={user.id}
+                onClick={() => onUserItemClick(user.id)}
+              />
+            ))}
         </Flex>
       )}
     </Sidebar>

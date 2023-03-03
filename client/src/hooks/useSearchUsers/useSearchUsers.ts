@@ -23,5 +23,9 @@ export async function fetchUsers({ queryKey }: QueryFunctionContext<QueryKey>) {
 }
 
 export default function useSearchUsers(query: string, enabled: boolean) {
-  return useQuery([queryKeys.SEARCH_USERS, { query }], fetchUsers, { enabled });
+  return useQuery([queryKeys.SEARCH_USERS, { query }], fetchUsers, {
+    keepPreviousData: true,
+    enabled,
+    retry: false,
+  });
 }

@@ -124,8 +124,6 @@ class Model<T> {
     const unformattedQuery = [insertStatement, returningClause];
     const query = this.#constructQuery(unformattedQuery, ...insertValues);
 
-    console.log(query);
-
     const { rows } = await pool.query(query);
     const data: T = rows.length ? rows[0] : null;
 

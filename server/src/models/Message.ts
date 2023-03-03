@@ -20,12 +20,18 @@ export class Message extends Model<MessageSchema> {
   data?: string;
   parent?: string;
   is_read: boolean;
-  created_at: string;
-  modified_at: string;
+  created_at?: string;
+  modified_at?: string;
 
   constructor(config?: MessageSchema) {
     super("message");
-    Object.assign(this, config);
+    this.id = config?.id;
+    this.author = config?.author;
+    this.conversation = config?.conversation;
+    this.data = config?.data;
+    this.parent = config?.parent || null;
+    this.is_read = config?.is_read || false;
+
   }
 }
 

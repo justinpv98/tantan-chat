@@ -10,7 +10,7 @@ import queryClient from "./config/queryClient";
 
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+  <>
   <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
@@ -18,5 +18,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         </Router>
       </AuthProvider>
     </QueryClientProvider>
-  </React.StrictMode>
+  </>
 );

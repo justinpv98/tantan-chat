@@ -41,11 +41,11 @@ export const darkColors = {
 };
 
 export const darkTheme = {
-    primary: "$green9",
+    primary: "$green8",
     primaryGradient:
       "linear-gradient(69.79deg, #30A46C 0%, #37BD73 100%), rgba(0, 0, 0, 0.2)",
-    error: "$red9",
-    success: "$green9",
+    error: "$red8",
+    success: "$green8",
     background: "$sage1",
     disabled: "$sage4",
     onPrimary: "$sage12",
@@ -155,11 +155,11 @@ export const spaces = {
 };
 
 export const theme = {
-  primary: "$green9",
+  primary: "$green11",
   primaryGradient:
     "linear-gradient(69.79deg, #30A46C 0%, #37BD73 100%), rgba(0, 0, 0, 0.2)",
-  error: "$red9",
-  success: "$green9",
+  error: "$red11",
+  success: "$green11",
   background: "$sage1",
   disabled: "$sage4",
   onPrimary: "$sage1",

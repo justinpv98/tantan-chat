@@ -3,7 +3,7 @@ import logger from "@/logger";
 import { Request, Response } from "express-serve-static-core";
 
 import ConversationModel, { Conversation } from "@/models/Conversation";
-import { ConversationParticipant } from "@/models/ConversationParticipant";
+import ConversationParticipantModel, { ConversationParticipant } from "@/models/ConversationParticipant";
 
 // @desc    Create a new conversation between users
 // @route   POST /api/conversations
@@ -12,13 +12,14 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
   const { targetId } = req.body;
   const { id } = req.session.user;
 
-  console.log(targetId);
+  if(id == targetId){
+    res.status(401)
+    throw new Error("Forbidden to create conversation with self")
+  }
 
   const participants = [id, targetId];
 
-  const conversation = await ConversationModel.findIdByParticipants(
-    participants
-  );
+  const conversation = await ConversationParticipantModel.findConversationId(participants)
 
   if (conversation) {
     // if conversation exists, send conversation info
@@ -43,7 +44,7 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
     });
 
     logger.info(
-      `Conversation ${newConversation.id} created between participants - ${participants} `
+      `Conversation #${newConversation.id} created between participants - ${participants.sort().map(p => "#" + p)} `
     );
 
     res.status(201).json({ id: newConversation.id });
@@ -56,8 +57,6 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
 const getConversation = asyncHandler(async (req: Request, res: Response) => {
   const { id: conversationId } = req.params;
   const { id: userId } = req.session.user;
-
-  console.log(conversationId);
 
   const conversation = await ConversationModel.findExistingConversation(
     conversationId

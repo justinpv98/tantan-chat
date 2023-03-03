@@ -34,27 +34,20 @@ export class Conversation extends Model<ConversationSchema> {
     this.name = config?.name;
   }
 
-  async findIdByParticipants(participants: string[]) {
+  async findAllByParticipant(userId: string) {
+    // Find all conversations for a user
     const query = format(
-      `   SELECT 
-      cp.conversation 
-    FROM 
-      conversation_participant AS cp 
-    WHERE 
-      "user" in (%L) 
-    GROUP BY 
-      conversation 
-    HAVING 
-      count(*) = %L
-    `,
-      participants,
-      participants.length
+      ` SELECT conversation AS conversation_id
+    FROM conversation_participant AS cp
+    WHERE cp.user = %L`,
+      userId
     );
 
     const { rows } = await pool.query(query);
-    const data: string = rows.length ? rows[0].conversation : null;
+    const data: {conversation_id: string}[] = rows.length ? rows : null;
     return data;
   }
+
 
   async findExistingConversation(conversationId: string) {
     // Get existing conversation with messages and participants in one query using
@@ -68,14 +61,7 @@ export class Conversation extends Model<ConversationSchema> {
           c.id, 
           c.name, 
           c.owner, 
-          (
-            SELECT 
-              type 
-            FROM 
-              conversation_type ct 
-            WHERE 
-              c.type = ct.id
-          ), 
+          c.type,
           (
             SELECT 
               json_agg(participant) 
