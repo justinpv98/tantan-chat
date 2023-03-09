@@ -8,16 +8,17 @@ import Icon from "../Icon/Icon";
 type Props = {
   css?: CSS;
   children?: React.ReactNode;
+  label?: string;
   side?: "top" | "right" | "bottom" | "left";
   sideOffset?: number;
   trigger?: React.ReactNode;
 };
 
-export default function Popover({ css, children, side = "top", sideOffset = 5, trigger }: Props) {
+export default function Popover({ css, children, label, side = "top", sideOffset = 5, trigger }: Props) {
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
-        <Button transparent css={{ padding: 0,  ...css }}>
+        <Button aria-label={label} transparent css={{ padding: 0,  ...css }}>
           {trigger}
         </Button>
       </PopoverPrimitive.Trigger>

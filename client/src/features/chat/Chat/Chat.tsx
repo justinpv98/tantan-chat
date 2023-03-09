@@ -1,3 +1,7 @@
+import { useState, useRef } from "react";
+
+// Hooks
+import { useSocket } from "@/hooks";
 
 // Components
 import { Flex } from "@/features/ui";
@@ -6,12 +10,13 @@ import ChatInfo from "../ChatInfo/ChatInfo";
 import ChatMessageBar from "../ChatMessageBar/ChatMessageBar";
 
 type Props = {
-  info: any; //id of user that is being talked to from perspective of client
   onClickMore: () => void;
 };
 
-export default function Chat({ onClickMore, info }: Props) {
-
+export default function Chat({ onClickMore }: Props) {
+  const socket = useSocket();
+  const [isRefVisible, SetIsRefVisible] = useState(true);
+  const observedRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <Flex
@@ -19,9 +24,13 @@ export default function Chat({ onClickMore, info }: Props) {
       direction="column"
       css={{ width: "100%", maxHeight: "100vh" }}
     >
-      <ChatInfo info={info} onClickMore={onClickMore} />
-      <ChatConversation />
-      <ChatMessageBar />
+      <ChatInfo onClickMore={onClickMore} />
+      <ChatConversation
+        isRefVisible={isRefVisible}
+        observedRef={observedRef}
+        setIsRefVisible={SetIsRefVisible}
+      />
+      <ChatMessageBar isRefVisible={isRefVisible} observedRef={observedRef} />
     </Flex>
   );
 }

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useAuth, useCreateConversation, useGetConversation } from "@/hooks";
+import { useGetConversation } from "@/hooks";
 
 // Components
 import { Navbar } from "@/features/navigation";
@@ -11,50 +11,37 @@ import { Chat, ChatRightMenu } from "@/features/chat";
 import Flex from "../Flex/Flex";
 import Text from "../Text/Text";
 
-
 export default function Layout() {
-  const { id: targetId } = useParams();
+  const { id: conversationId } = useParams();
   const [showRightMenu, setShowRightMenu] = useState(false);
+
+  const { data: conversationData } = useGetConversation(
+    conversationId || "",
+    !!conversationId
+  );
 
   function toggleRightMenu() {
     setShowRightMenu(!showRightMenu);
   }
 
-  const { id: userId } = useAuth();
-  const { data: conversationId } = useCreateConversation(
-    targetId || "",
-    !!targetId
-  );
-  const { data: conversationData } = useGetConversation(
-    conversationId,
-    !!conversationId
-  );
-
-  let chatInfo;
-  if (conversationData?.type === "dm") {
-    chatInfo = conversationData.participants.filter(
-      (participant) => participant.id !== userId
-    )[0];
-  }
-
   return (
-    <LayoutContainer>
+    <LayoutContainer >
       <Navbar />
       {conversationData ? (
-        <Chat info={chatInfo} onClickMore={toggleRightMenu} />
+        <Chat onClickMore={toggleRightMenu} />
       ) : (
         <Flex
           as="main"
           justify="center"
           align="center"
-          css={{ background: "$sage3", color: "$sage11", width: "100%" }}
+          css={{ background: "$sage4", color: "$sage11", width: "100%" }}
         >
           <Text size="xl" color="lowContrast" weight="bold">
             Select a chat or find a friend and start a new conversation
           </Text>
         </Flex>
       )}
-      {conversationData && showRightMenu && <ChatRightMenu info={chatInfo} />}
+      {conversationData && showRightMenu && <ChatRightMenu />}
     </LayoutContainer>
   );
 }

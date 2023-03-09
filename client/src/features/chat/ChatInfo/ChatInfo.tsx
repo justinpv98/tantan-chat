@@ -1,35 +1,36 @@
 import { styled } from "@/stitches.config";
 
-// Types
-import { Participant } from "@/hooks/useGetConversation/useGetConversation";
+// Hooks
+import { useGetTarget } from "@/hooks";
 
 // Components
 import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";
 
 type Props = {
-  info?: Participant,
   onClickMore: () => void;
 };
 
-export default function ChatInfo({ info, onClickMore }: Props) {
+export default function ChatInfo({ onClickMore }: Props) {
+  const target = useGetTarget();
+
   return (
     <Container as="header">
       <Flex align="center">
-        <Avatar size={250}/>
+        <Avatar size={250} />
         <Flex direction="column" css={{ marginLeft: "$050" }}>
           <Heading as="h1" size="h6">
-            {info && info.username}
+            {target && target.username}
           </Heading>
         </Flex>
       </Flex>
-      <Box css={{color: "$sage11"}}>
+      <Box css={{ color: "$sage11" }}>
         <Button icon="center" transparent>
           <Icon icon="phone" />
         </Button>
-        <Button icon="center"   transparent>
+        <Button icon="center" transparent>
           <Icon icon="video-camera" />
         </Button>
-        <Button icon="center"   transparent onClick={onClickMore}>
+        <Button icon="center" transparent onClick={onClickMore}>
           <Icon icon="ellipsis-vertical" />
         </Button>
       </Box>

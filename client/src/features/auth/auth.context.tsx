@@ -2,6 +2,8 @@ import { createContext, useReducer } from "react";
 import authReducer from "./auth.reducer";
 import axios from "@/config/axios";
 
+import { useSocket } from "@/hooks";
+
 const BASE_URL = "/auth";
 
 interface ProviderProps {
@@ -64,6 +66,7 @@ export const AuthContext = createContext(initialState);
 
 export const AuthProvider = ({ children }: ProviderProps) => {
   const [authState, dispatch] = useReducer(authReducer, initialState);
+  const socket = useSocket();
 
   async function login(data: LoginData): Promise<void> {
     try {
@@ -72,6 +75,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
         type: AuthActionTypes.LOGIN_SUCCESS,
         payload: res.data,
       });
+      socket.close();
+      socket.open();
     } catch (error: any) {
       dispatch({
         type: AuthActionTypes.LOGIN_FAIL,

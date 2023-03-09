@@ -39,6 +39,7 @@ export const Container = styled("section", {
   borderLeft: "1px solid $sage7",
   borderRight: "1px solid $sage7",
   background: "$background",
+  oveflow: "scroll",
 
   "@lg": {
     position: "relative",

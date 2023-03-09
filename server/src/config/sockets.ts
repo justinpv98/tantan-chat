@@ -56,7 +56,12 @@ function initializeSocket(
 
     users[socket.id] = socket;
 
-    logger.debug(`User #${socket.user.id} has established a connection`);
+    if (!socket.user.id) {
+      socket.disconnect();
+      logger.debug(`A user's session timed out`);
+    } else {
+      logger.debug(`User #${socket.user.id} has established a connection`);
+    }
 
     const conversations = await ConversationModel.findAllByParticipant(
       socket.user.id
@@ -64,7 +69,7 @@ function initializeSocket(
 
     if (conversations) {
       conversations.forEach((conversationData) => {
-        const conversationId = conversationData.conversation_id
+        const conversationId = conversationData.conversation_id;
         socket.join(conversationId);
         logger.debug(
           `User #${socket.user.id} has joined conversation #${conversationId}`
@@ -73,20 +78,24 @@ function initializeSocket(
     }
 
     socket.on("createConversation", (conversationId: string) => {
-      socket.join(conversationId)
-      logger.debug(`User #${socket.user.id} has joined conversation #${conversationId}`)
-    })
+      socket.join(conversationId);
+      logger.debug(
+        `User #${socket.user.id} has joined conversation #${conversationId}`
+      );
+    });
 
-    socket.on(
-      "message",
-      async (data: MessageSchema) => {
-        data.author = socket.user.id;
-        const message = new Message(data);
-        await message.save();
+    socket.on("message", async (data: MessageSchema) => {
+      data.author = socket.user.id;
+      const message = new Message(data);
+      await message.save();
 
-        io.to(message.conversation).emit("message", message);
-      }
-    );
+      io.in(message.conversation).emit("message", message);
+    });
+
+    socket.on("typing", (conversationId: string) => {
+
+      socket.broadcast.to(conversationId).emit("typing", socket.user.username);
+    });
 
     socket.on("disconnect", () => {
       logger.debug(`Socket ID: ${socket.id} has disconnected`);

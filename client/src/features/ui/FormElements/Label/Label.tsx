@@ -1,6 +1,6 @@
 import { styled } from "@/stitches.config";
 import Box from "../../Box/Box";
-import Text from "../../Text/Text";
+import {_Text} from "../../Text/Text";
 
 import { CSS } from "@stitches/react";
 
@@ -32,7 +32,7 @@ export default function Label({
   );
 }
 
-const LabelText = styled(Text, {
+const LabelText = styled(_Text, {
   display: "inline-block",
   userSelect: "none",
   marginBlockEnd: "$050",

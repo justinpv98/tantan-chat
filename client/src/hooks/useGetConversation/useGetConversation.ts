@@ -7,9 +7,10 @@ type QueryKey = [string, { query: string }];
 type ConversationData = {
   id: string;
   name: string | null;
-  type: "dm" | "group chat";
+  type: 1 | 2 | 3 | 4;
   participants: Participant[];
   messages: Message[];
+  lastMessageId: string;
 }
 
 export type Participant = {
@@ -51,5 +52,6 @@ export default function useGetConversation(query: string, enabled: boolean) {
   return useQuery([queryKeys.GET_CONVERSATION, { query }], fetchConversation, {
     keepPreviousData: true,
     enabled,
+    staleTime: Infinity
   });
 }

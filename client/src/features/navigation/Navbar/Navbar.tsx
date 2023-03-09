@@ -25,6 +25,7 @@ export default function Navbar({}: Props) {
           {navRoutes.map((route) => {
             return (
               <SideNavigationItem
+                label={route.label}
                 path={
                   route.path +
                   (route.path === "/" ? "" : "/") +
@@ -37,6 +38,7 @@ export default function Navbar({}: Props) {
           })}
           <li>
             <Popover
+              label={"Settings"}
               side="top"
               css={{
                 borderRadius: "$round",
@@ -54,13 +56,14 @@ export default function Navbar({}: Props) {
           </li>
         </NavigationWrapper>
         <Popover
+          label={"Settings"}
           side="right"
           css={{
             display: "none",
             borderRadius: "$round",
             width: "$275",
             height: "$275",
-            backgroundColor: "$sage3",
+            backgroundColor: "$sage4",
 
             "@lg": {
               display: "block",

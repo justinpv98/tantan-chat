@@ -17,7 +17,9 @@ type FoundConversationSchema = {
   name: string | null;
   type: "dm" | "group chat";
   participants: Participant[];
+  lastMessageId: string;
   messages: Message[];
+  totalPages: number;
 };
 
 export class Conversation extends Model<ConversationSchema> {
@@ -44,12 +46,11 @@ export class Conversation extends Model<ConversationSchema> {
     );
 
     const { rows } = await pool.query(query);
-    const data: {conversation_id: string}[] = rows.length ? rows : null;
+    const data: { conversation_id: string }[] = rows.length ? rows : null;
     return data;
   }
 
-
-  async findExistingConversation(conversationId: string) {
+  async findExistingConversation(conversationId: string, messageLimit: number) {
     // Get existing conversation with messages and participants in one query using
     // Postgres's native json formatting
     const query = format(
@@ -89,25 +90,30 @@ export class Conversation extends Model<ConversationSchema> {
             FROM 
               (
                 SELECT 
-                  message.id, 
-                  message.author, 
-                  message.data, 
-                  message.parent, 
-                  message.is_read, 
-                  message.created_at, 
-                  message.modified_at, 
+                  mesg.id, 
+                  mesg.author, 
+                  mesg.data, 
+                  mesg.parent, 
+                  mesg.is_read, 
+                  mesg.created_at, 
+                  mesg.modified_at, 
                   (
                     SELECT 
                       json_agg(attachment) 
                     FROM 
                       attachment 
                     WHERE 
-                      attachment.message = message.id 
+                      attachment.message = mesg.id 
                   ) as attachments 
                 FROM 
-                  message 
-                WHERE 
-                  message.conversation = c.id
+                  (SELECT * 
+                    FROM message
+                    WHERE 
+                    message.conversation = c.id
+                    ORDER BY id DESC
+                    LIMIT %L
+                    ) mesg
+                ORDER BY mesg.id ASC
               ) message
           ) AS messages 
         FROM 
@@ -116,6 +122,7 @@ export class Conversation extends Model<ConversationSchema> {
           c.id = %L
       ) convo
      `,
+      messageLimit,
       conversationId
     );
 

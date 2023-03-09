@@ -164,8 +164,7 @@ class Model<T> {
       offsetClause,
     ];
     const query = this.#constructQuery(unformattedQuery, ...whereValues);
-
-
+    
     const { rows } = await pool.query(query);
     const data: T[] = rows.length ? rows : null;
     return data;

@@ -23,7 +23,7 @@ export default function UserItem({ user, onClick }: Props) {
         width: "100%",
         paddingBlock: "$050",
         paddingInline: "$050",
-        "&:hover": { background: "$sage3" },
+        "&:hover": { background: "$sage4" },
       }}
     >
       <Box>
