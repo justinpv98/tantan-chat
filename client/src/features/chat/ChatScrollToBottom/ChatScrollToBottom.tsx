@@ -52,7 +52,7 @@ export default function ChatScrollToBottom({
 
   useLayoutEffect(() => {
     observedRef.current?.scrollIntoView();
-  }, [data?.messages]);
+  }, [data?.id]);
 
   return <Box ref={observedRef} />;
 }

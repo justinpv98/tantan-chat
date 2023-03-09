@@ -4,7 +4,7 @@ import { styled } from "@/stitches.config";
 import { useGetTarget } from "@/hooks";
 
 // Components
-import { Flex, Sidebar } from "@/features/ui";
+import { Avatar, Flex, Sidebar } from "@/features/ui";
 
 
 
@@ -16,7 +16,10 @@ export default function ChatRightMenu() {
         direction="column"
         align="center"
         css={{ width: "100%", paddingInline: "$100" }}
-      ></Flex>
+      >
+        <Avatar size="lg" css={{marginTop: "1rem"}} />
+
+      </Flex>
     </Sidebar>
   );
 }

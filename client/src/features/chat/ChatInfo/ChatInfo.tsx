@@ -1,7 +1,7 @@
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useGetTarget } from "@/hooks";
+import { useGetTarget, useTheme } from "@/hooks";
 
 // Components
 import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";
@@ -12,11 +12,17 @@ type Props = {
 
 export default function ChatInfo({ onClickMore }: Props) {
   const target = useGetTarget();
+  const {theme} = useTheme();
+
+  const themePreference = theme ?'dark' && {
+    boxShadow: "none",
+    borderBottom: "1px solid $sage7"
+  } : undefined
 
   return (
-    <Container as="header">
+    <Container as="header" css={themePreference}>
       <Flex align="center">
-        <Avatar size={250} />
+        <Avatar size="md" />
         <Flex direction="column" css={{ marginLeft: "$050" }}>
           <Heading as="h1" size="h6">
             {target && target.username}

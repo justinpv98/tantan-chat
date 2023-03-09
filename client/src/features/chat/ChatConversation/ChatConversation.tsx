@@ -68,4 +68,5 @@ const ConversationContainer = styled("ol", {
   listStyle: "none",
   overflowY: "scroll",
   paddingBlock: "$050 $200",
+  maxWidth: "100vw"
 });

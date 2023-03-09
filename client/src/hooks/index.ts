@@ -9,4 +9,5 @@ export {default as useGetMessages } from "./useGetMessages/useGetMessages";
 export {default as useGetTarget } from "./useGetTarget/useGetTarget";
 export {default as useSearchUsers } from "./useSearchUsers/useSearchUsers";
 export {default as useSocket } from "./useSocket/useSocket";
+export {default as useTheme } from "./useTheme/useTheme";
 export {default as useThrottle } from "./useThrottle/useThrottle";

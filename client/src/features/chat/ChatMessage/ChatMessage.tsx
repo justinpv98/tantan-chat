@@ -50,8 +50,12 @@ const Message = styled("p", {
   whiteSpace: "pre-line",
   borderRadius: "$050",
   padding: "$050 $075",
-  maxWidth: "30rem",
+  maxWidth: "clamp(15rem, 50vw, 30rem)",
   overflowWrap: "break-word",
+
+  "@md": {
+    maxWidth: "30rem"
+  },
 
   variants:{
     isUser:{
