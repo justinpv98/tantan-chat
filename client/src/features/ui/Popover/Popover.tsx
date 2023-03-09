@@ -1,7 +1,11 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
-import { styled } from "@/stitches.config";
+import { styled, darkTheme } from "@/stitches.config";
 import { CSS, keyframes } from "@stitches/react";
 
+// Hooks
+import { useTheme } from "@/hooks";
+
+// Components
 import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 
@@ -15,6 +19,10 @@ type Props = {
 };
 
 export default function Popover({ css, children, label, side = "top", sideOffset = 5, trigger }: Props) {
+  
+  const {theme} = useTheme();
+
+
   return (
     <PopoverPrimitive.Root>
       <PopoverPrimitive.Trigger asChild>
@@ -23,7 +31,7 @@ export default function Popover({ css, children, label, side = "top", sideOffset
         </Button>
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>
-        <Content side={side} sideOffset={sideOffset}>
+        <Content className={theme ? darkTheme : ""} side={side} sideOffset={sideOffset}>
           <Close>
             <Icon icon="x-mark" />
           </Close>
@@ -80,6 +88,7 @@ const Content = styled(PopoverPrimitive.Content, {
   padding: 20,
   width: 260,
   backgroundColor: "$sage1",
+  color: "$onBackground",
   boxShadow:
     "hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px",
   animationDuration: "400ms",

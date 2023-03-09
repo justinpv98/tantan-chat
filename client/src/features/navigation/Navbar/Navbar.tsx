@@ -5,13 +5,12 @@ import { navRoutes } from "@/constants/routes";
 
 // Components
 import {
-  Avatar,
-  Box,
   Flex,
-  Popover,
   SideNavigation,
   SideNavigationItem,
 } from "@/features/ui";
+
+import Settings from "../Settings/Settings";
 
 type Props = {};
 
@@ -37,40 +36,10 @@ export default function Navbar({}: Props) {
             );
           })}
           <li>
-            <Popover
-              label={"Settings"}
-              side="top"
-              css={{
-                borderRadius: "$round",
-                display: "block",
-                width: "$275",
-                height: "$275",
-                backgroundColor: "$sage4",
-
-                "@lg": {
-                  display: "none",
-                },
-              }}
-              trigger={<Avatar size={250} />}
-            />
+            <Settings isMobile />
           </li>
         </NavigationWrapper>
-        <Popover
-          label={"Settings"}
-          side="right"
-          css={{
-            display: "none",
-            borderRadius: "$round",
-            width: "$275",
-            height: "$275",
-            backgroundColor: "$sage4",
-
-            "@lg": {
-              display: "block",
-            },
-          }}
-          trigger={<Avatar size={250} />}
-        />
+        <Settings/>
       </SideNavigation>
       <Outlet />
     </Flex>

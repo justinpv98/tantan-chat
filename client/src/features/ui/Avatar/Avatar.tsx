@@ -7,12 +7,19 @@ import Icon from "../Icon/Icon";
 type Props = {
   css?: CSS;
   name?: string;
-  size?: VariantProps<typeof Root>["size"] & number;
+  size?: VariantProps<typeof Root>["size"];
   src?: string;
 };
 
-export default function Avatar({ css, name, size = 200, src }: Props) {
-  const fallbackSize = ((size * 16) / 100) * 0.625;
+export default function Avatar({ css, name, size = "sm", src }: Props) {
+  let fallbackSize;
+  if(size === "sm"){
+    fallbackSize = "1.5rem"
+  } else if (size === "md"){
+    fallbackSize = "1.875rem"
+  } else if (size === "lg"){
+    fallbackSize = "5rem"
+  }
 
   return (
     <Root css={css} size={size}>
@@ -49,34 +56,18 @@ const Root = styled(AvatarPrimitive.Root, {
   borderRadius: "100%",
   variants: {
     size: {
-      "050": {
-        width: "$050",
-        height: "$050",
-      },
-      100: {
-        width: "$100",
-        height: "$100",
-      },
-      150: {
-        width: "$150",
-        height: "$150",
-      },
-      200: {
-        width: "$200",
-        height: "$200",
-      },
-      225: {
-        width: "$225",
-        height: "$225",
-      },
-      250: {
+      sm: {
         width: "$250",
         height: "$250",
       },
-      300: {
+      md: {
         width: "$300",
         height: "$300",
       },
+      lg: {
+        width: "8rem",
+        height: "8rem"
+      }
     },
   },
 });

@@ -27,7 +27,7 @@ export default function UserItem({ user, onClick }: Props) {
       }}
     >
       <Box>
-        <Avatar size={300} />
+        <Avatar size="md" />
       </Box>
       <Text>{user.username}</Text>
     </Flex>

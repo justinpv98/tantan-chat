@@ -131,9 +131,10 @@ const login = asyncHandler(async (req: Request, res: Response) => {
 const logout = asyncHandler(async (req: Request, res: Response) => {
   // Destroy session upon logout
   try {
+    logger.info(`User #${req.session.user.id} has logged out`);
     await req.session.destroy(() => {
-      logger.info(`User #${req.session.user.id} has logged out`);
     });
+    res.clearCookie('connect.sid')
     res.sendStatus(200);
   } catch (error) {
     res.status(500);
