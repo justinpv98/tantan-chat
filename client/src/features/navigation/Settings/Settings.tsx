@@ -1,4 +1,7 @@
 import React from "react";
+import { useQueryClient } from "react-query";
+
+// Types
 import { CSS } from "@stitches/react";
 
 // Hooks
@@ -37,7 +40,13 @@ const desktopCSS: CSS = {
   };
   
 export default function Settings({ isMobile }: Props) {
+  const queryClient = useQueryClient();
   const { logout } = useAuth();
+
+  function onClickLogout(){
+    queryClient.removeQueries()
+    logout()
+  }
 
   return (
     <Popover
@@ -46,7 +55,7 @@ export default function Settings({ isMobile }: Props) {
       css={isMobile ? mobileCSS : desktopCSS}
       trigger={<Avatar size="sm" />}
     >
-      <Button onClick={logout} transparent>
+      <Button onClick={onClickLogout} transparent>
         <Text color="error">Logout</Text>
       </Button>
     </Popover>
