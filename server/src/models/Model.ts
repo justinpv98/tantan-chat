@@ -164,7 +164,7 @@ class Model<T> {
       offsetClause,
     ];
     const query = this.#constructQuery(unformattedQuery, ...whereValues);
-    
+
     const { rows } = await pool.query(query);
     const data: T[] = rows.length ? rows : null;
     return data;
@@ -302,7 +302,7 @@ class Model<T> {
     if (!select || select.length === 0) {
       return `SELECT * FROM "${this.modelName}" `;
     }
-    if (select.length === 1) {
+    if (select.length === 1 && Object.entries(as).length === 0) {
       return `SELECT ${select[0]} FROM "${this.modelName}" `;
     }
 

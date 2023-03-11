@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
-import axios from "@/config/axios";
 
 // Types
-import { Message } from "@/hooks/useGetConversation/useGetConversation";
+import { Message } from "../hooks/useGetMessages/useGetMessages";
 
 // Hooks
-import { useCurrentConversation, useGetMessages, useSocket } from "@/hooks";
+import { useSocket } from "@/hooks";
+import { useGetMessages } from "@/features/chat/hooks";
 
 // Components
 import ChatInfiniteScroller from "../ChatInfiniteScroller/ChatInfiniteScroller";
@@ -25,10 +26,15 @@ export default function ChatConversation({
   observedRef,
   setIsRefVisible,
 }: Props) {
+  const { id } = useParams();
   const socket = useSocket();
   const containerRef = useRef<HTMLOListElement | null>(null);
 
   const { messages, setMessages, isError } = useGetMessages();
+
+  useLayoutEffect(() => {
+    setMessages([]);
+  }, [id]);
 
   socket.on("message", (message: Message) => {
     setMessages([...messages, message]);
@@ -36,12 +42,14 @@ export default function ChatConversation({
 
   return (
     <ConversationContainer ref={containerRef}>
-      {containerRef?.current && <ChatInfiniteScroller
-        containerRef={containerRef}
-        isError={isError}
-        messages={messages}
-        setMessages={setMessages}
-      />}
+      {containerRef?.current && (
+        <ChatInfiniteScroller
+          containerRef={containerRef}
+          isError={isError}
+          messages={messages}
+          setMessages={setMessages}
+        />
+      )}
       {messages.length
         ? messages.map((message) => (
             <ChatMessage key={message?.id} message={message} />
@@ -68,5 +76,5 @@ const ConversationContainer = styled("ol", {
   listStyle: "none",
   overflowY: "scroll",
   paddingBlock: "$050 $200",
-  maxWidth: "100vw"
+  maxWidth: "100vw",
 });

@@ -5,7 +5,7 @@ import { useQueryClient } from "react-query";
 import { CSS } from "@stitches/react";
 
 // Hooks
-import { useAuth } from "@/hooks";
+import { useAuth, useSocket } from "@/hooks";
 
 // Components
 import { Avatar, Button, Popover, Text } from "@/features/ui";
@@ -42,10 +42,12 @@ const desktopCSS: CSS = {
 export default function Settings({ isMobile }: Props) {
   const queryClient = useQueryClient();
   const { logout } = useAuth();
+  const socket = useSocket();
 
   function onClickLogout(){
-    queryClient.removeQueries()
-    logout()
+    queryClient.removeQueries();
+    socket.disconnect();
+    logout();
   }
 
   return (

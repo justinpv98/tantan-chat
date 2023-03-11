@@ -1,7 +1,7 @@
 import React from "react";
 
 // Types
-import { UserData } from "@/hooks/useSearchUsers/useSearchUsers";
+import { UserData } from "@/features/chat/hooks/useSearchUsers/useSearchUsers";
 
 // Components
 import { Avatar, Box, Flex, Text } from "@/features/ui";
@@ -29,7 +29,7 @@ export default function UserItem({ user, onClick }: Props) {
       <Box>
         <Avatar size="md" />
       </Box>
-      <Text>{user.username}</Text>
+      <Text weight="medium">{user.username}</Text>
     </Flex>
   );
 }

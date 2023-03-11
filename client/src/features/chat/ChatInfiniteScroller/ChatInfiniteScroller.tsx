@@ -2,10 +2,10 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 // Types
-import { Message } from "@/hooks/useGetConversation/useGetConversation";
+import { Message } from "@/features/chat/hooks/useGetConversation/useGetConversation";
 
 // Fetch
-import { fetchMessages } from "@/hooks/useGetMessages/useGetMessages";
+import { fetchMessages } from "@/features/chat/hooks/useGetMessages/useGetMessages";
 // Hooks
 import {
   useAbortController,

@@ -5,12 +5,13 @@ import validateRequest from "@/middleware/validateRequest";
 import {
   createConversation,
   getConversation,
+  getConversations,
   getMessages
 } from "@/controllers/conversationController";
 
 const router = Router();
 
-router.route("/").post(isAuthenticated, createConversation);
+router.route("/").get(isAuthenticated, getConversations).post(isAuthenticated, createConversation);
 
 router.route("/:id").get(isAuthenticated, getConversation);
 

@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 
-import useAuth from "../useAuth/useAuth";
+import useAuth from "@/hooks/useAuth/useAuth";
 import useGetConversation from "../useGetConversation/useGetConversation";
-import { Participant } from "../useGetConversation/useGetConversation";
+import { Participant } from "../useGetMessages/useGetMessages";
 
 export default function useGetTarget() {
   // Used to get person or group that is being talked to
@@ -10,13 +10,14 @@ export default function useGetTarget() {
   const { id: userId } = useAuth();
   const { data } = useGetConversation(id || "", !!id);
 
-
   let target;
+
   if (data?.type === 1) {
-    target = data.participants.filter(
+    target = data?.participants.filter(
       (participant) => participant.id !== userId
     )[0];
+    return target as Participant;
+  } else {
+    return;
   }
-
-  return target as Participant;
 }

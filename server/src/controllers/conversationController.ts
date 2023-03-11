@@ -62,6 +62,25 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// @desc    Get conversations
+// @route   GET /api/conversations/open
+// @access  Private
+
+const getConversations = asyncHandler(async (req: Request, res: Response) => {
+  const { id: userId } = req.session.user;
+
+  const conversations = await ConversationModel.findExistingConversations(
+    userId
+  );
+
+  if (conversations === null) {
+    res.status(404);
+    throw new Error("Conversations could not be found.");
+  }
+
+  res.status(200).json(conversations);
+});
+
 // @desc    Get a conversation
 // @route   GET /api/conversations/:id
 // @access  Private
@@ -70,8 +89,7 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
   const { id: userId } = req.session.user;
 
   const conversation = await ConversationModel.findExistingConversation(
-    conversationId,
-    MESSAGE_LIMIT
+    conversationId, userId
   );
 
   if (!conversation) {
@@ -79,21 +97,27 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Conversation not found");
   }
 
+  let userIndex;
   const userIsInConversation = conversation.participants.some(
-    (participant) => participant.id == userId
+    (participant, index) => {
+      if(participant.id == userId){
+        userIndex = index;
+        return true
+      }
+    }
   );
 
   if (!userIsInConversation) {
     res.status(401);
     throw new Error("User is forbidden from conversation");
+  } else {
+    conversation.participants.splice(userIndex, 1)
   }
-
-  conversation.lastMessageId = conversation.messages[0].id;
 
   res.status(200).json(conversation);
 });
 
-// @desc    Get meessages from a conversation
+// @desc    Get messages from a conversation
 // @route   GET /api/conversations/:id/messages?before=lastMessageId
 // @access  Private
 const getMessages = asyncHandler(async (req: Request, res: Response) => {
@@ -122,13 +146,12 @@ const getMessages = asyncHandler(async (req: Request, res: Response) => {
     lastMessageId as string
   );
 
-
   if (!messages) {
-    res.status(404)
+    res.status(404);
     throw Error();
   } else {
     res.status(200).json(messages);
   }
 });
 
-export { createConversation, getConversation, getMessages };
+export { createConversation, getConversation, getConversations, getMessages };

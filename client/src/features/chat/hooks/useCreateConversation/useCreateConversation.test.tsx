@@ -18,10 +18,10 @@ describe("useCreateConversation", () => {
         "access-control-allow-origin": "*",
         "access-control-allow-credentials": "true",
       })
-      .post("/conversations", { targetId: "156" })
+      .post("/conversations", { targetId: 156 })
       .reply(200, { id: expectedData });
 
-    const { result } = renderHook(() => useCreateConversation("156", true), {
+    const { result } = renderHook(() => useCreateConversation(), {
       wrapper,
     });
 

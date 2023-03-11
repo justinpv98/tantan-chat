@@ -2,6 +2,8 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { styled } from "@/stitches.config";
 import { CSS, VariantProps } from "@stitches/react";
 
+// Components
+import Box from "../Box/Box";
 import Icon from "../Icon/Icon";
 
 type Props = {
@@ -9,9 +11,11 @@ type Props = {
   name?: string;
   size?: VariantProps<typeof Root>["size"];
   src?: string;
+  showStatus?: boolean;
+  status?: string;
 };
 
-export default function Avatar({ css, name, size = "sm", src }: Props) {
+export default function Avatar({ css, name, size = "sm", showStatus = false, status, src }: Props) {
   let fallbackSize;
   if(size === "sm"){
     fallbackSize = "1.5rem"
@@ -22,12 +26,15 @@ export default function Avatar({ css, name, size = "sm", src }: Props) {
   }
 
   return (
+    <Box css={{position: 'relative'}}>
     <Root css={css} size={size}>
       <AvatarPrimitive.Image src={src} alt={name} />
       <Fallback delayMs={50}>
         <Icon icon="user" size={fallbackSize} />
       </Fallback>
+      {showStatus && <Status className="avatar-status" status={1}/>}
     </Root>
+    </Box>
   );
 }
 
@@ -54,6 +61,7 @@ const Root = styled(AvatarPrimitive.Root, {
   width: "$150",
   height: "$150",
   borderRadius: "100%",
+
   variants: {
     size: {
       sm: {
@@ -68,6 +76,35 @@ const Root = styled(AvatarPrimitive.Root, {
         width: "8rem",
         height: "8rem"
       }
-    },
+    }
   },
 });
+
+const Status = styled("div", {
+  background: "$sage9",
+  borderRadius: "100%",
+  position: "absolute",
+  width: 10,
+  height: 10,
+  right: 2,
+  bottom: 2,
+  zIndex: 10,
+  outline: "3px solid $background",
+
+  variants: {
+    status: {
+      1: {
+        background: "$sage9"
+      },
+      2: {
+        background: "$success"
+      },
+      3: {
+        background: "$error"
+      },
+      4: {
+        background: "$amber9"
+      }
+    }
+  }
+})

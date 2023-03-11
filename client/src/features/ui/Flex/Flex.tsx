@@ -7,7 +7,7 @@ type ExtraProps = {
   as?: React.ElementType;
   children?: React.ReactNode;
   css?: CSS;
-  onClick?: () => {};
+  onClick?: () => any;
   testId?: string;
 };
 

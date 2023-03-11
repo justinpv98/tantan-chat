@@ -1,7 +1,8 @@
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useGetTarget, useTheme } from "@/hooks";
+import { useTheme } from "@/hooks";
+import { useGetTarget } from "../hooks";
 
 // Components
 import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";

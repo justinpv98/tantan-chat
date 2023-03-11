@@ -1,41 +1,9 @@
 import { useQuery, QueryFunctionContext } from "react-query";
 import axios from "@/config/axios";
 import queryKeys from "@/constants/queryKeys";
+import { ConversationData } from "@/pages/Home/hooks/useConversations";
 
 type QueryKey = [string, { query: string }];
-
-type ConversationData = {
-  id: string;
-  name: string | null;
-  type: 1 | 2 | 3 | 4;
-  participants: Participant[];
-  messages: Message[];
-  lastMessageId: string;
-}
-
-export type Participant = {
-  id: string;
-  username: string;
-  profile_picture: string | null;
-}
-
-export type Message = {
-  attachments: Attachment[]
-  id: string;
-  author: string;
-  data: string;
-  parent: string;
-  is_read: boolean;
-  created_at: string;
-  modified_at: string | null;
-} | null
-
-export type Attachment = {
-  id: string;
-  message: string;
-  file_name: string;
-  url: string;
-}
 
 export async function fetchConversation({
   queryKey,

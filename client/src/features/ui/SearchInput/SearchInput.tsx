@@ -25,7 +25,7 @@ export default function SearchInput({
     handleBlur && handleBlur(true);
   }
   function onBlur(e: React.FocusEvent<HTMLInputElement>) {
-    // change to onclickoutside?
+    handleBlur && handleBlur(false);
   }
 
   return (

@@ -3,6 +3,7 @@ import logger from "@/logger";
 
 // Models
 import ConversationModel from "@/models/Conversation";
+import ConversationParticipantModel from "@/models/ConversationParticipant";
 import { Message } from "@/models/Message";
 
 // Types
@@ -63,9 +64,12 @@ function initializeSocket(
       logger.debug(`User #${socket.user.id} has established a connection`);
     }
 
-    const conversations = await ConversationModel.findAllByParticipant(
-      socket.user.id
-    );
+    const conversations =  await ConversationParticipantModel.findAll({
+      select: ["conversation"],
+      as: { conversation: "conversation_id" },
+      where: { user: socket.user.id },
+    }) as unknown as {conversation_id: string}[];
+
 
     if (conversations) {
       conversations.forEach((conversationData) => {
@@ -89,11 +93,12 @@ function initializeSocket(
       const message = new Message(data);
       await message.save();
 
-      io.in(message.conversation).emit("message", message);
+      const conversation = await ConversationModel.findExistingConversation(message.conversation, message.author);
+
+      io.emit("message", message, conversation);
     });
 
     socket.on("typing", (conversationId: string) => {
-
       socket.broadcast.to(conversationId).emit("typing", socket.user.username);
     });
 

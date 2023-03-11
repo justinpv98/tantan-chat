@@ -1,16 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { styled } from "@/stitches.config";
 import {
   useAuth,
-  useCreateConversation,
   useDebouncedValue,
-  useSearchUsers,
-  useSocket
+  useSocket,
 } from "@/hooks";
+import { useCreateConversation, useSearchUsers } from "@/features/chat/hooks";
+import useConversations from "./hooks/useConversations";
 
 // Components
 import { Flex, SearchInput, Sidebar } from "@/features/ui";
-import { UserItem } from "@/features/navigation";
+import { ConversationItem, UserItem } from "@/features/navigation";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -26,18 +27,31 @@ export default function Home() {
     Boolean(debouncedQuery)
   );
 
+  const { data: initialUserData } = useConversations(true);
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
-
 
   // Search functions
   function handleBlurSearch(isSearching: boolean) {
-    if (!isSearching) {
+    if (!isSearching && !query) {
       setQuery("");
+      setSearching(isSearching);
+    } else if (isSearching){
+      setSearching(isSearching);
+    } 
+  }
+
+  function handleChangeSearch(value: string) {
+    setQuery(value);
+
+    if (value === "") {
+      setSearching(false);
+    } else {
+      setSearching(true);
     }
-    setSearching(isSearching);
   }
 
   // Conversation functions
+
   async function onUserItemClick(userId: string) {
     mutate(userId);
     setQuery("");
@@ -45,7 +59,7 @@ export default function Home() {
   }
 
   function onCreateConversationSuccess(targetId: string) {
-    socket.emit("createConversation", targetId)
+    socket.emit("createConversation", targetId);
     navigate(`/c/${targetId}`);
   }
 
@@ -56,15 +70,21 @@ export default function Home() {
     >
       <SearchInput
         handleBlur={handleBlurSearch}
-        handleChange={setQuery}
+        handleChange={handleChangeSearch}
         value={query}
       />
-      {query && searching && (
-        <Flex
-          direction="column"
-          css={{ gap: "$0", marginTop: "$075", padding: "$100 $050" }}
-        >
-          {userData
+      <ItemContainer direction="column">
+        {initialUserData &&
+          !searching &&
+          initialUserData.map((conversation) => (
+            <ConversationItem
+              key={conversation.id}
+              conversation={conversation}
+            />
+          ))}
+        {query &&
+          searching &&
+          userData
             ?.filter((user) => user.id !== userId)
             .map((user) => (
               <UserItem
@@ -73,8 +93,13 @@ export default function Home() {
                 onClick={() => onUserItemClick(user.id)}
               />
             ))}
-        </Flex>
-      )}
+      </ItemContainer>
     </Sidebar>
   );
 }
+
+const ItemContainer = styled(Flex, {
+  gap: "$0",
+  marginTop: "$075",
+  padding: "$050 $050",
+});

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useGetConversation } from "@/hooks";
+import { useGetConversation, useSocket } from "@/hooks";
 
 // Components
 import { Navbar } from "@/features/navigation";
@@ -15,10 +15,14 @@ export default function Layout() {
   const { id: conversationId } = useParams();
   const [showRightMenu, setShowRightMenu] = useState(false);
 
+const socket = useSocket();
+socket.connect();
   const { data: conversationData } = useGetConversation(
     conversationId || "",
     !!conversationId
   );
+
+  
 
   function toggleRightMenu() {
     setShowRightMenu(!showRightMenu);
@@ -27,7 +31,7 @@ export default function Layout() {
   return (
     <LayoutContainer >
       <Navbar />
-      {conversationData ? (
+      {conversationData  ? (
         <Chat onClickMore={toggleRightMenu} />
       ) : (
         <Flex

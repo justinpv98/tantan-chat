@@ -5,7 +5,7 @@ import useGetConversation from "../useGetConversation/useGetConversation";
 export default function useCurrentConversation() {
   // Used to get person or group that is being talked to
   const { id } = useParams();
-  const { data } = useGetConversation(id || "", !!id);
+  const { data } = useGetConversation(id || "", false);
 
   return data;
 }

@@ -1,13 +1,7 @@
 export {default as useAbortController } from "./useAbortController/useAbortController";
 export {default as useAuth } from "./useAuth/useAuth";
-export {default as useCurrentConversation } from "./useCurrentConversation/useCurrentConversation";
-export {default as useCreateConversation } from "./useCreateConversation/useCreateConversation";
 export {default as useDebouncedValue } from "./useDebouncedValue/useDebouncedValue";
-export {default as useGetConversation } from "./useGetConversation/useGetConversation";
 export {default as useInfiniteScroll } from "./useInfiniteScroll/useInfiniteScroll";
-export {default as useGetMessages } from "./useGetMessages/useGetMessages";
-export {default as useGetTarget } from "./useGetTarget/useGetTarget";
-export {default as useSearchUsers } from "./useSearchUsers/useSearchUsers";
 export {default as useSocket } from "./useSocket/useSocket";
 export {default as useTheme } from "./useTheme/useTheme";
 export {default as useThrottle } from "./useThrottle/useThrottle";

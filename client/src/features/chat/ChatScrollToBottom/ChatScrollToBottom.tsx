@@ -1,10 +1,10 @@
 import React, { useLayoutEffect } from "react";
 
 // Types
-import { Message } from "@/hooks/useGetConversation/useGetConversation";
+import { Message } from "../hooks/useGetMessages/useGetMessages";
 
 // Hooks
-import { useCurrentConversation } from "@/hooks";
+import { useCurrentConversation } from "@/features/chat/hooks";
 
 // Components
 import { Box } from "@/features/ui";

@@ -18,6 +18,7 @@ export default function Chat({ onClickMore }: Props) {
   const [isRefVisible, SetIsRefVisible] = useState(true);
   const observedRef = useRef<HTMLDivElement | null>(null);
 
+
   return (
     <Flex
       as="main"

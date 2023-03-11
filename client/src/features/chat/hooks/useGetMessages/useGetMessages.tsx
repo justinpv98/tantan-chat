@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import axios from "@/config/axios";
 
-import useAbortController from "../useAbortController/useAbortController";
+import useAbortController from "@/hooks/useAbortController/useAbortController";
 import useCurrentConversation from "../useCurrentConversation/useCurrentConversation";
 
 type QueryKey = [string, { query: string }];
@@ -18,6 +18,7 @@ export type Message = {
   author: string;
   data: string;
   parent: string;
+  conversation: number;
   is_read: boolean;
   created_at: string;
   modified_at: string | null;
@@ -32,7 +33,7 @@ export type Attachment = {
 
 export async function fetchMessages(
   signal: AbortSignal,
-  query: string,
+  query: string | number,
   lastMessageId?: string | number
 ) {
   const queryString = lastMessageId ? `?before=${lastMessageId}` : "";
@@ -53,7 +54,7 @@ export default function useGetMessages(lastMessageId?: string | number) {
   const conversation = useCurrentConversation();
 
   useLayoutEffect(() => {
-    const fetch = async (id: string) => {
+    const fetch = async (id: number) => {
       const messages = await fetchMessages(getSignal(), id);
       setMessages(messages);
     };

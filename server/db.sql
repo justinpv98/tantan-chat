@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS conversation (
     owner INT CONSTRAINT is_dm CHECK (type = 1 OR owner IS NOT NULL),
     type INT DEFAULT 1 NOT NULL,
     name VARCHAR(32),
+    profile_picture VARCHAR(80),
     FOREIGN KEY (owner)
         REFERENCES "user" (id),
     FOREIGN KEY (type)
@@ -82,6 +83,13 @@ CREATE TABLE IF NOT EXISTS conversation_participant (
         REFERENCES "user" (id)
 );
 
+CREATE UNIQUE INDEX idx_cp_convo ON "conversation_participant" (
+    conversation
+);
+
+CREATE UNIQUE INDEX idx_cp_user ON "conversation_participant" (
+    "user"
+);
 
 
 CREATE TABLE IF NOT EXISTS message (
@@ -101,6 +109,11 @@ CREATE TABLE IF NOT EXISTS message (
         REFERENCES message (id)
 );
 
+CREATE UNIQUE INDEX idx_msg_convo ON "message" (
+    id,
+    conversation
+);
+
 CREATE TABLE IF NOT EXISTS attachment (
     id SERIAL PRIMARY KEY,
     message INT NOT NULL,
@@ -110,17 +123,37 @@ CREATE TABLE IF NOT EXISTS attachment (
         REFERENCES message (id)
 );
 
+CREATE UNIQUE INDEX idx_att_msg ON "attachment" (
+    message
+)
+
+CREATE TABLE IF NOT EXISTS unread_messages (
+    id SERIAL PRIMARY KEY,
+    message INT NOT NULL,
+    "user" INT NOT NULL,
+    FOREIGN KEY (message)
+        REFERENCES message (id),
+    FOREIGN KEY ("user")
+        REFERENCES "user" (id)
+)
+
+INSERT INTO user_status (
+    type
+) VALUES ('offline');
+
 INSERT INTO user_status (
     type
 ) VALUES ('online');
 
 INSERT INTO user_status (
     type
-) VALUES ('dnd');
+) VALUES ('away');
+
 
 INSERT INTO user_status (
     type
-) VALUES ('offline');
+) VALUES ('dnd');
+
 
 INSERT INTO relationship_type (
     type

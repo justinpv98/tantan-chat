@@ -1,9 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { styled } from "@/stitches.config";
+import { useQueries, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
+import { styled } from "@/stitches.config";
 
 // Hooks
-import { useAuth, useGetConversation, useSocket, useThrottle} from "@/hooks";
+import {
+  useAuth,
+  useSocket,
+  useThrottle,
+} from "@/hooks";
+
+import {
+  useGetConversation,
+  useGetMessages,
+} from "@/features/chat/hooks"
+
+import { useUpdateConversations } from "@/pages/Home/hooks/useConversations";
 
 // Components
 import { Button, Flex, Icon } from "@/features/ui";
@@ -20,10 +32,12 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
     data: "",
   };
 
+  const updateConversations = useUpdateConversations();
+
   const [message, setMessage] = useState(initialState);
 
   const { id: targetId } = useParams();
-  const { data } = useGetConversation(targetId || "", true);
+  const { data } = useGetConversation(targetId || "", false);
 
   const { id: userId } = useAuth();
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -33,9 +47,9 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
   const throttle = useThrottle();
 
   useEffect(() => {
-    setMessage(initialState)
-    autoGrow(inputRef?.current)
-  }, [targetId])
+    setMessage(initialState);
+    autoGrow(inputRef?.current);
+  }, [targetId]);
 
   function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     throttle(() => socket.emit("typing", data?.id));
@@ -47,7 +61,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
 
   function onInput() {
     autoGrow(inputRef?.current);
-    if(isRefVisible && observedRef?.current){
+    if (isRefVisible && observedRef?.current) {
       observedRef.current.scrollIntoView();
     }
   }
@@ -76,6 +90,10 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
 
       if (inputRef?.current) {
         autoGrow(inputRef.current, true);
+      }
+
+      if (data) {
+        updateConversations(data);
       }
     }
   }
