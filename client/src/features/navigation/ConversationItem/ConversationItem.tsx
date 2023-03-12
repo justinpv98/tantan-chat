@@ -2,13 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 // Types
-import { ConversationData } from "@/pages/Home/hooks/useConversations";
+import { ConversationData } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 // Hooks
-import { useConversations } from "@/pages/Home/hooks";
+import { useGetConversations } from "@/features/chat/hooks";
 
 // Components
-import { Avatar, Box, Flex, Text } from "@/features/ui";
+import { Avatar, Flex, Text } from "@/features/ui";
 
 type Props = {
   conversation: ConversationData;
@@ -16,7 +16,7 @@ type Props = {
 
 export default function ConversationItem({ conversation }: Props) {
   const navigate = useNavigate();
-  const { setCurrentConversation } = useConversations(false);
+  const { setCurrentConversation } = useGetConversations(false);
 
   function onClick() {
     setCurrentConversation(conversation);
@@ -24,7 +24,7 @@ export default function ConversationItem({ conversation }: Props) {
   }
 
   if (conversation.type === 1) {
-    const { username } = conversation.participants[0];
+    const { username, status } = conversation.participants[0];
     return (
       <Flex
         align="center"
@@ -42,7 +42,7 @@ export default function ConversationItem({ conversation }: Props) {
           },
         }}
       >
-        <Avatar size="md" showStatus />
+        <Avatar size="md" status={status} showStatus/>
         <Text weight="medium">{username}</Text>
       </Flex>
     );

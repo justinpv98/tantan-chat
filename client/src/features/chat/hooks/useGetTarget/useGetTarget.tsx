@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import useAuth from "@/hooks/useAuth/useAuth";
+import { useAuth, useSocket } from "@/hooks";
 import useGetConversation from "../useGetConversation/useGetConversation";
 import { Participant } from "../useGetMessages/useGetMessages";
 

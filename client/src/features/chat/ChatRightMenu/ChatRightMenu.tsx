@@ -1,7 +1,7 @@
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useGetTarget } from "@/hooks";
+import { useGetTarget } from "@/features/chat/hooks";
 
 // Components
 import { Avatar, Flex, Sidebar } from "@/features/ui";

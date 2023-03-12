@@ -10,6 +10,7 @@ export type Participant = {
   id: string;
   username: string;
   profile_picture: string | null;
+  status: 1 | 2 | 3 | 4;
 };
 
 export type Message = {

@@ -2,7 +2,8 @@ import { Fragment, useEffect, useState } from "react";
 import { keyframes } from "@stitches/react";
 
 // Hooks
-import { useSocket, useGetTarget } from "@/hooks";
+import { useSocket } from "@/hooks";
+import { useGetTarget } from "../hooks";
 
 // Components
 import { Box, Text } from "@/features/ui";

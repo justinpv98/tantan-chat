@@ -1,1 +1,1 @@
-export {default as useConversations} from "./useConversations";
+export {default as useGetConversations} from "../../../features/chat/hooks/useGetConversations/useGetConversations";

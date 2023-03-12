@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@/stitches.config";
 import {
@@ -6,8 +6,7 @@ import {
   useDebouncedValue,
   useSocket,
 } from "@/hooks";
-import { useCreateConversation, useSearchUsers } from "@/features/chat/hooks";
-import useConversations from "./hooks/useConversations";
+import { useCreateConversation, useGetConversations, useSearchUsers } from "@/features/chat/hooks";
 
 // Components
 import { Flex, SearchInput, Sidebar } from "@/features/ui";
@@ -27,7 +26,7 @@ export default function Home() {
     Boolean(debouncedQuery)
   );
 
-  const { data: initialUserData } = useConversations(true);
+  const { data: conversationsData } = useGetConversations(false);
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
 
   // Search functions
@@ -39,6 +38,7 @@ export default function Home() {
       setSearching(isSearching);
     } 
   }
+
 
   function handleChangeSearch(value: string) {
     setQuery(value);
@@ -74,9 +74,9 @@ export default function Home() {
         value={query}
       />
       <ItemContainer direction="column">
-        {initialUserData &&
+        {conversationsData?.length &&
           !searching &&
-          initialUserData.map((conversation) => (
+          conversationsData.map((conversation) => (
             <ConversationItem
               key={conversation.id}
               conversation={conversation}

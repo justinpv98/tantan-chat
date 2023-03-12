@@ -15,7 +15,7 @@ export interface AuthState {
     email: string;
     username: string;
     profile_picture: object;
-    status: string;
+    status: 1 | 2 | 3 | 4;
     message: string;
     loading: boolean;
     login: (data: LoginData) => void;
@@ -52,7 +52,7 @@ const initialState: AuthState = {
   email: "",
   username: "",
   profile_picture: {},
-  status: "",
+  status: 2,
   message: "",
   loading: false,
   login: () => {},

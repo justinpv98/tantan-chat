@@ -15,7 +15,7 @@ import {
   useGetMessages,
 } from "@/features/chat/hooks"
 
-import { useUpdateConversations } from "@/pages/Home/hooks/useConversations";
+import { useUpdateConversations } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 // Components
 import { Button, Flex, Icon } from "@/features/ui";
@@ -126,7 +126,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
         </Button>
         <form
           style={{ width: "100%" }}
-          onSubmit={onSubmit}
+          onSubmit={(e) => onSubmit(e)}
           onKeyDown={onKeyDownEnter}
         >
           <Input
@@ -150,7 +150,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
         icon="center"
         css={{ color: "$sage11" }}
         transparent
-        onClick={onSubmit}
+        onClick={(e) => onSubmit(e)}
       >
         <Icon icon="paper-airplane" />
       </Button>

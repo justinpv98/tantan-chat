@@ -2,6 +2,8 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { styled } from "@/stitches.config";
 import { CSS, VariantProps } from "@stitches/react";
 
+import { Participant } from "@/features/chat/hooks/useGetMessages/useGetMessages";
+
 // Components
 import Box from "../Box/Box";
 import Icon from "../Icon/Icon";
@@ -12,7 +14,7 @@ type Props = {
   size?: VariantProps<typeof Root>["size"];
   src?: string;
   showStatus?: boolean;
-  status?: string;
+  status?: Participant['status'];
 };
 
 export default function Avatar({ css, name, size = "sm", showStatus = false, status, src }: Props) {
@@ -32,7 +34,7 @@ export default function Avatar({ css, name, size = "sm", showStatus = false, sta
       <Fallback delayMs={50}>
         <Icon icon="user" size={fallbackSize} />
       </Fallback>
-      {showStatus && <Status className="avatar-status" status={1}/>}
+      {showStatus && <Status className="avatar-status" status={status}/>}
     </Root>
     </Box>
   );

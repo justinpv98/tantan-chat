@@ -1,7 +1,7 @@
 import { useQuery, QueryFunctionContext } from "react-query";
 import axios from "@/config/axios";
 import queryKeys from "@/constants/queryKeys";
-import { ConversationData } from "@/pages/Home/hooks/useConversations";
+import { ConversationData } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 type QueryKey = [string, { query: string }];
 

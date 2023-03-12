@@ -21,7 +21,7 @@ type Options = {
   select?: string[];
   as?: { [key: string]: string };
   where?: WhereClause;
-  set?: object;
+  set?: { [key: string]: string | number };
   limit?: number | false;
   offset?: number | false;
   orderBy?: OrderByColumn[];
@@ -85,7 +85,7 @@ const operators = {
 const defaultOptions: Options = {
   select: [],
   as: {},
-  set: [],
+  set: {},
   where: false,
   limit: false,
   offset: false,
@@ -184,6 +184,7 @@ class Model<T> {
     const unformattedQuery = [updateStatement, setClause, whereClause];
 
     const query = this.#constructQuery(unformattedQuery, ...setValues, id);
+
 
     const { rows } = await pool.query(query);
     const data: T = rows.length ? rows : null;
@@ -314,7 +315,7 @@ class Model<T> {
     return `SELECT ${selectColumns} FROM "${this.modelName}" `;
   }
 
-  #composeSetClause(set: object) {
+  #composeSetClause(set: Options["set"]) {
     let statement = "SET ";
 
     const entries = Object.entries(set);

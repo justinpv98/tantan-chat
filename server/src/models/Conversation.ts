@@ -68,7 +68,8 @@ export class Conversation extends Model<ConversationSchema> {
               SELECT 
                 "user".id, 
                 "user".username, 
-                "user".profile_picture 
+                "user".profile_picture,
+                "user".status
               FROM 
                 (
                   SELECT 

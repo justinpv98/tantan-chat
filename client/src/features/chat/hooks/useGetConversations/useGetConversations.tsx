@@ -6,8 +6,7 @@ import queryKeys from "@/constants/queryKeys";
 // Hooks
 import { useAuth } from "@/hooks";
 
-
-import { Participant } from "@/features/chat/hooks/useGetConversation/useGetConversation";
+import { Participant } from "@/features/chat/hooks/useGetMessages/useGetMessages";
 
 export type ConversationData = {
   id: number;
@@ -23,7 +22,7 @@ export async function fetchConversation() {
   return res.data as ConversationData[];
 }
 
-export default function useConversations(enabled: boolean = false) {
+export default function useGetConversations(enabled: boolean = false) {
   const [currentConversation, setCurrentConversation] =
     useState<ConversationData>();
 
@@ -43,16 +42,21 @@ export default function useConversations(enabled: boolean = false) {
 
 export function useUpdateConversations() {
   const queryClient = useQueryClient();
-  const {id: userId} = useAuth();
+  const { id: userId } = useAuth();
 
   function updateConversations(data: ConversationData) {
-  
     queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
-      const idSet = new Set();
-      const convos = [data, ...oldData].filter(({ id }) =>
-        idSet.has(id) ? false : idSet.add(id)
-      );
+      let convos;
+      if (oldData) {
+        const idSet = new Set();
+        convos = [data, ...oldData].filter(({ id }) =>
+          idSet.has(id) ? false : idSet.add(id)
+        );
+      } else {
+        convos = [data];
+      }
 
+      console.log(convos)
       return convos;
     });
   }

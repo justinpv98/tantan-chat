@@ -55,7 +55,7 @@ export default function Settings({ isMobile }: Props) {
       label={"Settings"}
       side="right"
       css={isMobile ? mobileCSS : desktopCSS}
-      trigger={<Avatar size="sm" />}
+      trigger={<Avatar size="sm" status={2} showStatus/>}
     >
       <Button onClick={onClickLogout} transparent>
         <Text color="error">Logout</Text>

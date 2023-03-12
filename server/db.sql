@@ -83,11 +83,11 @@ CREATE TABLE IF NOT EXISTS conversation_participant (
         REFERENCES "user" (id)
 );
 
-CREATE UNIQUE INDEX idx_cp_convo ON "conversation_participant" (
+CREATE INDEX idx_cp_convo ON "conversation_participant" (
     conversation
 );
 
-CREATE UNIQUE INDEX idx_cp_user ON "conversation_participant" (
+CREATE INDEX idx_cp_user ON "conversation_participant" (
     "user"
 );
 
@@ -125,8 +125,9 @@ CREATE TABLE IF NOT EXISTS attachment (
 
 CREATE UNIQUE INDEX idx_att_msg ON "attachment" (
     message
-)
+);
 
+/*
 CREATE TABLE IF NOT EXISTS unread_messages (
     id SERIAL PRIMARY KEY,
     message INT NOT NULL,
@@ -135,7 +136,8 @@ CREATE TABLE IF NOT EXISTS unread_messages (
         REFERENCES message (id),
     FOREIGN KEY ("user")
         REFERENCES "user" (id)
-)
+);
+*/
 
 INSERT INTO user_status (
     type

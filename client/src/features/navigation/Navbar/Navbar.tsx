@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, Outlet } from "react-router-dom";
 import { styled } from "@/stitches.config";
 import { navRoutes } from "@/constants/routes";
@@ -6,67 +6,80 @@ import queryClient from "@/config/queryClient";
 import queryKeys from "@/constants/queryKeys";
 
 // Types
+import { ConversationData } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 import { Message } from "@/features/chat/hooks/useGetMessages/useGetMessages";
 
 // Hooks
 import { useAuth, useSocket } from "@/hooks";
-import { useConversations } from "@/pages/Home/hooks";
+import { useGetConversations } from "@/features/chat/hooks";
 
 // Components
 import { Flex, SideNavigation, SideNavigationItem } from "@/features/ui";
-
 import Settings from "../Settings/Settings";
-import { ConversationData } from "@/pages/Home/hooks/useConversations";
 
 type Props = {};
 
 export default function Navbar({}: Props) {
   const { id } = useParams();
   const { id: userId } = useAuth();
+  const { data: conversations, isSuccess } = useGetConversations(true);
   const socket = useSocket();
-  const { data: conversations } = useConversations();
 
-  socket.on(
-    "message",
-    async (message: Message, conversation: ConversationData) => {
-      if(message?.author === userId) return;
-      const conversationId = message?.conversation;
+  useEffect(() => {
+    socket.on("setStatus", (userId, status) => {
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        const newData = oldData.map((conversation: ConversationData) => {
+          const modifiedConversation = conversation;
+          modifiedConversation?.participants.map((participant) => {
+            if (participant.id === userId) {
+              participant.status = status;
+            }
+            return participant;
+          });
+          return modifiedConversation;
+        });
+        return newData;
+      });
+    });
 
-      const hasConversation = conversations?.find(
-        ({ id }) => id == conversationId
-      );
+    socket.on(
+      "message",
+      async (message: Message, conversation: ConversationData) => {
+        if (message?.author == userId) return;
 
-      if (hasConversation) {
-        queryClient.setQueryData(
-          queryKeys.GET_CONVERSATIONS,
-          (oldData: any) => {
-            const idSet = new Set();
-            const convos = [hasConversation, ...oldData].filter(({ id }) =>
-              idSet.has(id) ? false : idSet.add(id)
+        const conversationId = message?.conversation;
+
+        const hasConversation = conversations?.find(
+          ({ id }) => id == conversationId
+        );
+
+        if (conversations !== undefined && conversations.length > 1) {
+          if (hasConversation) {
+            queryClient.setQueryData(
+              queryKeys.GET_CONVERSATIONS,
+              (oldData: any) => {
+                const idSet = new Set();
+                const convos = [hasConversation, ...oldData].filter(({ id }) =>
+                  idSet.has(id) ? false : idSet.add(id)
+                );
+
+                return convos;
+              }
             );
-
-            return convos;
+          } else {
+            queryClient.setQueryData(
+              queryKeys.GET_CONVERSATIONS,
+              (oldData: any) => {
+                return [conversation, ...oldData];
+              }
+            );
           }
-        );
-      } else {
-        let spliceIndex;
-        for (let i = 0; i < conversation.participants.length - 1; i++) {
-          if (conversation.participants[i].id === userId) {
-            spliceIndex = i;
-          }
+        } else {
+          queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
         }
-
-        if (spliceIndex) {
-          conversation.participants.splice(spliceIndex, 1);
-        }
-
-        queryClient.setQueryData(
-          queryKeys.GET_CONVERSATIONS,
-          (oldData: any) => [conversation, oldData]
-        );
       }
-    }
-  );
+    );
+  }, [socket, isSuccess]);
 
   return (
     <Flex as="nav">

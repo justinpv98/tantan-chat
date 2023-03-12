@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useQueryClient } from "react-query";
 import { styled } from "@/stitches.config";
+import queryKeys from "@/constants/queryKeys";
+
+// Types
 
 // Hooks
-import { useGetConversation, useSocket } from "@/hooks";
+import { useAuth, useSocket } from "@/hooks";
+import { useGetConversation,  } from "@/features/chat/hooks";
 
 // Components
 import { Navbar } from "@/features/navigation";
@@ -12,26 +17,26 @@ import Flex from "../Flex/Flex";
 import Text from "../Text/Text";
 
 export default function Layout() {
+  const queryClient = useQueryClient();
   const { id: conversationId } = useParams();
   const [showRightMenu, setShowRightMenu] = useState(false);
 
-const socket = useSocket();
-socket.connect();
+  const socket = useSocket();
+  socket.connect();
+
   const { data: conversationData } = useGetConversation(
     conversationId || "",
     !!conversationId
   );
-
-  
 
   function toggleRightMenu() {
     setShowRightMenu(!showRightMenu);
   }
 
   return (
-    <LayoutContainer >
+    <LayoutContainer>
       <Navbar />
-      {conversationData  ? (
+      {conversationData ? (
         <Chat onClickMore={toggleRightMenu} />
       ) : (
         <Flex
