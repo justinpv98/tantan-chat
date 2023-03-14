@@ -13,7 +13,7 @@ function useInfiniteScroll(containerRef: MutableRefObject<any>) {
       } else {
         setCanLoadMore(false);
       }
-    }, {root: containerRef.current, rootMargin: '400px'});
+    }, {root: containerRef.current, rootMargin: '300px'});
 
     if (loadMoreRef.current) observer.observe(loadMoreRef.current);
 

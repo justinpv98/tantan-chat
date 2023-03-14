@@ -12,13 +12,13 @@ import {
 
 import {
   useGetConversation,
-  useGetMessages,
 } from "@/features/chat/hooks"
 
 import { useUpdateConversations } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 // Components
 import { Button, Flex, Icon } from "@/features/ui";
+import {GIFButton} from "@/features/media";
 
 type Props = {
   isRefVisible: boolean;
@@ -26,6 +26,7 @@ type Props = {
 };
 
 export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
+    
   const initialState = {
     author: "",
     conversation: "",
@@ -49,7 +50,8 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
   useEffect(() => {
     setMessage(initialState);
     autoGrow(inputRef?.current);
-  }, [targetId]);
+    observedRef?.current?.scrollIntoView();
+  }, [targetId])
 
   function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     throttle(() => socket.emit("typing", data?.id));
@@ -85,12 +87,13 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
         conversation: data?.id,
         data: message.data.trim(),
       });
-      observedRef.current?.scrollIntoView();
       setMessage(initialState);
 
       if (inputRef?.current) {
         autoGrow(inputRef.current, true);
       }
+
+      observedRef?.current?.scrollIntoView();
 
       if (data) {
         updateConversations(data);
@@ -106,6 +109,8 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
       target.style.height = "3rem";
     }
   }
+
+
 
   return (
     <Flex
@@ -138,9 +143,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
           />
         </form>
         <Flex gap={1}>
-          <Button icon="center" transparent>
-            <Icon icon="gif" />
-          </Button>
+          <GIFButton />
           <Button icon="center" transparent>
             <Icon icon="face-smile" />
           </Button>

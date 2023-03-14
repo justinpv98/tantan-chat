@@ -53,8 +53,9 @@ export default function Navbar({}: Props) {
           ({ id }) => id == conversationId
         );
 
-        if (conversations !== undefined && conversations.length > 1) {
+        if (conversations !== undefined && conversations.length >= 1) {
           if (hasConversation) {
+            console.log('due')
             queryClient.setQueryData(
               queryKeys.GET_CONVERSATIONS,
               (oldData: any) => {
@@ -67,6 +68,7 @@ export default function Navbar({}: Props) {
               }
             );
           } else {
+            console.log('blue')
             queryClient.setQueryData(
               queryKeys.GET_CONVERSATIONS,
               (oldData: any) => {
@@ -75,6 +77,7 @@ export default function Navbar({}: Props) {
             );
           }
         } else {
+          console.log('true')
           queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
         }
       }

@@ -1,20 +1,26 @@
 import React from "react";
 import { styled } from "@/stitches.config";
 
-import Box from "../Box/Box";
+// types
+import { CSS } from "@stitches/react";
+
+// Components
 import Flex from "../Flex/Flex";
-import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 
 type Props = {
+  css?: CSS;
   handleBlur?: (isSearching: boolean) => void;
   handleChange?: (value: string) => void;
+  placeholder?: string;
   value?: string;
 };
 
 export default function SearchInput({
+  css,
   handleBlur,
   handleChange,
+  placeholder,
   value,
 }: Props) {
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -29,7 +35,7 @@ export default function SearchInput({
   }
 
   return (
-    <SearchContainer>
+    <SearchContainer css={css}>
       <Flex
       align="center"
         css={{
@@ -42,10 +48,11 @@ export default function SearchInput({
       </Flex>
 
       <Input
-        onChange={onChange}
+        onChange={(e) => onChange(e)}
         onFocus={onFocus}
         onBlur={onBlur}
         value={value}
+        placeholder={placeholder}
       />
     </SearchContainer>
   );
@@ -59,6 +66,7 @@ const SearchContainer = styled(Flex, {
   marginInline: "$100",
   marginBlock: "$075",
   paddingInline: "$050",
+  overflow: "hidden",
 
 
   "&:focus-within": {

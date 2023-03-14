@@ -55,8 +55,7 @@ export function useUpdateConversations() {
       } else {
         convos = [data];
       }
-
-      console.log(convos)
+      
       return convos;
     });
   }

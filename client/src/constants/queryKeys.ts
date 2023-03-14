@@ -1,8 +1,10 @@
 enum queryKeys {
     CREATE_CONVERSATION = "createConversation",
-    GET_CONVERSATION = "getConvesation",
-    GET_CONVERSATIONS = "getConvesationS",
+    GET_CONVERSATION = "getConversation",
+    GET_CONVERSATIONS = "getConvesations",
+    GET_GIF_CATEGORIES = "getGIFCategories",
     GET_MESSAGES = "getMessages",
+    SEARCH_GIFS = "searchGifs",
     SEARCH_USERS = "searchUsers",
 }
 

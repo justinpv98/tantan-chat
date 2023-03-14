@@ -1,12 +1,19 @@
 import React from "react";
 import { styled } from "@/stitches.config";
 
+// Components
+import { GIF } from "@/features/media";
+
 // Hooks
 import { useAuth } from "@/hooks";
 
 type Props = {
   message: any;
 };
+
+type GIF = {
+   
+}
 
 export default function ChatMessage({ message }: Props) {
   const { id } = useAuth();
@@ -15,11 +22,22 @@ export default function ChatMessage({ message }: Props) {
     return message.author === id;
   }
 
+  function renderMessage(){
+    switch(message.type){
+      case 1:
+        return <Message isUser={isUser()}>{message.data}</Message>
+      case 2:
+        return <GIF result={message} />
+      default:
+        break
+    }
+  }
+
   // Aria-setsize to alert the browser that the number of list items
   // are unknown
   return (
     <MessageContainer aria-setsize={-1} isUser={isUser()} className={!isUser() ? "user" : ""}>
-      <Message isUser={isUser()}>{message.data}</Message>
+      {renderMessage()}
     </MessageContainer>
   );
 }

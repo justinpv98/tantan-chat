@@ -88,7 +88,7 @@ return () => {
       css={{
         transition: "bottom 200ms ease-in-out, opacity 1ms ease-in 160ms",
         backgroundColor: "$sage4",
-        bottom: usersTyping.length === 0 ? "2rem" : "4.5rem",
+        bottom: usersTyping.length === 0 ? "2rem" : "4.25rem",
         color: "$sage12",
         fontSize: "$075",
         letterSpacing: 0.25,

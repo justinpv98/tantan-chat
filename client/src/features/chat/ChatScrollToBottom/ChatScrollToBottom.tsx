@@ -48,6 +48,7 @@ export default function ChatScrollToBottom({
         observer.unobserve(observedRef.current);
       }
     };
+
   }, [observedRef, messages]);
 
   useLayoutEffect(() => {

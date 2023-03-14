@@ -18,9 +18,11 @@ export type Message = {
   id: string;
   author: string;
   data: string;
+  type: number;
+  media_url: string;
+  description: string;
   parent: string;
   conversation: number;
-  is_read: boolean;
   created_at: string;
   modified_at: string | null;
 } | null;

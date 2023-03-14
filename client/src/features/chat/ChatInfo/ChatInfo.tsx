@@ -28,7 +28,7 @@ export default function ChatInfo({ onClickMore }: Props) {
   }, [dataUpdatedAt]);
 
   const themePreference = theme
-    ? "dark" && {
+    === "dark" ? {
         boxShadow: "none",
         borderBottom: "1px solid $sage7",
       }
