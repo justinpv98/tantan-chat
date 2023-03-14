@@ -10,7 +10,9 @@ export type MessageSchema = {
   conversation?: string;
   data?: string;
   parent?: string;
-  is_read: boolean;
+  type?: number;
+  media_url?: string;
+  description?: string;
   created_at: string;
   modified_at: string;
 };
@@ -21,7 +23,9 @@ export class Message extends Model<MessageSchema> {
   conversation?: string;
   data?: string;
   parent?: string;
-  is_read: boolean;
+  type?: number;
+  media_url?: string;
+  description?: string;
   created_at?: string;
   modified_at?: string;
 
@@ -32,7 +36,10 @@ export class Message extends Model<MessageSchema> {
     this.conversation = config?.conversation;
     this.data = config?.data;
     this.parent = config?.parent || null;
-    this.is_read = config?.is_read || false;
+    this.type = config?.type || 1;
+    this.media_url = config?.media_url;
+    this.description = config?.description;
+
   }
 
   async getMessages( conversationId: string, lastMessageId?: string) {
@@ -40,9 +47,11 @@ export class Message extends Model<MessageSchema> {
       `SELECT         
     mesg.id, 
     mesg.author, 
+    mesg.type,
     mesg.data, 
     mesg.parent, 
-    mesg.is_read, 
+    mesg.media_url,
+    mesg.description, 
     mesg.created_at, 
     mesg.modified_at
     FROM (SELECT *

@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS conversation (
     owner INT CONSTRAINT is_dm CHECK (type = 1 OR owner IS NOT NULL),
     type INT DEFAULT 1 NOT NULL,
     name VARCHAR(32),
-    profile_picture VARCHAR(80),
+    avatar VARCHAR(80),
     FOREIGN KEY (owner)
         REFERENCES "user" (id),
     FOREIGN KEY (type)
@@ -91,20 +91,28 @@ CREATE INDEX idx_cp_user ON "conversation_participant" (
     "user"
 );
 
+CREATE TABLE IF NOT EXISTS message_type (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(32) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS message (
     id SERIAL PRIMARY KEY,
     author INT NOT NULL,
     conversation INT NOT NULL,
-    data TEXT NOT NULL,
+    type INT DEFAULT 1 NOT NULL,
+    data TEXT,
+    media_url VARCHAR(255),
+    description TEXT,
     parent INT,
-    is_read BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT now() NOT NULL,
     modified_at TIMESTAMP,
     FOREIGN KEY (author)
         REFERENCES "user" (id),
     FOREIGN KEY (conversation)
         REFERENCES conversation (id),
+    FOREIGN KEY (type)
+        REFERENCES message_type (id),
     FOREIGN KEY (parent)
         REFERENCES message (id)
 );
@@ -114,30 +122,30 @@ CREATE UNIQUE INDEX idx_msg_convo ON "message" (
     conversation
 );
 
-CREATE TABLE IF NOT EXISTS attachment (
-    id SERIAL PRIMARY KEY,
-    message INT NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    url VARCHAR(255) NOT NULL,
-    FOREIGN KEY (message)
-        REFERENCES message (id)
-);
+-- CREATE TABLE IF NOT EXISTS attachment (
+--     id SERIAL PRIMARY KEY,
+--     message INT NOT NULL,
+--     file_name VARCHAR(255) NOT NULL,
+--     url VARCHAR(255) NOT NULL,
+--     FOREIGN KEY (message)
+--         REFERENCES message (id)
+-- );
 
-CREATE UNIQUE INDEX idx_att_msg ON "attachment" (
-    message
-);
+-- CREATE UNIQUE INDEX idx_att_msg ON "attachment" (
+--     message
+-- );
 
-/*
-CREATE TABLE IF NOT EXISTS unread_messages (
-    id SERIAL PRIMARY KEY,
-    message INT NOT NULL,
-    "user" INT NOT NULL,
-    FOREIGN KEY (message)
-        REFERENCES message (id),
-    FOREIGN KEY ("user")
-        REFERENCES "user" (id)
-);
-*/
+
+-- CREATE TABLE IF NOT EXISTS unread_messages (
+--     id SERIAL PRIMARY KEY,
+--     message INT NOT NULL,
+--     "user" INT NOT NULL,
+--     FOREIGN KEY (message)
+--         REFERENCES message (id),
+--     FOREIGN KEY ("user")
+--         REFERENCES "user" (id)
+-- );
+
 
 INSERT INTO user_status (
     type
@@ -180,6 +188,18 @@ INSERT INTO conversation_type (
 INSERT INTO conversation_type (
     type
 ) VALUES ('group chat');
+
+INSERT INTO message_type (
+    type
+) VALUES ('text');
+
+INSERT INTO message_type (
+    type
+) VALUES ('gif');
+
+INSERT INTO message_type (
+    type
+) VALUES ('image');
 
 CREATE  FUNCTION update_modified_at()
 RETURNS TRIGGER AS $$

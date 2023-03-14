@@ -82,7 +82,7 @@ export class Conversation extends Model<ConversationSchema> {
                 LEFT JOIN "user" ON "user".id = cp."user"
             ) participant
         ) AS participants,
-        ( SELECT json_build_object('id', message.id, 'data', message.data, 'is_read', message.is_read, 'created_at', message.created_at) FROM message
+        ( SELECT json_build_object('id', message.id, 'data', message.data, 'media_url', message.media_url, 'description', message.description, 'type', message.type, 'created_at', message.created_at) FROM message
         WHERE
             message.id = (
                 SELECT
@@ -118,7 +118,7 @@ export class Conversation extends Model<ConversationSchema> {
                   LEFT JOIN conversation_participant cp ON cp."user" = u.id
                   WHERE
                       u.id != %L
-                      AND cp.conversation = c.id GROUP BY u.id) AS p), 'last_message', ( SELECT json_build_object('id', message.id, 'data', message.data, 'is_read', message.is_read, 'created_at', message.created_at) FROM message
+                      AND cp.conversation = c.id GROUP BY u.id) AS p), 'last_message', ( SELECT json_build_object('id', message.id, 'data', message.data, 'media_url', message.media_url, 'description', message.description, 'type', message.type, 'created_at', message.created_at) FROM message
                       WHERE
                           message.id = (
                               SELECT

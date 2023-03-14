@@ -62,6 +62,7 @@ function initializeSocket(
     sockets[socket.id] = socket;
     socket.conversations = new Set();
 
+
     await handleUnidentifiedSocket(socket);
     await joinConversations(socket);
     await connectSocketToUser(socket);
@@ -107,11 +108,15 @@ function initializeSocket(
         conversation.participants = filteredParticipants;
       }
 
-      io.emit("message", message, conversation);
+      io.to(conversation.id).emit("message", message, conversation);
     });
 
     socket.on("typing", (conversationId: string) => {
       socket.to(conversationId).emit("typing", socket.user.username);
+    });
+
+    socket.on("sendFriendRequest", (targetId: string) => {
+      socket.to(targetId).emit("friendRequestReceived");
     });
 
     socket.on("disconnect", async () => {
@@ -142,6 +147,8 @@ async function joinConversations(socket: SocketWithChannels) {
     where: { user: socket.user.id },
   })) as unknown as { conversation_id: string }[];
 
+  socket.join(socket.user.id);
+
   if (conversations) {
     conversations.forEach((conversationData) => {
       const conversationId = conversationData.conversation_id;
@@ -157,11 +164,11 @@ async function joinConversations(socket: SocketWithChannels) {
 async function connectSocketToUser(socket: SocketWithChannels) {
   // Handle multiple socket instances of a user
   if (!users[socket.user.id]) {
-    users[socket.user.id] = [socket.id];
+    users[socket.user.id] = {sockets: []};
     socket.to([...socket.conversations]).emit("setStatus", socket.user.id, 2);
     UserModel.updateById(socket.user.id, { set: { status: 2 } });
   } else {
-    users[socket.user.id].push(socket.user.id);
+    users[socket.user.id]?.sockets.push(socket.id);
   }
 }
 
@@ -170,14 +177,14 @@ async function handleDisconnect(socket: SocketWithChannels) {
   delete sockets[socket.id];
 
   const conversations = Array.from(socket.conversations);
-  if (users[userId].length === 1) {
+  if (users[userId]?.sockets.length === 1) {
     delete users[userId];
     socket.to(conversations).emit("setStatus", userId, 1);
     UserModel.updateById(userId, { set: { status: 1 } });
     logger.debug(`User ${socket.user.id} has disconnected`);
   } else {
-    const index = users[userId].indexOf(socket.id);
-    users[userId].splice(index, 1);
+    const index = users[userId].sockets.indexOf(socket.id);
+    users[userId].sockets.splice(index, 1);
   }
 }
 
