@@ -86,7 +86,7 @@ export default function GIFButton() {
     <Popover
       trigger={<Icon icon="gif" />}
       css={{
-        paddingTop: "0",
+        padding: "12px"
       }}
       open={isPopoverOpen}
       onClickTrigger={() => onClickOpen()}

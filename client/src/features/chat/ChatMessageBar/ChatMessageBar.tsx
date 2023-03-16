@@ -1,24 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useQueries, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
 // Hooks
-import {
-  useAuth,
-  useSocket,
-  useThrottle,
-} from "@/hooks";
+import { useAuth, useSocket, useThrottle } from "@/hooks";
 
-import {
-  useGetConversation,
-} from "@/features/chat/hooks"
+import { useGetConversation } from "@/features/chat/hooks";
 
 import { useUpdateConversations } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 // Components
 import { Button, Flex, Icon } from "@/features/ui";
-import {GIFButton} from "@/features/media";
+import { EmojiButton, GIFButton } from "@/features/media";
 
 type Props = {
   isRefVisible: boolean;
@@ -26,7 +19,6 @@ type Props = {
 };
 
 export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
-    
   const initialState = {
     author: "",
     conversation: "",
@@ -34,7 +26,6 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
   };
 
   const updateConversations = useUpdateConversations();
-
   const [message, setMessage] = useState(initialState);
 
   const { id: targetId } = useParams();
@@ -51,7 +42,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
     setMessage(initialState);
     autoGrow(inputRef?.current);
     observedRef?.current?.scrollIntoView();
-  }, [targetId])
+  }, [targetId]);
 
   function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     throttle(() => socket.emit("typing", data?.id));
@@ -81,11 +72,13 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
     e.preventDefault();
 
     if (message.data) {
+      let imageData;
       socket.emit("message", {
         ...message,
         author: userId,
         conversation: data?.id,
         data: message.data.trim(),
+        file: imageData,
       });
       setMessage(initialState);
 
@@ -109,8 +102,6 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
       target.style.height = "3rem";
     }
   }
-
-
 
   return (
     <Flex
@@ -144,9 +135,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
         </form>
         <Flex gap={1}>
           <GIFButton />
-          <Button icon="center" transparent>
-            <Icon icon="face-smile" />
-          </Button>
+            <EmojiButton setMessage={setMessage} />
         </Flex>
       </InputContainer>
       <Button
@@ -175,7 +164,7 @@ export const Container = styled("div", {
 const InputContainer = styled("div", {
   position: "relative",
   display: "flex",
-  alignItems: "flex-start",
+  alignItems: "center",
   height: "100%",
   maxHeight: "50vh",
   width: "100%",
@@ -183,6 +172,7 @@ const InputContainer = styled("div", {
   backgroundColor: "$sage4",
   color: "$sage11",
   marginLeft: "$100",
+  paddingLeft: "$075",
 
   [`& ${Button}`]: {
     "&:hover": {

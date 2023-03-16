@@ -21,7 +21,7 @@ type Props = {
   onClickTrigger?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onFocusOutside?: PopoverContentProps["onFocusOutside"],
   onInteractOutside?: (event: React.FocusEvent | MouseEvent | TouchEvent) => void,
-  open: boolean;
+  open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
   sideOffset?: number;
   trigger?: React.ReactNode;
