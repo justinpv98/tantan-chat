@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
@@ -14,6 +14,7 @@ import ChatInfiniteScroller from "../ChatInfiniteScroller/ChatInfiniteScroller";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import ChatScrollToBottom from "../ChatScrollToBottom/ChatScrollToBottom";
 import ChatTypingBar from "../ChatTypingBar/ChatTypingBar";
+
 
 type Props = {
   isRefVisible: boolean;
@@ -33,13 +34,18 @@ export default function ChatConversation({
   const { messages, setMessages, isError } = useGetMessages();
 
   useLayoutEffect(() => {
+    socket.on("message", (message: Message) => {
+      setMessages([...messages, message]);
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, [messages]);
+
+  useEffect(() => {
     setMessages([]);
   }, [id]);
-
-
-  socket.on("message", (message: Message) => {
-    setMessages([...messages, message]);
-  });
 
   return (
     <ConversationContainer ref={containerRef}>

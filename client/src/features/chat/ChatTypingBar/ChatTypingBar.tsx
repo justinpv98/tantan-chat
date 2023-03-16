@@ -8,33 +8,43 @@ import { useGetTarget } from "../hooks";
 // Components
 import { Box, Text } from "@/features/ui";
 
-
 export default function ChatTypingBar() {
   const [usersTyping, setUsersTyping] = useState<string[]>([]);
   const socket = useSocket();
   const target = useGetTarget();
 
+
+  function typingListener(username: string){
+    const users = [...usersTyping, username];
+    const filteredUsers = [...new Set(users)];
+    setUsersTyping(filteredUsers);
+  }
+
+  useEffect(() => {
+    socket.on("typing", typingListener);
+
+
+    return () => {
+      socket.off("typing", typingListener)
+    }
+
+  }, [])
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      setUsersTyping([])
-    }, 1500)
+      setUsersTyping([]);
+    }, 1500);
 
     return () => {
       clearTimeout(timer);
-    }
-  }, [usersTyping])
+    };
+  }, [usersTyping]);
 
   useEffect(() => {
-return () => {
-  setUsersTyping([])
-}
-  }, [target?.id])
-
-  socket.on("typing", (username) => {
-    const users = [...usersTyping, username]
-    const filteredUsers = [...new Set(users)]
-    setUsersTyping(filteredUsers)
-  });
+    return () => {
+      setUsersTyping([]);
+    };
+  }, [target?.id]);
 
   function formatUsers(users: string[]) {
     switch (true) {

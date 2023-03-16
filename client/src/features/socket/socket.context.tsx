@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useRef, createContext } from "react";
 import { io, Socket} from "socket.io-client";
 
 interface ProviderProps {
@@ -10,7 +10,7 @@ export const initialState = io(import.meta.env.VITE_SERVER_URL, {withCredentials
 export const SocketContext = createContext<Socket>(initialState);
 
 export const SocketProvider = ({ children }: ProviderProps) => {
-  const [socket, setSocket] = useState<Socket>(initialState)
+  const socketRef = useRef(initialState);
 
-  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+  return <SocketContext.Provider value={socketRef.current}>{children}</SocketContext.Provider>
 };
