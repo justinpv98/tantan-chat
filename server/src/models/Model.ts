@@ -21,7 +21,7 @@ type Options = {
   select?: string[];
   as?: { [key: string]: string };
   where?: WhereClause;
-  set?: object;
+  set?: { [key: string]: string | number };
   limit?: number | false;
   offset?: number | false;
   orderBy?: OrderByColumn[];
@@ -85,7 +85,7 @@ const operators = {
 const defaultOptions: Options = {
   select: [],
   as: {},
-  set: [],
+  set: {},
   where: false,
   limit: false,
   offset: false,
@@ -95,6 +95,7 @@ const defaultOptions: Options = {
 
 class Model<T> {
   modelName: string;
+  
   constructor(modelName: string) {
     this.modelName = modelName;
   }
@@ -107,7 +108,7 @@ class Model<T> {
 
     for (const [column, value] of Object.entries(this)) {
       if (column !== "modelName" && value) {
-        insertColumns.push(column);
+        insertColumns.push('"' + column + '"');
         insertValues.push(value);
       }
     }
@@ -125,10 +126,13 @@ class Model<T> {
 
     const { rows } = await pool.query(query);
     const data: T = rows.length ? rows[0] : null;
-    return data;
+
+    const savedData = Object.assign(this, data);
+    delete savedData.modelName;
+    return savedData;
   }
 
-  async findById(id: number, config: Options | undefined) {
+  async findById(id: string | number, config?: Options | undefined) {
     const { select, as } = this.#assignDefaults(config);
 
     const selectStatement = this.#composeSelectStatement(select, as);
@@ -163,14 +167,13 @@ class Model<T> {
     ];
     const query = this.#constructQuery(unformattedQuery, ...whereValues);
 
-
     const { rows } = await pool.query(query);
     const data: T[] = rows.length ? rows : null;
     return data;
     
   }
 
-  async updateById(id: number, config: Options) {
+  async updateById(id: string | number, config?: Options) {
     const { set } = this.#assignDefaults(config);
 
     const updateStatement = `UPDATE "${this.modelName}" `;
@@ -183,6 +186,7 @@ class Model<T> {
     const unformattedQuery = [updateStatement, setClause, whereClause];
 
     const query = this.#constructQuery(unformattedQuery, ...setValues, id);
+
 
     const { rows } = await pool.query(query);
     const data: T = rows.length ? rows : null;
@@ -212,7 +216,7 @@ class Model<T> {
     return data;
   }
 
-  async deleteById(id: number, config: Options) {
+  async deleteById(id: string | number, config?: Options) {
     const { returning, as } = this.#assignDefaults(config);
 
     const deleteStatement = `DELETE FROM "${this.modelName}" `;
@@ -226,6 +230,7 @@ class Model<T> {
     const unformattedQuery = [deleteStatement, whereClause, returningClause];
 
     const query = this.#constructQuery(unformattedQuery, id);
+
 
     const { rows } = await pool.query(query);
     const data: T | number = rows.length ? rows[0] : null;
@@ -300,7 +305,7 @@ class Model<T> {
     if (!select || select.length === 0) {
       return `SELECT * FROM "${this.modelName}" `;
     }
-    if (select.length === 1) {
+    if (select.length === 1 && Object.entries(as).length === 0) {
       return `SELECT ${select[0]} FROM "${this.modelName}" `;
     }
 
@@ -312,7 +317,7 @@ class Model<T> {
     return `SELECT ${selectColumns} FROM "${this.modelName}" `;
   }
 
-  #composeSetClause(set: object) {
+  #composeSetClause(set: Options["set"]) {
     let statement = "SET ";
 
     const entries = Object.entries(set);
@@ -463,11 +468,11 @@ class Model<T> {
     const formatted = expressions.map((array, index) => {
       if (array.length === 1) {
         return index < array.length - 1
-          ? `${array[0]} = %L AND`
-          : `${array[0]} = %L`;
+          ? `"${array[0]}" = %L AND`
+          : `"${array[0]}" = %L`;
       } else {
         const operator = array[1];
-        return `${array[0]} ${operators[operator]} %L`;
+        return `"${array[0]}" ${operators[operator]} %L`;
       }
     });
 

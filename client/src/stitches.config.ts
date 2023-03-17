@@ -128,7 +128,7 @@ export const globalStyles = globalCss({
   },
   li: {
     listStyle: "none",
-    padding: 0
+    padding: 0,
   },
   ".sr-only": {
     border: "0 !important",
@@ -142,5 +142,21 @@ export const globalStyles = globalCss({
     position: "absolute !important",
     width: "1px !important",
     whiteSpace: "nowrap !important",
+  },
+  
+  ".epr-dark-theme": {
+    "--epr-bg-color": "transparent !important",
+    "--epr-category-icon-active-color": "var(--colors-primary) !important",
+    "--epr-picker-border-color": "transparent !important",
+    "--epr-category-label-text-color": "var(--colors-sage11) !important",
+    "--epr-preview-text-color": "var(--colors-sage11) !important",
+    "--epr-search-border-color": "transparent !important",
+    "--epr-search-input-bg-color": "var(--colors-sage3) !important",
+    "--epr-search-input-border-radius": "var(--radii-round)",
+    "--epr-search-input-bg-color-active": "var(--colors-sage3) !important"
+  },
+  "button.epr-cat-btn.epr-active": {
+    filter:
+      "invert(26%) sepia(89%) saturate(400%) hue-rotate(95deg) brightness(70%) contrast(106%)",
   },
 });

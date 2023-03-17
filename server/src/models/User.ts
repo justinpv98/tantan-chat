@@ -9,7 +9,7 @@ export type UserSchema = {
   username?: string;
   password?: string;
   profile_picture?: {};
-  status?: string;
+  status?: 1 | 2 | 3 | 4;
 };
 
 export class User extends Model<UserSchema> {
@@ -18,7 +18,7 @@ export class User extends Model<UserSchema> {
   username?: string;
   password?: string;
   profile_picture?: {};
-  status?: string;
+  status?: 1 | 2 | 3 | 4;
 
   constructor(config?: UserSchema) {
     super("user");

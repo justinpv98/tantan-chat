@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { PrivateRoute, RestrictedRoute } from "@/features/navigation";
 
 /* Elements */
+import { SocketProvider } from "@/features/socket/socket.context";
 import { Friends, Home, Login, Register } from "@/pages";
 import { Layout } from "@/features/ui";
 import { IconProps } from "@/features/ui/Icon/Icon";
@@ -11,16 +12,23 @@ const routes = [
   {
     path: "/",
     element: (
-      <PrivateRoute redirectPath="/login">
-        <Layout />
-      </PrivateRoute>
+      <SocketProvider>
+        <PrivateRoute redirectPath="/login">
+          <Layout />
+        </PrivateRoute>
+      </SocketProvider>
     ),
     children: [
       {
-        path: ":id?",
+        path: "/",
         element: <Home />,
+        children: [{ path: "c/:id", element: <Home /> }],
       },
-      { path: "friends/:id?", element: <Friends /> },
+      {
+        path: "friends",
+        element: <Friends />,
+        children: [{ path: "c/:id", element: <Friends /> }],
+      },
     ],
   },
   {
@@ -38,23 +46,25 @@ const routes = [
       },
     ],
   },
-
 ];
 
 export const navRoutes: NavRoutes[] = [
   {
     path: "/",
     icon: "chat-bubble-oval-left",
+    label: "Home"
   },
   {
     path: "/friends",
     icon: "users",
+    label: "Friends"
   },
 ];
 
 export type NavRoutes = {
-  path: string;
   icon: IconProps["icon"];
+  label: string;
+  path: string;
 };
 
 export default routes;

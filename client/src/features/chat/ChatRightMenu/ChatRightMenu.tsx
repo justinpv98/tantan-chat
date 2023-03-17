@@ -1,18 +1,25 @@
-import React from "react";
 import { styled } from "@/stitches.config";
 
-import { Flex, Heading, Sidebar } from "@/features/ui";
+// Hooks
+import { useGetTarget } from "@/features/chat/hooks";
 
-type Props = {};
+// Components
+import { Avatar, Flex, Sidebar } from "@/features/ui";
 
-export default function ChatRightMenu({}: Props) {
+
+
+export default function ChatRightMenu() {
+  const target = useGetTarget();
   return (
-    <Sidebar title="Name" titleAlignment="center" aria-live="polite">
+    <Sidebar title={target?.username} titleAlignment="center" aria-live="polite">
       <Flex
         direction="column"
         align="center"
         css={{ width: "100%", paddingInline: "$100" }}
-      ></Flex>
+      >
+        <Avatar size="lg" css={{marginTop: "1rem"}} />
+
+      </Flex>
     </Sidebar>
   );
 }

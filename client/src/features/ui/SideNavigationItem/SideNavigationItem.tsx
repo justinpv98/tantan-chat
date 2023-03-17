@@ -4,12 +4,12 @@ import { NavLink } from "react-router-dom";
 
 import Icon, { IconProps } from "../Icon/Icon";
 
-type Props = { icon?: IconProps["icon"]; path: string };
+type Props = { label: string; icon?: IconProps["icon"]; path: string };
 
-export default function SideNavigationItem({ icon, path }: Props) {
+export default function SideNavigationItem({ label, icon, path }: Props) {
   return (
     <li>
-      <Link to={path} end>
+      <Link aria-label={label} to={path} end>
         <Icon icon={icon} />
       </Link>
     </li>
@@ -32,7 +32,7 @@ export const Link = styled(NavLink, {
   },
 
   "&:hover:not(.active)": {
-    backgroundColor: "$sage3",
+    backgroundColor: "$sage4",
     color: "$sage12",
     transition: "color cubic-bezier(0.16, 1, 0.3, 1) 250ms",
   },

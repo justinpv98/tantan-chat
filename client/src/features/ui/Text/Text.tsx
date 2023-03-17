@@ -1,7 +1,8 @@
 import React from "react";
+import { CSS, VariantProps } from "@stitches/react";
 import { styled } from "@/stitches.config";
 
-const Text = styled("p", {
+export const _Text = styled("p", {
   color: "$onBackground",
   variants: {
     align: {
@@ -38,5 +39,22 @@ const Text = styled("p", {
     },
   },
 });
+
+type Props = {
+  align?:  VariantProps<typeof _Text>["align"]
+  color?:  VariantProps<typeof _Text>["color"]
+  css?: CSS;
+  children?: React.ReactNode;
+  htmlFor?: string;
+  inline?: boolean;
+  italic?: boolean;
+  size?:  VariantProps<typeof _Text>["size"];
+  underline?: boolean;
+  weight?: VariantProps<typeof _Text>["weight"]
+};
+
+ function Text({ children, color, inline, ...rest }: Props) {
+  return <_Text as={inline ? "span" : "p"} color={color} {...rest}>{children}</_Text>;
+}
 
 export default Text;

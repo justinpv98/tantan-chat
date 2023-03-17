@@ -1,33 +1,61 @@
 import { styled } from "@/stitches.config";
 
-import { Avatar, Box, Button, Flex, Heading, Icon, Text } from "@/features/ui";
+// Hooks
+import { useParams } from "react-router-dom";
+import { useTheme } from "@/hooks";
+import { useGetTarget, useGetConversations } from "../hooks";
+
+// Components
+import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";
+import { useEffect } from "react";
 
 type Props = {
   onClickMore: () => void;
 };
 
 export default function ChatInfo({ onClickMore }: Props) {
+  const {id} = useParams();
+  const target = useGetTarget();
+  const { theme } = useTheme();
+  const {data, dataUpdatedAt} = useGetConversations()
+
+  useEffect(() => {
+    const convoIndex = data?.findIndex((obj) => obj.id === Number(id)) || 0
+    if(target && data && convoIndex > 0){
+      target.status = data[convoIndex].participants[0].status;
+    }
+
+  }, [dataUpdatedAt]);
+
+  const themePreference = theme
+    === "dark" ? {
+        boxShadow: "none",
+        borderBottom: "1px solid $sage7",
+      }
+    : undefined;
+
   return (
-    <Container as="header">
+    <Container as="header" css={themePreference}>
       <Flex align="center">
-        <Avatar size={250}/>
+        <Avatar
+          size="md"
+          status={target?.status}
+          showStatus={!!target?.status}
+        />
         <Flex direction="column" css={{ marginLeft: "$050" }}>
           <Heading as="h1" size="h6">
-            Name
+            {target && target.username}
           </Heading>
-          <Text color="lowContrast" size="sm">
-            @Username
-          </Text>
         </Flex>
       </Flex>
-      <Box css={{color: "$sage11"}}>
+      <Box css={{ color: "$sage11" }}>
         <Button icon="center" transparent>
           <Icon icon="phone" />
         </Button>
-        <Button icon="center"   transparent>
+        <Button icon="center" transparent>
           <Icon icon="video-camera" />
         </Button>
-        <Button icon="center"   transparent onClick={onClickMore}>
+        <Button icon="center" transparent onClick={onClickMore}>
           <Icon icon="ellipsis-vertical" />
         </Button>
       </Box>

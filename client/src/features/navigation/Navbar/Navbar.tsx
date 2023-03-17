@@ -1,21 +1,92 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, Outlet } from "react-router-dom";
 import { styled } from "@/stitches.config";
 import { navRoutes } from "@/constants/routes";
+import queryClient from "@/config/queryClient";
+import queryKeys from "@/constants/queryKeys";
 
-import {
-  Avatar,
-  Box,
-  Flex,
-  Popover,
-  SideNavigation,
-  SideNavigationItem,
-} from "@/features/ui";
+// Types
+import { ConversationData } from "@/features/chat/hooks/useGetConversations/useGetConversations";
+import { Message } from "@/features/chat/hooks/useGetMessages/useGetMessages";
+
+// Hooks
+import { useAuth, useSocket } from "@/hooks";
+import { useGetConversations } from "@/features/chat/hooks";
+
+// Components
+import { Flex, SideNavigation, SideNavigationItem } from "@/features/ui";
+import Settings from "../Settings/Settings";
 
 type Props = {};
 
 export default function Navbar({}: Props) {
   const { id } = useParams();
+  const { id: userId } = useAuth();
+  const { data: conversations, isSuccess } = useGetConversations(true);
+  const socket = useSocket();
+
+  function setStatus(userId: string, status: 1 | 2 | 3 | 4) {
+    queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+      const newData = oldData?.map((conversation: ConversationData) => {
+        const modifiedConversation = conversation;
+        modifiedConversation?.participants.map((participant) => {
+          if (participant.id === userId) {
+            participant.status = status;
+          }
+          return participant;
+        });
+        return modifiedConversation;
+      });
+      return newData;
+    });
+  }
+
+  async function message(message: Message, conversation: ConversationData) {
+    console.log('test')
+    if (message?.author == userId) return;
+
+    const conversationId = message?.conversation;
+
+    const hasConversation = conversations?.find(
+      ({ id }) => id == conversationId
+    );
+
+    if (conversations !== undefined && conversations.length >= 1) {
+      if (hasConversation) {
+        queryClient.setQueryData(
+          queryKeys.GET_CONVERSATIONS,
+          (oldData: any) => {
+            const idSet = new Set();
+            const convos = [hasConversation, ...oldData].filter(({ id }) =>
+              idSet.has(id) ? false : idSet.add(id)
+            );
+
+            return convos;
+          }
+        );
+      } else {
+        queryClient.setQueryData(
+          queryKeys.GET_CONVERSATIONS,
+          (oldData: any) => {
+            return [conversation, ...oldData];
+          }
+        );
+      }
+    } else {
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
+    }
+  }
+
+  useEffect(() => {
+    socket.on("setStatus", setStatus);
+
+    socket.on("message", message);
+
+    return () => {
+      socket.off("setStatus", setStatus);
+      socket.off("message", message);
+    };
+  }, [socket, isSuccess]);
 
   return (
     <Flex as="nav">
@@ -24,45 +95,22 @@ export default function Navbar({}: Props) {
           {navRoutes.map((route) => {
             return (
               <SideNavigationItem
-                path={route.path + (id ? `/${id}` : "")}
+                label={route.label}
+                path={
+                  route.path +
+                  (route.path === "/" ? "" : "/") +
+                  (id ? `c/${id}` : "")
+                }
                 icon={route.icon}
                 key={route.path}
               />
             );
           })}
           <li>
-            <Popover
-              side="top"
-              css={{
-                borderRadius: "$round",
-                display: "block",
-                width: "$275",
-                height: "$275",
-                backgroundColor: "$sage4",
-
-                "@lg": {
-                  display: "none",
-                },
-              }}
-              trigger={<Avatar size={250} />}
-            />
+            <Settings isMobile />
           </li>
         </NavigationWrapper>
-        <Popover
-          side="right"
-          css={{
-            display: "none",
-            borderRadius: "$round",
-            width: "$275",
-            height: "$275",
-            backgroundColor: "$sage3",
-
-            "@lg": {
-              display: "block",
-            },
-          }}
-          trigger={<Avatar size={250} />}
-        />
+        <Settings />
       </SideNavigation>
       <Outlet />
     </Flex>

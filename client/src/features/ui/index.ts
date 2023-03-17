@@ -10,6 +10,7 @@ export {default as Layout} from "./Layout/Layout";
 export {default as Link} from "./Link/Link";
 export {default as PasswordInput} from "./FormElements/PasswordInput/PasswordInput";
 export {default as Popover} from "./Popover/Popover";
+export {default as SearchInput} from "./SearchInput/SearchInput";
 export {default as Sidebar} from "./Sidebar/Sidebar";
 export {default as SideNavigation} from "./SideNavigation/SideNavigation";
 export {default as SideNavigationItem} from "./SideNavigationItem/SideNavigationItem";
