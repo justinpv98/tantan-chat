@@ -2,13 +2,19 @@ import asyncHandler from "express-async-handler";
 import logger from "@/logger";
 import { Request, Response } from "express-serve-static-core";
 
+// Models
 import ConversationModel, { Conversation } from "@/models/Conversation";
 import ConversationParticipantModel, {
   ConversationParticipant,
 } from "@/models/ConversationParticipant";
-import MessageModel from "@/models/Message";
+import MessageModel, { Message } from "@/models/Message";
 
-const MESSAGE_LIMIT = 50;
+// Helpers
+import { uploadImage } from "@/storage/cloudinary";
+
+interface ReqWithFiles extends Response {
+  files: File[];
+}
 
 // @desc    Create a new conversation between users
 // @route   POST /api/conversations
@@ -62,6 +68,49 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+// @desc    Post an image to a conversation
+// @route   GET /api/conversations/:id/images
+// @access  Private
+const postImage = asyncHandler(
+  async (req: Request & { file: any }, res: Response) => {
+    const { id: conversationId } = req.params;
+    const { id: userId, username } = req.session.user;
+    const { file } = req;
+
+    const conversations = await ConversationModel.findExistingConversations(
+      userId
+    );
+
+    if (conversations === null) {
+      res.status(404);
+      throw new Error("Conversations could not be found.");
+    }
+
+    try {
+      const storedImage = await uploadImage(file, `/${conversationId}`)
+      const media_url = (storedImage as any).secure_url;
+
+      const message = new Message({
+        author: userId,
+        conversation: conversationId,
+        media_url: media_url as string,
+        description: "Image by " + username,
+        type: 3,
+      });
+
+
+      await message.save();
+
+   
+      const io = req.app.get('io');
+      io.in(Number(conversationId)).emit("message", message, conversationId);
+    } catch (err) {
+      res.status(500);
+      throw new Error("Server error.");
+    }
+  }
+);
+
 // @desc    Get conversations
 // @route   GET /api/conversations/open
 // @access  Private
@@ -89,7 +138,8 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
   const { id: userId } = req.session.user;
 
   const conversation = await ConversationModel.findExistingConversation(
-    conversationId, userId
+    conversationId,
+    userId
   );
 
   if (!conversation) {
@@ -100,9 +150,9 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
   let userIndex;
   const userIsInConversation = conversation.participants.some(
     (participant, index) => {
-      if(participant.id == userId){
+      if (participant.id == userId) {
         userIndex = index;
-        return true
+        return true;
       }
     }
   );
@@ -111,7 +161,7 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
     res.status(401);
     throw new Error("User is forbidden from conversation");
   } else {
-    conversation.participants.splice(userIndex, 1)
+    conversation.participants.splice(userIndex, 1);
   }
 
   res.status(200).json(conversation);
@@ -154,4 +204,10 @@ const getMessages = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-export { createConversation, getConversation, getConversations, getMessages };
+export {
+  createConversation,
+  getConversation,
+  getConversations,
+  getMessages,
+  postImage,
+};

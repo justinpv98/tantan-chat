@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@/stitches.config";
 import {
@@ -16,6 +16,7 @@ export default function Home() {
   const navigate = useNavigate();
   const { id: userId } = useAuth();
   const socket = useSocket();
+  const [foundUser, setFoundUser] = useState("");
 
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
@@ -53,14 +54,15 @@ export default function Home() {
   // Conversation functions
 
   async function onUserItemClick(userId: string) {
+    setFoundUser(userId);
     mutate(userId);
     setQuery("");
     setSearching(false);
   }
 
-  function onCreateConversationSuccess(targetId: string) {
-    socket.emit("createConversation", targetId);
-    navigate(`/c/${targetId}`);
+  function onCreateConversationSuccess(conversationId: string, targetId: string ) {
+    socket.emit("createConversation", conversationId, [targetId]);
+    navigate(`/c/${conversationId}`);
   }
 
   return (

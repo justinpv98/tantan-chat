@@ -4,6 +4,7 @@ enum queryKeys {
     GET_CONVERSATIONS = "getConvesations",
     GET_GIF_CATEGORIES = "getGIFCategories",
     GET_MESSAGES = "getMessages",
+    POST_IMAGE = "postImage",
     SEARCH_GIFS = "searchGifs",
     SEARCH_USERS = "searchUsers",
 }

@@ -28,14 +28,14 @@ export default function GIF({ onClick, result }: Props) {
 
 const Video = styled("video", {
   width: "100%",
-  objectFit: "fill"
+  objectFit: "fill",
+  borderRadius: "$050",
 });
 
 const ImageContainer = styled("div", {
   appearance: "none",
   background: "none",
   border: "none",
-  borderRadius: "$050",
   maxHeight: "320px",
   maxWidth: "300px",
   cursor: "pointer",

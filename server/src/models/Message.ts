@@ -13,8 +13,8 @@ export type MessageSchema = {
   type?: number;
   media_url?: string;
   description?: string;
-  created_at: string;
-  modified_at: string;
+  created_at?: string;
+  modified_at?: string;
 };
 
 export class Message extends Model<MessageSchema> {

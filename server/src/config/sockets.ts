@@ -1,6 +1,9 @@
 import { allowedOrigins } from "./cors/corsOptions";
 import logger from "@/logger";
 
+import { upload, uploadImage } from "@/storage/cloudinary";
+import { UploadApiResponse } from "cloudinary";
+
 // Models
 import ConversationModel from "@/models/Conversation";
 import ConversationParticipantModel from "@/models/ConversationParticipant";
@@ -13,7 +16,11 @@ import { RequestHandler } from "express-serve-static-core";
 import { Server } from "http";
 import { Session } from "express-session";
 import { Socket } from "socket.io";
-import UserModel, { User, UserSchema } from "@/models/User";
+import UserModel, {  UserSchema } from "@/models/User";
+
+interface MessageSchemaWithFile extends MessageSchema {
+  file?: string;
+}
 
 declare module "http" {
   interface IncomingMessage {
@@ -30,9 +37,15 @@ interface SocketWithChannels extends Socket {
   user: UserSchema;
 }
 
+type UserToSocketsMap = {
+  [key: string]: {
+    sockets: string[];
+  };
+};
+
 // Caches
 const sockets = {};
-const users = {};
+const users: UserToSocketsMap = {};
 
 function initializeSocket(
   app: Application,
@@ -62,7 +75,6 @@ function initializeSocket(
     sockets[socket.id] = socket;
     socket.conversations = new Set();
 
-
     await handleUnidentifiedSocket(socket);
     await joinConversations(socket);
     await connectSocketToUser(socket);
@@ -70,19 +82,35 @@ function initializeSocket(
     socket.on("setStatus", (status: number) => {
       if (!statuses.includes(status)) return;
       const userId = socket.user.id;
-      socket.to([...socket.rooms]).emit("setStatus", userId, status);
+      socket.to([...socket.conversations]).emit("setStatus", userId, status);
 
       UserModel.updateById(userId, { set: { status } });
     });
 
-    socket.on("createConversation", (conversationId: string) => {
-      socket.join(conversationId);
-      logger.debug(
-        `User #${socket.user.id} has joined conversation #${conversationId}`
-      );
-    });
+    socket.on(
+      "createConversation",
+      (conversationId: string, targetIDs: string[]) => {
+        socket.join(conversationId);
 
-    socket.on("message", async (data: MessageSchema) => {
+        logger.debug(
+          `User #${socket.user.id} has joined conversation #${conversationId}`
+        );
+
+        targetIDs.forEach((targetID) => {
+          const targetSockets = users[targetID]?.sockets;
+          if (targetSockets && targetSockets.length) {
+            targetSockets.forEach((socketId) => {
+              sockets[socketId].join(conversationId);
+              logger.debug(
+                `User #${targetID} has joined conversation #${conversationId}`
+              );
+            });
+          }
+        });
+      }
+    );
+
+    socket.on("message", async (data: MessageSchemaWithFile) => {
       data.author = socket.user.id;
       const message = new Message(data);
       await message.save();
@@ -92,31 +120,11 @@ function initializeSocket(
         message.author
       );
 
-      let spliceIndex;
-      for (let i = 0; i < conversation.participants.length; i++) {
-        if (conversation.participants[i].id === socket.user.id) {
-          spliceIndex = i;
-          break;
-        }
-      }
-
-      if (spliceIndex !== undefined) {
-        const filteredParticipants = conversation.participants.splice(
-          spliceIndex,
-          1
-        );
-        conversation.participants = filteredParticipants;
-      }
-
-      io.to(conversation.id).emit("message", message, conversation);
+      io.in(conversation.id).emit("message", message, conversation);
     });
 
     socket.on("typing", (conversationId: string) => {
       socket.to(conversationId).emit("typing", socket.user.username);
-    });
-
-    socket.on("sendFriendRequest", (targetId: string) => {
-      socket.to(targetId).emit("friendRequestReceived");
     });
 
     socket.on("disconnect", async () => {
@@ -164,7 +172,7 @@ async function joinConversations(socket: SocketWithChannels) {
 async function connectSocketToUser(socket: SocketWithChannels) {
   // Handle multiple socket instances of a user
   if (!users[socket.user.id]) {
-    users[socket.user.id] = {sockets: []};
+    users[socket.user.id] = { sockets: [socket.id] };
     socket.to([...socket.conversations]).emit("setStatus", socket.user.id, 2);
     UserModel.updateById(socket.user.id, { set: { status: 2 } });
   } else {
@@ -183,8 +191,8 @@ async function handleDisconnect(socket: SocketWithChannels) {
     UserModel.updateById(userId, { set: { status: 1 } });
     logger.debug(`User ${socket.user.id} has disconnected`);
   } else {
-    const index = users[userId].sockets.indexOf(socket.id);
-    users[userId].sockets.splice(index, 1);
+    const index = users[userId]?.sockets.indexOf(socket.id);
+    users[userId]?.sockets.splice(index, 1);
   }
 }
 

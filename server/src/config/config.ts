@@ -1,12 +1,18 @@
 import * as dotenv from "dotenv";
 import corsOptions from "./cors/corsOptions";
 
-const env = process.env.NODE_ENV || "dev";
+const env = process.env.NODE_ENV || "production";
 
+console.log(process.env.NODE_ENV)
 
 dotenv.config();
 
 const config = {
+  cloudinary: {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  },
   client: {
     URL: process.env.CLIENT_URL,
   },

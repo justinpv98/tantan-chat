@@ -25,63 +25,67 @@ export default function Navbar({}: Props) {
   const { data: conversations, isSuccess } = useGetConversations(true);
   const socket = useSocket();
 
-  useEffect(() => {
-    socket.on("setStatus", (userId, status) => {
-      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
-        const newData = oldData.map((conversation: ConversationData) => {
-          const modifiedConversation = conversation;
-          modifiedConversation?.participants.map((participant) => {
-            if (participant.id === userId) {
-              participant.status = status;
-            }
-            return participant;
-          });
-          return modifiedConversation;
-        });
-        return newData;
-      });
-    });
-
-    socket.on(
-      "message",
-      async (message: Message, conversation: ConversationData) => {
-        if (message?.author == userId) return;
-
-        const conversationId = message?.conversation;
-
-        const hasConversation = conversations?.find(
-          ({ id }) => id == conversationId
-        );
-
-        if (conversations !== undefined && conversations.length >= 1) {
-          if (hasConversation) {
-            console.log('due')
-            queryClient.setQueryData(
-              queryKeys.GET_CONVERSATIONS,
-              (oldData: any) => {
-                const idSet = new Set();
-                const convos = [hasConversation, ...oldData].filter(({ id }) =>
-                  idSet.has(id) ? false : idSet.add(id)
-                );
-
-                return convos;
-              }
-            );
-          } else {
-            console.log('blue')
-            queryClient.setQueryData(
-              queryKeys.GET_CONVERSATIONS,
-              (oldData: any) => {
-                return [conversation, ...oldData];
-              }
-            );
+  function setStatus(userId: string, status: 1 | 2 | 3 | 4) {
+    queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+      const newData = oldData?.map((conversation: ConversationData) => {
+        const modifiedConversation = conversation;
+        modifiedConversation?.participants.map((participant) => {
+          if (participant.id === userId) {
+            participant.status = status;
           }
-        } else {
-          console.log('true')
-          queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
-        }
-      }
+          return participant;
+        });
+        return modifiedConversation;
+      });
+      return newData;
+    });
+  }
+
+  async function message(message: Message, conversation: ConversationData) {
+    console.log('test')
+    if (message?.author == userId) return;
+
+    const conversationId = message?.conversation;
+
+    const hasConversation = conversations?.find(
+      ({ id }) => id == conversationId
     );
+
+    if (conversations !== undefined && conversations.length >= 1) {
+      if (hasConversation) {
+        queryClient.setQueryData(
+          queryKeys.GET_CONVERSATIONS,
+          (oldData: any) => {
+            const idSet = new Set();
+            const convos = [hasConversation, ...oldData].filter(({ id }) =>
+              idSet.has(id) ? false : idSet.add(id)
+            );
+
+            return convos;
+          }
+        );
+      } else {
+        queryClient.setQueryData(
+          queryKeys.GET_CONVERSATIONS,
+          (oldData: any) => {
+            return [conversation, ...oldData];
+          }
+        );
+      }
+    } else {
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
+    }
+  }
+
+  useEffect(() => {
+    socket.on("setStatus", setStatus);
+
+    socket.on("message", message);
+
+    return () => {
+      socket.off("setStatus", setStatus);
+      socket.off("message", message);
+    };
   }, [socket, isSuccess]);
 
   return (

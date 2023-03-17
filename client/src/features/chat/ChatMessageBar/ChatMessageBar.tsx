@@ -3,15 +3,16 @@ import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useAuth, useSocket, useThrottle } from "@/hooks";
+import { useAuth, useFileHandler, useSocket, useThrottle } from "@/hooks";
 
 import { useGetConversation } from "@/features/chat/hooks";
+import { usePostImage } from "@/features/media/hooks";
 
 import { useUpdateConversations } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 // Components
-import { Button, Flex, Icon } from "@/features/ui";
-import { EmojiButton, GIFButton } from "@/features/media";
+import { Box, Button, Flex, Icon } from "@/features/ui";
+import { FileUploadButton, EmojiButton, GIFButton } from "@/features/media";
 
 type Props = {
   isRefVisible: boolean;
@@ -38,11 +39,21 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
 
   const throttle = useThrottle();
 
+  const {file, uploadFile} = useFileHandler();
+
+  const {mutate} = usePostImage()
+
   useEffect(() => {
     setMessage(initialState);
     autoGrow(inputRef?.current);
     observedRef?.current?.scrollIntoView();
   }, [targetId]);
+
+  useEffect(() => {
+    if(file && targetId){
+      mutate({file: file, conversationId: targetId})
+    }
+  }, [file])
 
   function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     throttle(() => socket.emit("typing", data?.id));
@@ -94,6 +105,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
     }
   }
 
+
   function autoGrow(target: any, reset: boolean = false) {
     target.style.height = "100%";
     target.style.height = target.scrollHeight - 22 + "px";
@@ -117,9 +129,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
       }}
     >
       <InputContainer>
-        <Button css={{ background: "none" }} icon="center" transparent>
-          <Icon icon="paper-clip" />
-        </Button>
+        <FileUploadButton onChange={uploadFile} />
         <form
           style={{ width: "100%" }}
           onSubmit={(e) => onSubmit(e)}
@@ -135,7 +145,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
         </form>
         <Flex gap={1}>
           <GIFButton />
-            <EmojiButton setMessage={setMessage} />
+          <EmojiButton setMessage={setMessage} />
         </Flex>
       </InputContainer>
       <Button

@@ -2,6 +2,7 @@ import React from "react";
 import { styled } from "@/stitches.config";
 
 // Components
+import { Image } from "@/features/ui";
 import { GIF } from "@/features/media";
 
 // Hooks
@@ -11,9 +12,7 @@ type Props = {
   message: any;
 };
 
-type GIF = {
-   
-}
+type GIF = {};
 
 export default function ChatMessage({ message }: Props) {
   const { id } = useAuth();
@@ -22,21 +21,36 @@ export default function ChatMessage({ message }: Props) {
     return message.author === id;
   }
 
-  function renderMessage(){
-    switch(message.type){
+  function renderMessage() {
+    switch (message.type) {
       case 1:
-        return <Message isUser={isUser()}>{message.data}</Message>
+        return <Message isUser={isUser()}>{message.data}</Message>;
       case 2:
-        return <GIF result={message} />
+        return <GIF result={message} />;
+      case 3:
+        return (
+          <ImageContainer>
+            <Image
+            css={{borderRadius: "$050"}}
+            src={message.media_url || ""}
+            alt={message.description || "image"}
+          />
+          </ImageContainer>
+          
+        );
       default:
-        break
+        break;
     }
   }
 
   // Aria-setsize to alert the browser that the number of list items
   // are unknown
   return (
-    <MessageContainer aria-setsize={-1} isUser={isUser()} className={!isUser() ? "user" : ""}>
+    <MessageContainer
+      aria-setsize={-1}
+      isUser={isUser()}
+      className={!isUser() ? "user" : ""}
+    >
       {renderMessage()}
     </MessageContainer>
   );
@@ -51,13 +65,13 @@ const MessageContainer = styled("li", {
       true: {
         justifyContent: "flex-end",
         "&:not(:has(+ :not(.user)))": {
-          marginBottom: "$050"
+          marginBottom: "$050",
         },
       },
       false: {
         justifyContent: "flex-start",
         "&:not(:has(+ .user))": {
-          marginBottom: "$050"
+          marginBottom: "$050",
         },
       },
     },
@@ -72,19 +86,24 @@ const Message = styled("p", {
   overflowWrap: "break-word",
 
   "@md": {
-    maxWidth: "30rem"
+    maxWidth: "30rem",
   },
 
-  variants:{
-    isUser:{
-      true:{
+  variants: {
+    isUser: {
+      true: {
         background: "$primary",
-        color: "$onPrimary"
+        color: "$onPrimary",
       },
       false: {
         background: "$sage4",
-        color: "$onBackground"
-      }
-    }
-  }
+        color: "$onBackground",
+      },
+    },
+  },
 });
+
+const ImageContainer = styled('div', {
+  maxHeight: "320px",
+  maxWidth: "300px",
+})

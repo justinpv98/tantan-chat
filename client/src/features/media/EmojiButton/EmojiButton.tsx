@@ -28,7 +28,7 @@ export default function EmojiButton({ setMessage }: Props) {
       sideOffset={20}
       trigger={<Icon icon="face-smile" />}
       css={{
-        padding: "12px"
+        padding: "12px",
       }}
       contentCSS={{
         width: "100vw",
@@ -40,8 +40,8 @@ export default function EmojiButton({ setMessage }: Props) {
 
         "@md": {
           maxWidth: "480px",
-        }}}
-      
+        },
+      }}
     >
       <EmojiPicker
         theme={theme === "dark" ? Theme.DARK : Theme.LIGHT}
@@ -49,9 +49,7 @@ export default function EmojiButton({ setMessage }: Props) {
         searchDisabled
         onEmojiClick={onEmojiClick}
         width="100%"
-        previewConfig={
-          {showPreview: false}
-        }
+        previewConfig={{ showPreview: false }}
       />
     </Popover>
   );

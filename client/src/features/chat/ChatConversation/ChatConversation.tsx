@@ -37,7 +37,6 @@ export default function ChatConversation({
     socket.on("message", (message: Message) => {
       setMessages([...messages, message]);
     });
-
     return () => {
       socket.off("message");
     };

@@ -9,7 +9,7 @@ export async function createConversation(targetId: string) {
 }
 
 export default function useCreateConversation(
-  onSuccess?: (targetId: string) => void
+  onSuccess?: (conversationId: string, targetId: string) => void
 ) {
   return useMutation(createConversation, {
     mutationKey: queryKeys.CREATE_CONVERSATION,
