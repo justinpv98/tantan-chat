@@ -20,11 +20,12 @@ function uploadImage(file: any, folder: string){
             resource_type: "auto",
             overwrite: true,
             quality: "auto",
-          };
+            format: "webp"
+          } as any;
     
           if (Array.isArray(file)) {
             const req = file.map((image: any) => {
-              return cloudinary.uploader.upload(image.path);
+              return cloudinary.uploader.upload(image.path, adminApiOptions);
             });
     
             try {
@@ -37,7 +38,7 @@ function uploadImage(file: any, folder: string){
 
             try {
               const result = await cloudinary.uploader.upload(
-                file.path
+                file.path, adminApiOptions
               );
 
               resolve(result);
