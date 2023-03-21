@@ -1,13 +1,11 @@
 import { allowedOrigins } from "./cors/corsOptions";
 import logger from "@/logger";
 
-import { upload, uploadImage } from "@/storage/cloudinary";
-import { UploadApiResponse } from "cloudinary";
-
 // Models
 import ConversationModel from "@/models/Conversation";
 import ConversationParticipantModel from "@/models/ConversationParticipant";
 import { Message } from "@/models/Message";
+import RelationshipModel, { Relationship } from "@/models/Relationship";
 
 // Types
 import { Application } from "express";
@@ -16,7 +14,7 @@ import { RequestHandler } from "express-serve-static-core";
 import { Server } from "http";
 import { Session } from "express-session";
 import { Socket } from "socket.io";
-import UserModel, {  UserSchema } from "@/models/User";
+import UserModel, { UserSchema } from "@/models/User";
 
 interface MessageSchemaWithFile extends MessageSchema {
   file?: string;
@@ -71,13 +69,15 @@ function initializeSocket(
   io.on("connection", async (socket: SocketWithChannels) => {
     socket.request.session.reload(() => {});
     socket.user = { ...socket.request.session.user };
-
+    delete socket.user.email;
+    
     sockets[socket.id] = socket;
     socket.conversations = new Set();
 
     await handleUnidentifiedSocket(socket);
     await joinConversations(socket);
     await connectSocketToUser(socket);
+
 
     socket.on("setStatus", (status: number) => {
       if (!statuses.includes(status)) return;
@@ -114,6 +114,7 @@ function initializeSocket(
       data.author = socket.user.id;
       const message = new Message(data);
       await message.save();
+      
 
       const conversation = await ConversationModel.findExistingConversation(
         message.conversation,
@@ -126,6 +127,7 @@ function initializeSocket(
     socket.on("typing", (conversationId: string) => {
       socket.to(conversationId).emit("typing", socket.user.username);
     });
+
 
     socket.on("disconnect", async () => {
       await handleDisconnect(socket);

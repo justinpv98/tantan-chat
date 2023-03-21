@@ -11,6 +11,7 @@ export async function createConversation(targetId: string) {
 export default function useCreateConversation(
   onSuccess?: (conversationId: string, targetId: string) => void
 ) {
+  
   return useMutation(createConversation, {
     mutationKey: queryKeys.CREATE_CONVERSATION,
     onSuccess: onSuccess,

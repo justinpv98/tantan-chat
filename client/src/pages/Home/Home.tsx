@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@/stitches.config";
+import { useAuth, useDebouncedValue, useSocket } from "@/hooks";
 import {
-  useAuth,
-  useDebouncedValue,
-  useSocket,
-} from "@/hooks";
-import { useCreateConversation, useGetConversations, useSearchUsers } from "@/features/chat/hooks";
+  useCreateConversation,
+  useGetConversations,
+  useSearchUsers,
+} from "@/features/chat/hooks";
 
 // Components
-import { Flex, SearchInput, Sidebar } from "@/features/ui";
+import { Button, Flex, Icon, SearchInput, Sidebar } from "@/features/ui";
 import { ConversationItem, UserItem } from "@/features/navigation";
 
 export default function Home() {
   const navigate = useNavigate();
   const { id: userId } = useAuth();
   const socket = useSocket();
-  const [foundUser, setFoundUser] = useState("");
-
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 300);
@@ -35,11 +33,10 @@ export default function Home() {
     if (!isSearching && !query) {
       setQuery("");
       setSearching(isSearching);
-    } else if (isSearching){
+    } else if (isSearching) {
       setSearching(isSearching);
-    } 
+    }
   }
-
 
   function handleChangeSearch(value: string) {
     setQuery(value);
@@ -54,19 +51,26 @@ export default function Home() {
   // Conversation functions
 
   async function onUserItemClick(userId: string) {
-    setFoundUser(userId);
     mutate(userId);
     setQuery("");
     setSearching(false);
   }
 
-  function onCreateConversationSuccess(conversationId: string, targetId: string ) {
+  function onCreateConversationSuccess(
+    conversationId: string,
+    targetId: string
+  ) {
     socket.emit("createConversation", conversationId, [targetId]);
     navigate(`/c/${conversationId}`);
   }
 
   return (
     <Sidebar
+      action={
+        <Button transparent icon="center" css={{color: "$sage11"}}>
+          <Icon icon="pencil-square" />
+        </Button>
+      }
       css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
       title="Chats"
     >

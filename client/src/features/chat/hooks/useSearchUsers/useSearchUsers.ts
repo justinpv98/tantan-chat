@@ -8,7 +8,7 @@ export type UserData = {
   id: string;
   username: string;
   profile_picture: {} | null;
-  status: string;
+  status: 1 | 2 | 3 | 4;
 };
 
 export async function fetchUsers({ queryKey }: QueryFunctionContext<QueryKey>) {

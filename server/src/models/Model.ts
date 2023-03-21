@@ -174,7 +174,7 @@ class Model<T> {
   }
 
   async updateById(id: string | number, config?: Options) {
-    const { set } = this.#assignDefaults(config);
+    const { set, returning, as } = this.#assignDefaults(config);
 
     const updateStatement = `UPDATE "${this.modelName}" `;
     const [setClause, setValues] = this.#composeSetClause(set) as [
@@ -183,18 +183,23 @@ class Model<T> {
     ];
     const whereClause = "WHERE id = %L";
 
-    const unformattedQuery = [updateStatement, setClause, whereClause];
+    let returningClause = "";
+
+    if (returning) {
+      returningClause = this.#composeReturningClause(returning, as);
+    }
+
+    const unformattedQuery = [updateStatement, setClause, whereClause, returningClause];
 
     const query = this.#constructQuery(unformattedQuery, ...setValues, id);
 
-
     const { rows } = await pool.query(query);
-    const data: T = rows.length ? rows : null;
+    const data: T = rows.length ? rows[0] : null;
     return data;
   }
 
   async updateAll(config: Options) {
-    const { set, where } = this.#assignDefaults(config);
+    const { set, where, returning, as } = this.#assignDefaults(config);
 
     const updateStatement = `UPDATE "${this.modelName}"  `;
     const [setClause, setValues] = this.#composeSetClause(set) as [
@@ -203,7 +208,13 @@ class Model<T> {
     ];
     const [whereClause, whereValues] = this.#composeWhereClause(where);
 
-    const unformattedQuery = [updateStatement, setClause, whereClause];
+    let returningClause = "";
+
+    if (returning) {
+      returningClause = this.#composeReturningClause(returning, as);
+    }
+
+    const unformattedQuery = [updateStatement, setClause, whereClause, returningClause];
 
     const query = this.#constructQuery(
       unformattedQuery,

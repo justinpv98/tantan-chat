@@ -12,6 +12,7 @@ import { Message } from "@/features/chat/hooks/useGetMessages/useGetMessages";
 // Hooks
 import { useAuth, useSocket } from "@/hooks";
 import { useGetConversations } from "@/features/chat/hooks";
+import { useGetRelationships } from "@/features/friends/hooks";
 
 // Components
 import { Flex, SideNavigation, SideNavigationItem } from "@/features/ui";
@@ -23,6 +24,7 @@ export default function Navbar({}: Props) {
   const { id } = useParams();
   const { id: userId } = useAuth();
   const { data: conversations, isSuccess } = useGetConversations(true);
+  useGetRelationships(true);
   const socket = useSocket();
 
   function setStatus(userId: string, status: 1 | 2 | 3 | 4) {

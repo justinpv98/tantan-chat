@@ -4,7 +4,7 @@ import { PrivateRoute, RestrictedRoute } from "@/features/navigation";
 
 /* Elements */
 import { SocketProvider } from "@/features/socket/socket.context";
-import { Friends, Home, Login, Register } from "@/pages";
+import { Friends, Home, Login, Notifications, Register } from "@/pages";
 import { Layout } from "@/features/ui";
 import { IconProps } from "@/features/ui/Icon/Icon";
 
@@ -29,6 +29,11 @@ const routes = [
         element: <Friends />,
         children: [{ path: "c/:id", element: <Friends /> }],
       },
+      {
+        path: "notifications",
+        element: <Notifications />,
+        children: [{ path: "c/:id", element: <Notifications /> }],
+      },
     ],
   },
   {
@@ -52,12 +57,17 @@ export const navRoutes: NavRoutes[] = [
   {
     path: "/",
     icon: "chat-bubble-oval-left",
-    label: "Home"
+    label: "Home",
   },
   {
     path: "/friends",
     icon: "users",
-    label: "Friends"
+    label: "Friends",
+  },
+  {
+    path: "/notifications",
+    icon: "bell",
+    label: "Notifications",
   },
 ];
 

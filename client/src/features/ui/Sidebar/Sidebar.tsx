@@ -6,9 +6,12 @@ import { CSS } from "@stitches/react";
 import { HeadingProps } from "../Heading/Heading";
 
 // Components
+import Box from "../Box/Box";
+import Flex from "../Flex/Flex";
 import Heading from "../Heading/Heading";
 
 type Props = {
+  action?: React.ReactNode;
   children?: React.ReactNode;
   css?: CSS;
   title?: string;
@@ -16,6 +19,7 @@ type Props = {
 };
 
 export default function Sidebar({
+  action,
   children,
   css,
   title,
@@ -24,9 +28,21 @@ export default function Sidebar({
 }: Props) {
   return (
     <Container css={css} {...rest}>
-      <Heading as="h2" size="h3" align={titleAlignment} css={{ px: "$200" }}>
-        {title}
-      </Heading>
+      <Flex
+        css={{ padding: titleAlignment === "center" ? "0 $200 0 $200" : "0 $100 0 $200", maxHeight: "1.875rem"}}
+        justify="between"
+        align="center"
+      >
+        <Heading
+          as="h2"
+          size="h3"
+          align={titleAlignment}
+          css={{ width: action ? "auto" : "100%" }}
+        >
+          {title}
+        </Heading>
+        {action && <Box>{action}</Box>}
+      </Flex>
       {children}
     </Container>
   );

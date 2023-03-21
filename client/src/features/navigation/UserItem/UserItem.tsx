@@ -9,9 +9,10 @@ import { Avatar, Box, Flex, Text } from "@/features/ui";
 type Props = {
   onClick?: () => any;
   user: UserData;
+  showStatus?: boolean;
 };
 
-export default function UserItem({ user, onClick }: Props) {
+export default function UserItem({ user, onClick, showStatus }: Props) {
   return (
     <Flex
       align="center"
@@ -29,7 +30,7 @@ export default function UserItem({ user, onClick }: Props) {
       <Box>
         <Avatar size="md" />
       </Box>
-      <Text weight="medium">{user.username}</Text>
+      <Text weight="semibold">{user.username}</Text>
     </Flex>
   );
 }

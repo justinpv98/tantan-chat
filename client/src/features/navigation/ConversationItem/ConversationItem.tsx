@@ -43,7 +43,7 @@ export default function ConversationItem({ conversation }: Props) {
         }}
       >
         <Avatar size="md" status={status} showStatus/>
-        <Text weight="medium">{username}</Text>
+        <Text weight="semibold">{username}</Text>
       </Flex>
     );
   } else {

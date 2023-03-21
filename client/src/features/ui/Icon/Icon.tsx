@@ -5,6 +5,7 @@ import React, { CSSProperties } from "react";
 
 export type IconProps = {
   icon:
+    | "bell"
     | "chat-bubble-oval-left"
     | "ellipsis-vertical"
     | "exclamation-circle"
@@ -18,9 +19,13 @@ export type IconProps = {
     | "microphone-slash"
     | "paper-airplane"
     | "paper-clip"
+    | "pencil-square"
     | "phone"
     | "phone-x-mark"
+    | "plus"
     | "user"
+    | "user-minus"
+    | "user-plus"
     | "users"
     | "video-camera"
     | "video-camera-slash"
@@ -32,6 +37,23 @@ export type IconProps = {
 
 export default function Icon({ icon, size = 24, style }: IconProps) {
   switch (icon) {
+    case "bell":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width={size}
+          height={size}
+          style={style}
+        >
+          <path
+            fillRule="evenodd"
+            d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9a2.25 2.25 0 104.496 0 25.057 25.057 0 01-4.496 0z"
+            clipRule="evenodd"
+          />
+        </svg>
+      );
     case "chat-bubble-oval-left":
       return (
         <svg
@@ -285,6 +307,38 @@ export default function Icon({ icon, size = 24, style }: IconProps) {
           />
         </svg>
       );
+    case "pencil-square":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6"
+          width={size}
+          height={size}
+          style={style}
+        >
+          <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+          <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+        </svg>
+      );
+    case "plus":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width={size}
+          height={size}
+          style={style}
+        >
+          <path
+            fillRule="evenodd"
+            d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+            clipRule="evenodd"
+          />
+        </svg>
+      );
     case "phone":
       return (
         <svg
@@ -334,6 +388,32 @@ export default function Icon({ icon, size = 24, style }: IconProps) {
             d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
             clipRule="evenodd"
           />
+        </svg>
+      );
+    case "user-minus":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width={size}
+          height={size}
+          style={style}
+        >
+          <path d="M10.375 2.25a4.125 4.125 0 100 8.25 4.125 4.125 0 000-8.25zM10.375 12a7.125 7.125 0 00-7.124 7.247.75.75 0 00.363.63 13.067 13.067 0 006.761 1.873c2.472 0 4.786-.684 6.76-1.873a.75.75 0 00.364-.63l.001-.12v-.002A7.125 7.125 0 0010.375 12zM16 9.75a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6z" />
+        </svg>
+      );
+    case "user-plus":
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width={size}
+          height={size}
+          style={style}
+        >
+          <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
         </svg>
       );
     case "users":
