@@ -4,7 +4,7 @@ const Button = styled("button", {
   display: "inline-flex",
   justifyContent: "center",
   alignItems: "center",
-  gap: "$050",
+  gap: "$075",
   cursor: "pointer",
 
   padding: "$075 $150",
@@ -61,12 +61,26 @@ const Button = styled("button", {
         },
       },
       secondary: {
-        background: "$secondary",
-        color: "$onSecondary",
+        background: "$sage3",
+        color: "$sage11",
+        "&:hover": {
+          background: "$sage4",
+          color: "$sage12",
+        },
+        "&:focus-visible": {
+          outline: "2px solid $amber9 !important",
+        },
       },
       tertiary: {
         background: "transparent",
-        color: "$onSecondary",
+        color: "$sage12",
+        "&:hover": {
+          background: "$sage4",
+          color: "$sage12",
+        },
+        "&:focus-visible": {
+          outline: "2px solid $amber9 !important",
+        },
       },
       accent: {
         background: "$accent",
@@ -115,12 +129,34 @@ const Button = styled("button", {
         "&:hover": { color: "$green11" },
       },
     },
+    round: {
+      true: {
+        borderRadius: "$round",
+      },
+    },
     outlined: {
       true: {
         background: "none",
         border: "1px solid",
       },
       false: {},
+    },
+    justify: {
+      start: {
+        justifyContent: "flex-start",
+      },
+      center: {
+        justifyContent: "center",
+      },
+      end: {
+        justifyContent: "flex-end",
+      },
+      evenly: {
+        justifyContent: "space-evenly",
+      },
+      between: {
+        justifyContent: "space-between",
+      },
     },
     size: {
       lg: {

@@ -36,15 +36,14 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 CREATE TABLE IF NOT EXISTS relationship_type (
     id SERIAL PRIMARY KEY,
-    type VARCHAR(16) UNIQUE NOT NULL
+    type VARCHAR(24) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS relationship (
     id SERIAL PRIMARY KEY,
-    type INT UNIQUE NOT NULL,
+    type INT NOT NULL,
     actor INT NOT NULL,
     target INT NOT NULL,
-    UNIQUE (actor, target),
     FOREIGN KEY (type)
         REFERENCES relationship_type (id),
     FOREIGN KEY (actor)
@@ -167,19 +166,19 @@ INSERT INTO user_status (
 
 INSERT INTO relationship_type (
     type
+) VALUES ('sent friend request');
+
+INSERT INTO relationship_type (
+    type
+) VALUES ('received friend request');
+
+INSERT INTO relationship_type (
+    type
 ) VALUES ('friend');
 
 INSERT INTO relationship_type (
     type
 ) VALUES ('blocked');
-
-INSERT INTO relationship_type (
-    type
-) VALUES ('sent request');
-
-INSERT INTO relationship_type (
-    type
-) VALUES ('received request');
 
 INSERT INTO conversation_type (
     type

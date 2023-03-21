@@ -35,6 +35,7 @@ export const _Text = styled("p", {
     weight: {
       regular: { fontWeight: "$regular" },
       medium: { fontWeight: "$medium" },
+      semibold: { fontWeight: "$semibold" },
       bold: { fontWeight: "$bold" },
     },
   },
