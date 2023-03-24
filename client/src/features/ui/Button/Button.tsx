@@ -46,7 +46,7 @@ const Button = styled("button", {
           background: "$green10",
         },
         "&:focus-visible": {
-          outline: "2px solid $amber9 !important",
+          outline: "2px solid $amber9",
         },
       },
       primaryGradient: {

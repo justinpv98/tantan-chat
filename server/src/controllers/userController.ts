@@ -4,7 +4,7 @@ import { Request, Response } from "express-serve-static-core";
 
 import UserModel from "@/models/User";
 import ConversationParticipantModel from "@/models/ConversationParticipant";
-import RelationshipModel, { Relationship } from "@/models/Relationship";
+import RelationshipModel from "@/models/Relationship";
 
 // @desc    Search users by username
 // @route   GET /api/users/search

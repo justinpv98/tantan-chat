@@ -116,6 +116,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
     // Store the user in session
     req.session.user = user;
 
+
     logger.info(`User #${user.id} has logged in`);
 
     res.status(200).json(user);

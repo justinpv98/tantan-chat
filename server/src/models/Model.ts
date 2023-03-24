@@ -359,7 +359,7 @@ class Model<T> {
       );
       returnColumns = this.#formatColumns(aliasedColumns);
     }
-    const returnStatement = returning ? `RETURNING ${returnColumns}` : "";
+    const returnStatement = returning ? ` RETURNING ${returnColumns}` : "";
 
     return returnStatement;
   }

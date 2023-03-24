@@ -14,6 +14,8 @@ export type ConversationData = {
   type: 1 | 2;
   participants: Participant[];
   last_message: number;
+  avatar?: string;
+  owner: string;
 };
 
 export async function fetchConversation() {

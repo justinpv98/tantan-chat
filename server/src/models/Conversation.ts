@@ -49,7 +49,7 @@ export class Conversation extends Model<ConversationSchema> {
     return data;
   }
 
-  async findExistingConversation(conversationId: string, userId: string) {
+  async findExistingConversation(conversationId: string) {
     const query = format(
       `SELECT 
     to_json(convo) 

@@ -38,24 +38,36 @@ export const _Text = styled("p", {
       semibold: { fontWeight: "$semibold" },
       bold: { fontWeight: "$bold" },
     },
+    overflow: {
+      ellipsis: {
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        overflow: "hidden"
+      }
+    }
   },
 });
 
 type Props = {
-  align?:  VariantProps<typeof _Text>["align"]
-  color?:  VariantProps<typeof _Text>["color"]
+  [key: string]: any;
+  align?: VariantProps<typeof _Text>["align"];
+  color?: VariantProps<typeof _Text>["color"];
   css?: CSS;
   children?: React.ReactNode;
   htmlFor?: string;
   inline?: boolean;
   italic?: boolean;
-  size?:  VariantProps<typeof _Text>["size"];
+  size?: VariantProps<typeof _Text>["size"];
   underline?: boolean;
-  weight?: VariantProps<typeof _Text>["weight"]
+  weight?: VariantProps<typeof _Text>["weight"];
 };
 
- function Text({ children, color, inline, ...rest }: Props) {
-  return <_Text as={inline ? "span" : "p"} color={color} {...rest}>{children}</_Text>;
+function Text({ children, color, inline, ...rest }: Props) {
+  return (
+    <_Text as={inline ? "span" : "p"} color={color} {...rest}>
+      {children}
+    </_Text>
+  );
 }
 
 export default Text;

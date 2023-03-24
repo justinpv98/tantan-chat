@@ -9,14 +9,14 @@ type QueryKey = [string, { query: string }];
 export type Participant = {
   id: string;
   username: string;
-  profile_picture: string | null;
+  profile_picture?: string;
   status: 1 | 2 | 3 | 4;
 };
 
 export type Message = {
   attachments: Attachment[];
   id: string;
-  author: string;
+  author: Participant;
   data: string;
   type: number;
   media_url: string;

@@ -2,11 +2,13 @@ import Model from "./Model";
 import pool from "@/db/db";
 import format from "pg-format";
 
+import { User, UserSchema } from "./User";
+
 const MESSAGE_LIMIT = 50;
 
 export type MessageSchema = {
   id?: string;
-  author?: string;
+  author?: string | UserSchema;
   conversation?: string;
   data?: string;
   parent?: string;
@@ -19,7 +21,7 @@ export type MessageSchema = {
 
 export class Message extends Model<MessageSchema> {
   id?: string;
-  author?: string;
+  author?: string | UserSchema;
   conversation?: string;
   data?: string;
   parent?: string;
@@ -46,7 +48,8 @@ export class Message extends Model<MessageSchema> {
     const query = format(
       `SELECT         
     mesg.id, 
-    mesg.author, 
+    (SELECT row_to_json("user")::jsonb-'password'-'email' FROM "user"
+    WHERE "user".id = mesg.author) AS author, 
     mesg.type,
     mesg.data, 
     mesg.parent, 

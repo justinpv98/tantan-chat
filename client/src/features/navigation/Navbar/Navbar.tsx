@@ -44,8 +44,7 @@ export default function Navbar({}: Props) {
   }
 
   async function message(message: Message, conversation: ConversationData) {
-    console.log('test')
-    if (message?.author == userId) return;
+    if (message?.author.id == userId) return;
 
     const conversationId = message?.conversation;
 
@@ -79,14 +78,54 @@ export default function Navbar({}: Props) {
     }
   }
 
+  async function createGroupDM(conversation: ConversationData){
+    if (conversations !== undefined && conversations.length >= 1){
+      queryClient.setQueryData(
+        queryKeys.GET_CONVERSATIONS,
+        (oldData: any) => {
+          return [conversation, ...oldData];
+        }
+      );
+    } else {
+      queryClient.setQueryData(
+        queryKeys.GET_CONVERSATIONS,
+        (oldData: any) => {
+          return [conversation];
+        }
+      );
+    }
+  }
+  
+  function changeConversationName(conversationId: string, name: string){
+    if (conversations !== undefined && conversations.length >= 1){
+      queryClient.setQueryData(
+        queryKeys.GET_CONVERSATIONS,
+        (oldData: any) => {
+          const newData = [...oldData];
+          const conversation = newData.find(conversation => conversation.id == conversationId)
+          conversation.name = name;
+          return newData;
+        }
+      );
+    } else {
+      return;
+    }
+  }
+
+
+
+
   useEffect(() => {
     socket.on("setStatus", setStatus);
-
     socket.on("message", message);
+    socket.on("createGroupDM", createGroupDM)
+    socket.on("changeConversationName", changeConversationName)
 
     return () => {
       socket.off("setStatus", setStatus);
       socket.off("message", message);
+      socket.off("createGroupDM", createGroupDM)
+      socket.off("changeConversationName")
     };
   }, [socket, isSuccess]);
 

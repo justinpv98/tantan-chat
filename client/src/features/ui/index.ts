@@ -1,6 +1,8 @@
 export {default as Avatar} from "./Avatar/Avatar";
 export {default as Box} from "./Box/Box";
 export {default as Button} from "./Button/Button";
+export {default as Checkbox} from "./Checkbox/Checkbox";
+export {default as Dialog} from "./Dialog/Dialog";
 export {default as Flex} from "./Flex/Flex";
 export {default as Heading} from "./Heading/Heading";
 export {default as Icon} from "./Icon/Icon";

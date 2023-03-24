@@ -10,7 +10,7 @@ import {
 
 // Components
 import { Button, Flex, Icon, SearchInput, Sidebar } from "@/features/ui";
-import { ConversationItem, UserItem } from "@/features/navigation";
+import { ConversationItem, GroupConversationDialog, UserItem } from "@/features/navigation";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -51,25 +51,23 @@ export default function Home() {
   // Conversation functions
 
   async function onUserItemClick(userId: string) {
-    mutate(userId);
+    mutate({targetIds: [userId], type: 1});
     setQuery("");
     setSearching(false);
   }
 
   function onCreateConversationSuccess(
     conversationId: string,
-    targetId: string
+    {targetIds }: any
   ) {
-    socket.emit("createConversation", conversationId, [targetId]);
+    socket.emit("createConversation", conversationId, [targetIds]);
     navigate(`/c/${conversationId}`);
   }
 
   return (
     <Sidebar
       action={
-        <Button transparent icon="center" css={{color: "$sage11"}}>
-          <Icon icon="pencil-square" />
-        </Button>
+        <GroupConversationDialog />
       }
       css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
       title="Chats"
