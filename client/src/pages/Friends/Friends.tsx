@@ -8,7 +8,7 @@ import { useGetRelationships } from "@/features/friends/hooks";
 import { useCreateConversation } from "@/features/chat/hooks";
 
 // Components
-import { Button, Flex, Icon, Sidebar } from "@/features/ui";
+import { Button, Flex, Icon, Sidebar, Text } from "@/features/ui";
 import { UserItem } from "@/features/navigation";
 
 export default function Friends() {
@@ -19,14 +19,14 @@ export default function Friends() {
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
 
   async function onUserItemClick(userId: string) {
-    mutate(userId);
+    mutate({targetIds: [userId], type: 1});
   }
 
   function onCreateConversationSuccess(
     conversationId: string,
-    targetId: string
+    {targetIds}: any
   ) {
-    socket.emit("createConversation", conversationId, [targetId]);
+    socket.emit("createConversation", conversationId, targetIds);
     navigate(`/friends/c/${conversationId}`);
   }
 
@@ -34,7 +34,7 @@ export default function Friends() {
     <Sidebar
       title="Friends"
     >
-      <ItemContainer>
+      <ItemContainer direction="column">
         {relationships?.length ?
           relationships
             ?.filter((relationship) => relationship.type === 3)
@@ -45,7 +45,7 @@ export default function Friends() {
                 showStatus
                 onClick={() => onUserItemClick(friendship.target.id)}
               />
-            )): null}
+            )): <Text color="lowContrast" css={{paddingInline: "$150"}} >Find friends by searching them up and sending a friend request!</Text>}
       </ItemContainer>
     </Sidebar>
   );

@@ -20,28 +20,47 @@ interface ReqWithFiles extends Response {
 // @route   POST /api/conversations
 // @access  Private
 const createConversation = asyncHandler(async (req: Request, res: Response) => {
-  const { targetId } = req.body;
+  const { targetIds, type } = req.body;
   const { id } = req.session.user;
 
-  if (id == targetId) {
-    res.status(401);
-    throw new Error("Forbidden to create conversation with self");
+  if (!Array.isArray(targetIds)) {
+    res.status(422);
+    throw new Error("Target ids must be in an array");
   }
 
-  const participants = [id, targetId];
+  if (targetIds.map(Number).includes(Number(id))) {
+    res.status(422);
+    throw new Error("Can not create conversation with self as target");
+  }
 
-  const conversation = await ConversationParticipantModel.findConversationId(
-    participants
-  );
+  const participants = Array.from(new Set([id, ...targetIds]));
 
-  if (conversation) {
+  if (type != "2") {
     // if conversation exists, send conversation info
 
-    res.status(200).json({ id: conversation });
+    const conversationId =
+      await ConversationParticipantModel.findConversationId(participants);
+
+    if (!conversationId) {
+      res.status(404);
+      throw new Error("Conversation not found");
+    }
+
+    res.status(200).json({ id: conversationId });
   } else {
     // If there is no existing conversation between users, create a new one
 
-    const newConversation = new Conversation({ type: "1" });
+    let newConversation;
+    if (type == 1) {
+      newConversation = new Conversation({ type: "1" });
+    } else {
+      newConversation = new Conversation({
+        type: "2",
+        owner: id,
+        name: "New Group Chat",
+      });
+    }
+
     await newConversation.save();
 
     // Add participants to conversation
@@ -59,9 +78,7 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
     logger.info(
       `Conversation #${
         newConversation.id
-      } created between participants - ${participants
-        .sort()
-        .map((p) => "#" + p)} `
+      } created between participants - ${targetIds.sort().map((p) => "#" + p)} `
     );
 
     res.status(201).json({ id: newConversation.id });
@@ -87,7 +104,7 @@ const postImage = asyncHandler(
     }
 
     try {
-      const storedImage = await uploadImage(file, `/${conversationId}`)
+      const storedImage = await uploadImage(file, `/${conversationId}`);
       const media_url = (storedImage as any).secure_url;
 
       const message = new Message({
@@ -98,11 +115,9 @@ const postImage = asyncHandler(
         type: 3,
       });
 
-
       await message.save();
 
-   
-      const io = req.app.get('io');
+      const io = req.app.get("io");
       io.in(Number(conversationId)).emit("message", message, conversationId);
     } catch (err) {
       res.status(500);
@@ -138,8 +153,7 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
   const { id: userId } = req.session.user;
 
   const conversation = await ConversationModel.findExistingConversation(
-    conversationId,
-    userId
+    conversationId
   );
 
   if (!conversation) {
@@ -156,6 +170,7 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
       }
     }
   );
+
 
   if (!userIsInConversation) {
     res.status(401);

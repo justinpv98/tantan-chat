@@ -70,14 +70,14 @@ function initializeSocket(
     socket.request.session.reload(() => {});
     socket.user = { ...socket.request.session.user };
     delete socket.user.email;
-    
+    delete socket.user.password;
+
     sockets[socket.id] = socket;
     socket.conversations = new Set();
 
     await handleUnidentifiedSocket(socket);
     await joinConversations(socket);
     await connectSocketToUser(socket);
-
 
     socket.on("setStatus", (status: number) => {
       if (!statuses.includes(status)) return;
@@ -89,7 +89,7 @@ function initializeSocket(
 
     socket.on(
       "createConversation",
-      (conversationId: string, targetIDs: string[]) => {
+      async (conversationId: string, targetIDs: string[], type?: 1 | 2) => {
         socket.join(conversationId);
 
         logger.debug(
@@ -107,19 +107,45 @@ function initializeSocket(
             });
           }
         });
+
+        if (type === 2) {
+          const conversation = await ConversationModel.findExistingConversation(
+            conversationId
+          );
+
+          console.log(conversation);
+
+          io.in(conversation.id).emit("createGroupDM", conversation);
+        }
       }
     );
+
+    socket.on("changeConversationName", async ({ conversationId, name }) => {
+
+      const newName = name.slice(0, 64);
+      io.in(Number(conversationId)).emit(
+        "changeConversationName",
+        conversationId,
+        newName
+      );
+
+      await ConversationModel.updateById(conversationId, {
+        set: {
+          name,
+        },
+      });
+    });
 
     socket.on("message", async (data: MessageSchemaWithFile) => {
       data.author = socket.user.id;
       const message = new Message(data);
       await message.save();
-      
 
       const conversation = await ConversationModel.findExistingConversation(
-        message.conversation,
-        message.author
+        message.conversation
       );
+
+      message.author = socket.user;
 
       io.in(conversation.id).emit("message", message, conversation);
     });
@@ -127,7 +153,6 @@ function initializeSocket(
     socket.on("typing", (conversationId: string) => {
       socket.to(conversationId).emit("typing", socket.user.username);
     });
-
 
     socket.on("disconnect", async () => {
       await handleDisconnect(socket);

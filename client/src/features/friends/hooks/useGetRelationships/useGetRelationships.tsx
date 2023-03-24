@@ -4,10 +4,10 @@ import axios from "@/config/axios";
 
 import queryKeys from "@/constants/queryKeys";
 
-type User = {
+export type User = {
   id: string ;
   username: string;
-  profile_picture: object;
+  profile_picture: string | null;
   status: 1 | 2 | 3 | 4;
 };
 

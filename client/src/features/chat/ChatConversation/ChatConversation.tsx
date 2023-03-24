@@ -46,6 +46,11 @@ export default function ChatConversation({
     setMessages([]);
   }, [id]);
 
+  function isPreviousMessageBySameAuthor(index: number){
+    if(index === 0) return false;
+    return messages[index]?.author.id == messages[index - 1]?.author.id
+  }
+
   return (
     <ConversationContainer ref={containerRef}>
       {containerRef?.current && (
@@ -57,8 +62,8 @@ export default function ChatConversation({
         />
       )}
       {messages.length
-        ? messages.map((message) => (
-            <ChatMessage key={message?.id} message={message} />
+        ? messages.map((message, index) => (
+            <ChatMessage key={message?.id} message={message} showUsername={!isPreviousMessageBySameAuthor(index)} />
           ))
         : null}
       <ChatScrollToBottom
@@ -82,5 +87,5 @@ const ConversationContainer = styled("ol", {
   listStyle: "none",
   overflowY: "scroll",
   paddingBlock: "$050 $200",
-  maxWidth: "100vw",
+  maxWidth: "100vw"
 });

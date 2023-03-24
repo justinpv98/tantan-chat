@@ -47,6 +47,26 @@ export default function ConversationItem({ conversation }: Props) {
       </Flex>
     );
   } else {
-    return <Flex></Flex>;
+    return (
+      <Flex
+        align="center"
+        onClick={onClick}
+        css={{
+          borderRadius: "$050",
+          cursor: "pointer",
+          gap: "$050",
+          width: "100%",
+          paddingBlock: "$050",
+          paddingInline: "$050",
+          "&:hover": {
+            background: "$sage4",
+            "& .avatar-status ": { outlineColor: "$sage4" },
+          },
+        }}
+      >
+        <Avatar size="md" src={conversation.avatar || undefined} showStatus={conversation.type !== 2}/>
+        <Text weight="semibold" overflow="ellipsis">{conversation.name}</Text>
+      </Flex>
+    );
   }
 }

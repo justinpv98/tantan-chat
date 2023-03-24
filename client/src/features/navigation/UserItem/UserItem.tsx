@@ -30,7 +30,7 @@ export default function UserItem({ user, onClick, showStatus }: Props) {
       <Box>
         <Avatar size="md" />
       </Box>
-      <Text weight="semibold">{user.username}</Text>
+      <Text weight="semibold" overflow="ellipsis">{user.username}</Text>
     </Flex>
   );
 }

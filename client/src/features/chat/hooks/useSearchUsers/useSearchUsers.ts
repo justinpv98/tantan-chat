@@ -7,7 +7,7 @@ type QueryKey = [string, { query: string }];
 export type UserData = {
   id: string;
   username: string;
-  profile_picture: {} | null;
+  profile_picture: string | null;
   status: 1 | 2 | 3 | 4;
 };
 

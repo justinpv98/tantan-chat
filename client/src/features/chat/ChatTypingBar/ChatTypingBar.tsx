@@ -11,7 +11,7 @@ import { Box, Text } from "@/features/ui";
 export default function ChatTypingBar() {
   const [usersTyping, setUsersTyping] = useState<string[]>([]);
   const socket = useSocket();
-  const target = useGetTarget();
+  const {data: conversation, target} = useGetTarget();
 
 
   function typingListener(username: string){
@@ -44,7 +44,7 @@ export default function ChatTypingBar() {
     return () => {
       setUsersTyping([]);
     };
-  }, [target?.id]);
+  }, [conversation?.id, target?.id]);
 
   function formatUsers(users: string[]) {
     switch (true) {

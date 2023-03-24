@@ -30,21 +30,23 @@ export class ConversationParticipant extends Model<ConversationParticipantSchema
   }
 
   async findConversationId(participants: string[]) {
-    // Find conversation id through participants
+    // Find conversation id of private dm through participants
     const query = format(
       `   SELECT 
-      cp.conversation 
+      cp.conversation,
+      conversation.type 
     FROM 
       conversation_participant AS cp 
+    JOIN conversation 
+    ON cp.conversation = conversation.id
     WHERE 
-      "user" in (%L) 
+      "user" in (%L) AND conversation.type = 1
     GROUP BY 
-      conversation 
-    HAVING 
-      count(*) = %L
+      conversation, conversation.type
+    HAVING
+    count(*) = 2;
     `,
-      participants,
-      participants.length
+      participants
     );
 
     const { rows } = await pool.query(query);

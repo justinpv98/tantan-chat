@@ -5,7 +5,7 @@ type State = {
   id: string | number;
   email: string;
   username: string;
-  profile_picture: object;
+  avatar: string;
   status: string | number;
   message: string;
   loading: boolean;
@@ -34,7 +34,7 @@ export default (state: State, action: Action<AuthActionTypes>) => {
         id: "",
         username: "",
         email: "",
-        profile_picture: {},
+        profile_picture: "",
         status: "",
         message: action.payload
       };
@@ -45,7 +45,7 @@ export default (state: State, action: Action<AuthActionTypes>) => {
         id: "",
         username: "",
         email: "",
-        profile_picture: {},
+        profile_picture: "",
         status: "",
         message: "",
         loading: false

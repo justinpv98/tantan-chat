@@ -3,34 +3,19 @@ import { styled } from "@/stitches.config";
 // Hooks
 import { useAuth } from "@/hooks";
 import { useGetTarget } from "@/features/chat/hooks";
-import {
-  useGetRelationships,
-
-} from "@/features/friends/hooks";
+import { useGetRelationships } from "@/features/friends/hooks";
 
 // Components
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Sidebar,
-  Text,
-} from "@/features/ui";
+import { Avatar, Box, Button, Flex, Icon, Sidebar, Text } from "@/features/ui";
 import { FriendMenuAction } from "@/features/navigation";
 
 export default function ChatRightMenu() {
-
-  const target = useGetTarget();
+  const { data: conversation, target } = useGetTarget();
   const { data: relationships } = useGetRelationships(false);
-
-
-
 
   return (
     <Sidebar
-      title={target?.username}
+      title={conversation?.type == 1 ? target?.username : conversation?.name}
       titleAlignment="center"
     >
       <Flex
@@ -38,10 +23,10 @@ export default function ChatRightMenu() {
         align="center"
         css={{ width: "100%", paddingInline: "$050" }}
       >
-           <Avatar size="lg" css={{ marginBlock: "$100" }} />
-       
+        <Avatar size="lg" css={{ marginBlock: "$100" }} />
+
         <Flex direction="column" css={{ width: "100%" }}>
-          <FriendMenuAction />
+          {conversation?.type == 1 &&<FriendMenuAction />}
         </Flex>
       </Flex>
     </Sidebar>

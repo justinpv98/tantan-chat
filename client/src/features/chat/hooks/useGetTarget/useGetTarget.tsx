@@ -11,14 +11,13 @@ export default function useGetTarget() {
   const { id: userId } = useAuth();
   const { data } = useGetConversation(id || "", !!id);
 
-  let target;
+  let target: Participant | undefined;
 
   if (data?.type === 1) {
     target = data?.participants.filter(
       (participant) => participant.id !== userId
     )[0];
-    return target as Participant;
-  } else {
-    return;
   }
+
+  return {data, target}
 }

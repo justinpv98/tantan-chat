@@ -9,7 +9,7 @@ describe("useAuth", () => {
       id: "1",
       email: "test@email.com",
       username: "test",
-      profile_picture: {},
+      profile_picture: null,
       status: "1",
       message: "",
       loading: false,

@@ -43,6 +43,13 @@ const _Heading = styled("h3", {
       true: { fontStyle: "italic" },
       false: {},
     },
+    overflow: {
+      ellipsis: {
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        overflow: "hidden"
+      }
+    },
     underline: {
       true: { textDecoration: "underline" },
       false: {},

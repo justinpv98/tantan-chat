@@ -8,7 +8,7 @@ export type UserSchema = {
   email?: string;
   username?: string;
   password?: string;
-  profile_picture?: {};
+  profile_picture?: string | null;
   status?: 1 | 2 | 3 | 4;
 };
 
@@ -17,7 +17,7 @@ export class User extends Model<UserSchema> {
   email?: string;
   username?: string;
   password?: string;
-  profile_picture?: {};
+  profile_picture?: string | null;
   status?: 1 | 2 | 3 | 4;
 
   constructor(config?: UserSchema) {

@@ -14,7 +14,7 @@ type Props = {
   action?: React.ReactNode;
   children?: React.ReactNode;
   css?: CSS;
-  title?: string;
+  title?: string | null;
   titleAlignment?: HeadingProps["align"];
 };
 
@@ -38,6 +38,7 @@ export default function Sidebar({
           size="h3"
           align={titleAlignment}
           css={{ width: action ? "auto" : "100%" }}
+          overflow="ellipsis"
         >
           {title}
         </Heading>
