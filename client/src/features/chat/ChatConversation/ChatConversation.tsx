@@ -2,6 +2,9 @@ import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Types
 import { Message } from "../hooks/useGetMessages/useGetMessages";
 
@@ -14,7 +17,6 @@ import ChatInfiniteScroller from "../ChatInfiniteScroller/ChatInfiniteScroller";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import ChatScrollToBottom from "../ChatScrollToBottom/ChatScrollToBottom";
 import ChatTypingBar from "../ChatTypingBar/ChatTypingBar";
-
 
 type Props = {
   isRefVisible: boolean;
@@ -34,11 +36,9 @@ export default function ChatConversation({
   const { messages, setMessages, isError } = useGetMessages();
 
   useLayoutEffect(() => {
-    socket.on("message", (message: Message) => {
-      setMessages([...messages, message]);
-    });
+    socket.on(socketEvents.MESSAGE, appendMessage);
     return () => {
-      socket.off("message");
+      socket.off(socketEvents.MESSAGE, appendMessage);
     };
   }, [messages]);
 
@@ -46,9 +46,13 @@ export default function ChatConversation({
     setMessages([]);
   }, [id]);
 
-  function isPreviousMessageBySameAuthor(index: number){
-    if(index === 0) return false;
-    return messages[index]?.author.id == messages[index - 1]?.author.id
+  function isPreviousMessageBySameAuthor(index: number) {
+    if (index === 0) return false;
+    return messages[index]?.author.id == messages[index - 1]?.author.id;
+  }
+
+  function appendMessage(message: Message) {
+    setMessages([...messages, message]);
   }
 
   return (
@@ -63,7 +67,11 @@ export default function ChatConversation({
       )}
       {messages.length
         ? messages.map((message, index) => (
-            <ChatMessage key={message?.id} message={message} showUsername={!isPreviousMessageBySameAuthor(index)} />
+            <ChatMessage
+              key={message?.id}
+              message={message}
+              showUsername={!isPreviousMessageBySameAuthor(index)}
+            />
           ))
         : null}
       <ChatScrollToBottom
@@ -87,5 +95,5 @@ const ConversationContainer = styled("ol", {
   listStyle: "none",
   overflowY: "scroll",
   paddingBlock: "$050 $200",
-  maxWidth: "100vw"
+  maxWidth: "100vw",
 });

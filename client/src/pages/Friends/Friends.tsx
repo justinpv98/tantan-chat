@@ -2,6 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Hooks
 import { useSocket } from "@/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
@@ -26,7 +29,7 @@ export default function Friends() {
     conversationId: string,
     {targetIds}: any
   ) {
-    socket.emit("createConversation", conversationId, targetIds);
+    socket.emit(socketEvents.CREATE_CONVERSATION, conversationId, targetIds);
     navigate(`/friends/c/${conversationId}`);
   }
 

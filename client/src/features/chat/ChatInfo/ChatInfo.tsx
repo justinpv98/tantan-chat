@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import { styled } from "@/stitches.config";
+
+// Constants
 import queryKeys from "@/constants/queryKeys";
+import socketEvents from "@/constants/socketEvents";
 
 // Hooks
 import { useAuth, useSocket, useTheme } from "@/hooks";
@@ -34,10 +37,10 @@ export default function ChatInfo({ onClickMore }: Props) {
   }, [id, conversation?.name]);
 
   useEffect(() => {
-    socket.on("conversationNameChange", changeName);
+    socket.on(socketEvents.CHANGE_CONVERSATION_NAME, changeName);
 
     return () => {
-      socket.off("conversationNameChange", changeName);
+      socket.off(socketEvents.CHANGE_CONVERSATION_NAME, changeName);
     };
   });
 

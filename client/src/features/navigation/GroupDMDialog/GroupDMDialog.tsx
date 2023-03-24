@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Types
 import { Relationship } from "@/features/friends/hooks/useGetRelationships/useGetRelationships";
 
@@ -47,7 +50,7 @@ export default function GroupConversationDialog({}: Props) {
     conversationId: string,
     { targetIds, type }: any
   ) {
-    socket.emit("createConversation", conversationId, targetIds, type);
+    socket.emit(socketEvents.CREATE_CONVERSATION, conversationId, targetIds, type);
     navigate(`/c/${conversationId}`);
   }
 

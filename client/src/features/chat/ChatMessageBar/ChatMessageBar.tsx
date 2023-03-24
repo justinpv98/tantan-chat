@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Hooks
 import { useAuth, useFileHandler, useSocket, useThrottle } from "@/hooks";
 
@@ -56,7 +59,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
   }, [file])
 
   function onChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    throttle(() => socket.emit("typing", data?.id));
+    throttle(() => socket.emit(socketEvents.TYPING, data?.id));
     setMessage({
       ...message,
       data: e.target.value,
@@ -84,7 +87,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
 
     if (message.data) {
       let imageData;
-      socket.emit("message", {
+      socket.emit(socketEvents.MESSAGE, {
         ...message,
         author: userId,
         conversation: data?.id,

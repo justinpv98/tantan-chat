@@ -1,6 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { keyframes } from "@stitches/react";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Hooks
 import { useSocket } from "@/hooks";
 import { useGetTarget } from "../hooks";
@@ -21,11 +24,11 @@ export default function ChatTypingBar() {
   }
 
   useEffect(() => {
-    socket.on("typing", typingListener);
+    socket.on(socketEvents.TYPING, typingListener);
 
 
     return () => {
-      socket.off("typing", typingListener)
+      socket.off(socketEvents.TYPING, typingListener)
     }
 
   }, [])

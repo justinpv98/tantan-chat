@@ -1,6 +1,9 @@
 import React, { Fragment, useEffect } from "react";
 import { useQueryClient } from "react-query";
+
+// Constants
 import queryKeys from "@/constants/queryKeys";
+import socketEvents from "@/constants/socketEvents";
 
 // Types
 import { Relationship } from "@/features/friends/hooks/useGetRelationships/useGetRelationships";
@@ -23,7 +26,7 @@ type Props = {};
 export default function FriendMenuAction() {
   const queryClient = useQueryClient();
   const { id } = useAuth();
-  const {data, target} = useGetTarget();
+  const { data, target } = useGetTarget();
   const socket = useSocket();
   const { data: relationships } = useGetRelationships(false);
   const { mutate: sendFriendRequest } = useCreateRelationship(
@@ -37,26 +40,26 @@ export default function FriendMenuAction() {
   );
 
   useEffect(() => {
-    socket.on("createRelationship", (relationship) =>
+    socket.on(socketEvents.CREATE_RELATIONSHIP, (relationship) =>
       addRelationshipToCache(relationship)
     );
-    socket.on("removeRelationship", (relationshipId) =>
+    socket.on(socketEvents.REMOVE_RELATIONSHIP, (relationshipId) =>
       removeRelationshipFromCache({ id: relationshipId })
     );
 
-    socket.on("updateRelationship", (relationship) =>
+    socket.on(socketEvents.UPDATE_RELATIONSHIP, (relationship) =>
       updateRelationshipInCache(relationship)
     );
 
     return () => {
-      socket.off("createRelationship", (relationship) =>
+      socket.off(socketEvents.CREATE_RELATIONSHIP, (relationship) =>
         addRelationshipToCache(relationship)
       );
-      socket.off("removeRelationship", (relationshipId) =>
+      socket.off(socketEvents.REMOVE_RELATIONSHIP, (relationshipId) =>
         removeRelationshipFromCache({ id: relationshipId })
       );
 
-      socket.off("updateRelationship", (relationship) =>
+      socket.off(socketEvents.UPDATE_RELATIONSHIP, (relationship) =>
         updateRelationshipInCache(relationship)
       );
     };
@@ -146,7 +149,7 @@ export default function FriendMenuAction() {
             return data;
           });
 
-          return oldData
+          return oldData;
         } else {
           return oldData;
         }
