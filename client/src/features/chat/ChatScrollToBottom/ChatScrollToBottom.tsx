@@ -24,7 +24,7 @@ export default function ChatScrollToBottom({
   setIsRefVisible,
   isRefVisible,
 }: Props) {
-  const data = useCurrentConversation();
+  const {data} = useCurrentConversation();
 
   useLayoutEffect(() => {
     const observer = new IntersectionObserver(

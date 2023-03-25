@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { ConversationData } from "@/features/chat/hooks/useGetConversations/useGetConversations";
 
 // Hooks
-import { useGetConversations } from "@/features/chat/hooks";
+import { useLayout } from "@/features/ui/hooks";
+import { useCurrentConversation, useGetConversations } from "@/features/chat/hooks";
 
 // Components
 import { Avatar, Flex, Text } from "@/features/ui";
@@ -17,10 +18,12 @@ type Props = {
 export default function ConversationItem({ conversation }: Props) {
   const navigate = useNavigate();
   const { setCurrentConversation } = useGetConversations(false);
+  const {setShowChat } = useLayout();
 
   function onClick() {
     setCurrentConversation(conversation);
     navigate(`/c/${conversation.id}`);
+    setShowChat(true)
   }
 
   if (conversation.type === 1) {

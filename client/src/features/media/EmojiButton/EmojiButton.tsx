@@ -26,7 +26,7 @@ export default function EmojiButton({ setMessage }: Props) {
   return (
     <Popover
       side="top"
-      sideOffset={20}
+      sideOffset={5}
       trigger={<Icon icon="face-smile" />}
       css={{
         padding: "12px",

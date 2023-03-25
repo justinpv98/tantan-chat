@@ -47,7 +47,7 @@ export default function ChatMessageBar({ isRefVisible, observedRef }: Props) {
           onKeyDown={onKeyDownEnter}
         >
           <Input
-            placeholder="Type a message here..."
+            placeholder="Type a message"
             ref={inputRef}
             value={message.data}
             onChange={onChange}

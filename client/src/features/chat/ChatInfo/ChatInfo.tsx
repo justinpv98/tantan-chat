@@ -1,7 +1,8 @@
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useChatInfo } from "../hooks";
+import { useCurrentConversation, useChatInfo } from "../hooks";
+import { useLayout } from "@/features/ui/hooks";
 
 // Components
 import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";
@@ -20,10 +21,14 @@ export default function ChatInfo({ onClickMore }: Props) {
     onConversationNameChange,
     themePreference,
   } = useChatInfo();
-  
+  const {setShowChat} = useLayout();
+
   return (
     <Container as="header" css={themePreference}>
-      <Flex align="center">
+      <ArrowButton icon="center" transparent css={{ color: "$sage11" }} onClick={() => setShowChat(false)}>
+        <Icon icon="arrow-left" />
+      </ArrowButton>
+      <NameContainer>
         <Avatar
           size="md"
           src={
@@ -50,7 +55,7 @@ export default function ChatInfo({ onClickMore }: Props) {
             />
           )}
         </Flex>
-      </Flex>
+      </NameContainer>
       <Box css={{ color: "$sage11" }}>
         <Button icon="center" transparent>
           <Icon icon="phone" />
@@ -66,6 +71,15 @@ export default function ChatInfo({ onClickMore }: Props) {
   );
 }
 
+const ArrowButton = styled(Button, {
+  position: "absolute",
+  left: "0",
+
+  "@lg": {
+    display: "none",
+  },
+});
+
 const Container = styled(Box, {
   position: "relative",
   display: "flex",
@@ -79,14 +93,28 @@ const Container = styled(Box, {
   boxShadow: "0 0 4px rgba(0, 0, 0, 0.2)",
 });
 
+const NameContainer = styled("div", {
+  display: "flex",
+  alignItems: "center",
+  paddingLeft: "$175",
+
+  "@lg": {
+    paddingLeft: "0",
+  },
+});
+
 const ConversationName = styled(Heading, {
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  maxWidth: "15.5rem",
+  maxWidth: "clamp(3.5rem, 2vw, 15.5rem)",
   fontSize: "1rem",
   color: "$onBackground",
   marginLeft: "$025",
+
+  "@lg": {
+    maxWidth: "15.5rem"
+  }
 });
 
 const DMInput = styled("input", {
@@ -100,11 +128,16 @@ const DMInput = styled("input", {
   position: "absolute",
   top: "-$025",
   fontWeight: "$bold",
-  minWidth: "15.5rem",
   textOverflow: "ellipsis",
   overflow: "hidden",
+  maxWidth: "clamp(3.5rem, 22.5vw, 15.5rem)",
 
   "&:hover": {
     outline: "1px solid $sage7",
+  },
+
+  "@lg": {
+    minWidth: "15.5rem",
+    maxWidth: "auto",
   },
 });

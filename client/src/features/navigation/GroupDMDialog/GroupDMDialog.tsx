@@ -10,6 +10,7 @@ import { Relationship } from "@/features/friends/hooks/useGetRelationships/useGe
 
 // Hooks
 import { useSocket } from "@/hooks";
+import { useLayout } from "@/features/ui/hooks";
 import { useCreateConversation } from "@/features/chat/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
 
@@ -26,6 +27,7 @@ export default function GroupConversationDialog({}: Props) {
   const navigate = useNavigate();
   const socket = useSocket();
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
+  const { setShowChat} = useLayout();
 
   function onChange(checked: boolean | "indeterminate", value: number) {
     if (checked == true) {
@@ -40,6 +42,7 @@ export default function GroupConversationDialog({}: Props) {
     if (targetIds.length > 0) {
       mutate({ targetIds, type: 2 });
     }
+    setShowChat(true)
   }
 
   function onOpen(){

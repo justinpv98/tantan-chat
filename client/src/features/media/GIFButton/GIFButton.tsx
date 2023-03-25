@@ -19,7 +19,7 @@ import GIFSearchResults from "../GIFSearchResults/GIFSearchResults";
 
 export default function GIFButton() {
   const socket = useSocket();
-  const conversation = useCurrentConversation();
+  const {data: conversation} = useCurrentConversation();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [query, setQuery] = useState("");

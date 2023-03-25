@@ -1,15 +1,17 @@
 import { styled } from "@/stitches.config";
 
 // Hooks
-import { useAuth } from "@/hooks";
 import { useGetTarget } from "@/features/chat/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
 
 // Components
-import { Avatar, Flex, Sidebar } from "@/features/ui";
+import { Avatar, Button, Flex, Icon, Sidebar } from "@/features/ui";
 import { FriendMenuAction } from "@/features/navigation";
 
-export default function ChatRightMenu() {
+type Props = {
+  toggleRightMenu: () => void;
+}
+export default function ChatRightMenu({toggleRightMenu}: Props) {
   const { data: conversation, target } = useGetTarget();
   const { data: relationships } = useGetRelationships(false);
 
@@ -17,7 +19,11 @@ export default function ChatRightMenu() {
     <Sidebar
       title={conversation?.type == 1 ? target?.username : conversation?.name}
       titleAlignment="center"
+      css={{zIndex: 200}}
     >
+      <ArrowButton icon="center" transparent css={{ color: "$sage11" }} onClick={toggleRightMenu}>
+        <Icon icon="arrow-left" />
+      </ArrowButton>
       <Flex
         direction="column"
         align="center"
@@ -46,5 +52,15 @@ export const Container = styled("div", {
     minWidth: "20rem",
     maxWidth: "20rem",
     minHeight: "100vh",
+  },
+});
+
+const ArrowButton = styled(Button, {
+  position: "absolute",
+  left: "0",
+  top: ".5rem",
+
+  "@lg": {
+    display: "none",
   },
 });

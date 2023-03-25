@@ -117,6 +117,10 @@ const postImage = asyncHandler(
 
       await message.save();
 
+      message.author = req.session.user;
+      delete message.author.email;
+      delete message.author.password;
+
       const io = req.app.get("io");
       io.in(Number(conversationId)).emit("message", message, conversationId);
     } catch (err) {

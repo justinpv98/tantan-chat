@@ -127,7 +127,7 @@ export default function Navbar({}: Props) {
     <Flex as="nav">
       <SideNavigation>
         <NavigationWrapper>
-          {navRoutes.map((route) => {
+          {navRoutes.map((route, index) => {
             return (
               <SideNavigationItem
                 label={route.label}
@@ -138,11 +138,12 @@ export default function Navbar({}: Props) {
                 }
                 icon={route.icon}
                 key={route.path}
+                showLabel={index === 0}
               />
             );
           })}
           <li>
-            <Settings isMobile />
+            <Settings isMobile side="top" />
           </li>
         </NavigationWrapper>
         <Settings />

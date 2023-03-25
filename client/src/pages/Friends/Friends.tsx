@@ -36,6 +36,7 @@ export default function Friends() {
   return (
     <Sidebar
       title="Friends"
+      css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
     >
       <ItemContainer direction="column">
         {relationships?.length ?

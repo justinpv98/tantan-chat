@@ -11,7 +11,8 @@ import { useAuth, useSocket } from "@/hooks";
 import { Avatar, Button, Popover, Text } from "@/features/ui";
 
 type Props = {
-  isMobile?: boolean
+  isMobile?: boolean,
+  side?: "bottom" | "left" | "right" | "top"
 };
 
 
@@ -39,7 +40,7 @@ const desktopCSS: CSS = {
     },
   };
   
-export default function Settings({ isMobile }: Props) {
+export default function Settings({ isMobile, side }: Props) {
   const queryClient = useQueryClient();
   const { logout } = useAuth();
   const socket = useSocket();
@@ -53,7 +54,7 @@ export default function Settings({ isMobile }: Props) {
   return (
     <Popover
       label={"Settings"}
-      side="right"
+      side={side || "right"}
       css={isMobile ? mobileCSS : desktopCSS}
       trigger={<Avatar size="sm" status={2} showStatus/>}
     >
