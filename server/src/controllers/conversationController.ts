@@ -52,10 +52,10 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
 
     let newConversation;
     if (type == 1) {
-      newConversation = new Conversation({ type: "1" });
+      newConversation = new Conversation({ type: 1 });
     } else {
       newConversation = new Conversation({
-        type: "2",
+        type: 2,
         owner: id,
         name: "New Group Chat",
       });
@@ -95,7 +95,7 @@ const postImage = asyncHandler(
     const { file } = req;
 
     const conversations = await ConversationModel.findExistingConversations(
-      userId
+      Number(userId)
     );
 
     if (conversations === null) {
@@ -109,13 +109,17 @@ const postImage = asyncHandler(
 
       const message = new Message({
         author: userId,
-        conversation: conversationId,
+        conversation: Number(conversationId),
         media_url: media_url as string,
         description: "Image by " + username,
         type: 3,
       });
 
       await message.save();
+
+      message.author = req.session.user;
+      delete message.author.email;
+      delete message.author.password;
 
       const io = req.app.get("io");
       io.in(Number(conversationId)).emit("message", message, conversationId);
@@ -153,7 +157,7 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
   const { id: userId } = req.session.user;
 
   const conversation = await ConversationModel.findExistingConversation(
-    conversationId
+    Number(conversationId)
   );
 
   if (!conversation) {

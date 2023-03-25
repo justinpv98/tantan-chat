@@ -11,6 +11,7 @@ export default function Notifications() {
   return (
     <Sidebar
       title="Notifications"
+      css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
     >
       <ItemContainer>
       </ItemContainer>

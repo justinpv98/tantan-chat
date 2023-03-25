@@ -4,23 +4,27 @@ import { styled } from "@/stitches.config";
 // Types
 import { GIFSearchResult } from "../hooks/useSearchGIFs/useSearchGIFs";
 
-type Props = {
-onClick?: (result: GIFSearchResult) => void;
-  result: GIFSearchResult & GIF
+export type Props = {
+  onClick?: (result: GIFSearchResult) => void;
+  result: GIFSearchResult & GIF;
 };
 
 type GIF = {
   media_url?: string;
-  description?: string
-}
+  description?: string;
+};
 
 export default function GIF({ onClick, result }: Props) {
-
   return (
     <ImageContainer onClick={onClick ? () => onClick(result) : () => {}}>
       <Video loop muted autoPlay>
-        <source src={result?.media_formats?.webm?.url || result?.media_url} type="video/webm" />
-        <p className="sr-only">{result?.content_description || result?.description}</p>
+        <source
+          src={result?.media_formats?.webm?.url || result?.media_url}
+          type="video/webm"
+        />
+        <p className="sr-only">
+          {result?.content_description || result?.description}
+        </p>
       </Video>
     </ImageContainer>
   );
@@ -42,6 +46,4 @@ const ImageContainer = styled("div", {
   overflow: "hidden",
 
   overflowWrap: "break-word",
-
-
 });

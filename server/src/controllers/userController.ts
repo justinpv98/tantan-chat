@@ -31,7 +31,7 @@ const searchUsers = asyncHandler(async (req: Request, res: Response) => {
 const getRelationships = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  if (req.session.user.id != id) {
+  if (req.session.user.id != Number(id)) {
     res.status(401);
     throw new Error("User is not authorized to access relationships");
   }
@@ -56,7 +56,7 @@ const createRelationship = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { targetId } = req.body;
 
-  if (req.session.user.id != id) {
+  if (req.session.user.id != Number(id)) {
     res.status(401);
     throw new Error("User is not authorized to access relationships");
   }
@@ -95,7 +95,7 @@ const updateRelationship = asyncHandler(async (req: Request, res: Response) => {
   const { id, targetId } = req.params;
   const { type } = req.body;
 
-  if (req.session.user.id != id) {
+  if (req.session.user.id != Number(id)) {
     res.status(401);
     throw new Error("User is not authorized to access relationships");
   }
@@ -162,7 +162,7 @@ const updateRelationship = asyncHandler(async (req: Request, res: Response) => {
 const deleteRelationship = asyncHandler(async (req: Request, res: Response) => {
   const { id, targetId } = req.params;
 
-  if (req.session.user.id != id) {
+  if (req.session.user.id != Number(id)) {
     res.status(401);
     throw new Error("User is not authorized to access relationships");
   }

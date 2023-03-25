@@ -17,9 +17,12 @@ export async function fetchConversation({
 }
 
 export default function useGetConversation(query: string, enabled: boolean) {
-  return useQuery([queryKeys.GET_CONVERSATION, { query }], fetchConversation, {
-    keepPreviousData: true,
-    enabled,
-    staleTime: Infinity
-  });
+
+  return {
+    ...useQuery([queryKeys.GET_CONVERSATION, { query }], fetchConversation, {
+      keepPreviousData: true,
+      enabled,
+      staleTime: Infinity,
+    }),
+  };
 }

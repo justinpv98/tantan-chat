@@ -1,3 +1,5 @@
+export {default as useChatInfo} from "./useChatInfo/useChatInfo";
+export {default as useChatMessageBar} from "./useChatMessageBar/useChatMessageBar";
 export {default as useCreateConversation} from "./useCreateConversation/useCreateConversation";
 export {default as useCurrentConversation} from "./useCurrentConversation/useCurrentConversation";
 export {default as useGetConversation} from "./useGetConversation/useGetConversation";

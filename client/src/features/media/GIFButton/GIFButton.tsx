@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { styled } from "@/stitches.config";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Types
 import { GIFSearchResult } from "../hooks/useSearchGIFs/useSearchGIFs";
 
@@ -16,7 +19,7 @@ import GIFSearchResults from "../GIFSearchResults/GIFSearchResults";
 
 export default function GIFButton() {
   const socket = useSocket();
-  const conversation = useCurrentConversation();
+  const {data: conversation} = useCurrentConversation();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -60,11 +63,6 @@ export default function GIFButton() {
     }
   }
 
-  function onFocusOutside() {
-    setIsPopoverOpen(false);
-    setQuery("");
-    setIsSearching(false);
-  }
 
   function onClickOpen(){
     setQuery("");
@@ -72,7 +70,7 @@ export default function GIFButton() {
   }
 
   function onClickResult(result: GIFSearchResult) {
-    socket.emit("message", {
+    socket.emit(socketEvents.MESSAGE, {
       conversation: conversation?.id,
       media_url: result.media_formats.webm.url,
       description: result.content_description,

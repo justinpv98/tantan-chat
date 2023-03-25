@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@/stitches.config";
+
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
+// Hooks
 import { useAuth, useDebouncedValue, useSocket } from "@/hooks";
 import {
   useCreateConversation,
@@ -60,7 +65,7 @@ export default function Home() {
     conversationId: string,
     {targetIds }: any
   ) {
-    socket.emit("createConversation", conversationId, [targetIds]);
+    socket.emit(socketEvents.CREATE_CONVERSATION, conversationId, [targetIds]);
     navigate(`/c/${conversationId}`);
   }
 

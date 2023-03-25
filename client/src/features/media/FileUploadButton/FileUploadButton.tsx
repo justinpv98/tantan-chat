@@ -1,9 +1,6 @@
 import React, { Fragment } from "react";
 import { styled } from "@/stitches.config";
 
-// Hooks
-import { useFileHandler } from "@/hooks";
-
 // Components
 import { Button, Icon} from "@/features/ui";
 

@@ -50,19 +50,23 @@ export default function Sidebar({
 }
 
 export const Container = styled("section", {
+  position: "fixed",
+  top: 0,
+  zIndex: 100,
   width: "100%",
   py: "$075",
   backgroundColor: "$sage1",
-  borderLeft: "1px solid $sage7",
-  borderRight: "1px solid $sage7",
+  border: "none",
   background: "$background",
   oveflow: "scroll",
+  minHeight: "100vh",
 
   "@lg": {
+    borderLeft: "1px solid $sage7",
+    borderRight: "1px solid $sage7",
     position: "relative",
     zIndex: "$onBase",
     minWidth: "20rem",
     maxWidth: "20rem",
-    minHeight: "100vh",
   },
 });

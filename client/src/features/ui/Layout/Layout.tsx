@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQueryClient } from "react-query";
 import { styled } from "@/stitches.config";
-import queryKeys from "@/constants/queryKeys";
-
-// Types
 
 // Hooks
-import { useAuth, useSocket } from "@/hooks";
-import { useGetConversation,  } from "@/features/chat/hooks";
+import { useMediaQuery, useSocket } from "@/hooks";
+import { useLayout } from "../hooks";
+import {
+  useCurrentConversation,
+  useGetConversation,
+} from "@/features/chat/hooks";
 
 // Components
 import { Navbar } from "@/features/navigation";
@@ -17,13 +17,14 @@ import Flex from "../Flex/Flex";
 import Text from "../Text/Text";
 
 export default function Layout() {
-  const queryClient = useQueryClient();
   const { id: conversationId } = useParams();
   const [showRightMenu, setShowRightMenu] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 59.99em)");
 
   const socket = useSocket();
   socket.connect();
 
+  const { showChat } = useLayout();
   const { data: conversationData } = useGetConversation(
     conversationId || "",
     !!conversationId
@@ -33,24 +34,29 @@ export default function Layout() {
     setShowRightMenu(!showRightMenu);
   }
 
-  return (
-    <LayoutContainer>
-      <Navbar />
-      {conversationData ? (
-        <Chat onClickMore={toggleRightMenu} />
-      ) : (
-        <Flex
-          as="main"
-          justify="center"
-          align="center"
-          css={{ background: "$sage4", color: "$sage11", width: "100%" }}
-        >
+
+  function renderChat() {
+    if (
+      (conversationData && !isMobile) ||
+      (conversationData && isMobile && showChat)
+    ) {
+      return <Chat onClickMore={toggleRightMenu} />;
+    } else {
+      return (
+        <ChatFallback>
           <Text size="xl" color="lowContrast" weight="bold">
             Select a chat or find a friend and start a new conversation
           </Text>
-        </Flex>
-      )}
-      {conversationData && showRightMenu && <ChatRightMenu />}
+        </ChatFallback>
+      );
+    }
+  }
+
+  return (
+    <LayoutContainer>
+      <Navbar />
+      {renderChat()}
+      {conversationData && showRightMenu && <ChatRightMenu toggleRightMenu={toggleRightMenu}/>}
     </LayoutContainer>
   );
 }
@@ -66,7 +72,15 @@ const LayoutContainer = styled("div", {
   },
 });
 
-const ChatFallback = styled("div", {
-  background: "$sage3",
+const ChatFallback = styled("main", {
+  display: "none",
+  background: "$sage4",
   color: "$sage11",
+  width: "100%",
+
+  "@lg": {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

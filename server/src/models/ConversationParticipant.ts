@@ -3,18 +3,18 @@ import pool from "@/db/db";
 import format from "pg-format";
 
 export type ConversationParticipantSchema = {
-  id?: string;
-  conversation?: string;
-  user?: string;
+  id?: number;
+  conversation?: number;
+  user?: number;
   joined_at?: string | number;
   left_at?: string | number;
   created_at?: string;
 };
 
 export class ConversationParticipant extends Model<ConversationParticipantSchema> {
-  id?: string;
-  conversation?: string;
-  "user"?: string;
+  id?: number;
+  conversation?: number;
+  "user"?: number;
   joined_at?: string | number;
   left_at?: string | number;
   created_at?: string;

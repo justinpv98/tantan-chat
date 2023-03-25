@@ -51,13 +51,15 @@ export async function fetchMessages(
 }
 
 export default function useGetMessages(lastMessageId?: string | number) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const getSignal = useAbortController();
-  const conversation = useCurrentConversation();
+  const {data: conversation} = useCurrentConversation();
 
   useLayoutEffect(() => {
     const fetch = async (id: number) => {
+      setIsLoading(true)
       const messages = await fetchMessages(getSignal(), id);
       setMessages(messages);
     };
@@ -65,11 +67,13 @@ export default function useGetMessages(lastMessageId?: string | number) {
     if (conversation?.id) {
       try {
         fetch(conversation.id);
+        setIsLoading(false);
       } catch (isError) {
         setIsError(true);
+        setIsLoading(false);
       }
     }
   }, [conversation]);
 
-  return { messages, setMessages, isError };
+  return { messages, setMessages, isLoading, isError };
 }

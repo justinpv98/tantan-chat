@@ -1,6 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { keyframes } from "@stitches/react";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Hooks
 import { useSocket } from "@/hooks";
 import { useGetTarget } from "../hooks";
@@ -14,18 +17,12 @@ export default function ChatTypingBar() {
   const {data: conversation, target} = useGetTarget();
 
 
-  function typingListener(username: string){
-    const users = [...usersTyping, username];
-    const filteredUsers = [...new Set(users)];
-    setUsersTyping(filteredUsers);
-  }
-
   useEffect(() => {
-    socket.on("typing", typingListener);
+    socket.on(socketEvents.TYPING, typingListener);
 
 
     return () => {
-      socket.off("typing", typingListener)
+      socket.off(socketEvents.TYPING, typingListener)
     }
 
   }, [])
@@ -93,6 +90,14 @@ export default function ChatTypingBar() {
         break;
     }
   }
+
+  function typingListener(username: string){
+    const users = [...usersTyping, username];
+    const filteredUsers = [...new Set(users)];
+    setUsersTyping(filteredUsers);
+  }
+
+  
   return (
     <Box
       css={{

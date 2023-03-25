@@ -7,11 +7,11 @@ import { User, UserSchema } from "./User";
 const MESSAGE_LIMIT = 50;
 
 export type MessageSchema = {
-  id?: string;
-  author?: string | UserSchema;
-  conversation?: string;
+  id?: number;
+  author?: number | UserSchema;
+  conversation?: number;
   data?: string;
-  parent?: string;
+  parent?: number;
   type?: number;
   media_url?: string;
   description?: string;
@@ -20,11 +20,11 @@ export type MessageSchema = {
 };
 
 export class Message extends Model<MessageSchema> {
-  id?: string;
-  author?: string | UserSchema;
-  conversation?: string;
+  id?: number;
+  author?: number | UserSchema;
+  conversation?: number;
   data?: string;
-  parent?: string;
+  parent?: number;
   type?: number;
   media_url?: string;
   description?: string;

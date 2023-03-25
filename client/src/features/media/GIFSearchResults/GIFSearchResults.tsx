@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "@/stitches.config";
 //@ts-expect-error
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import Masonry  from "react-responsive-masonry";
 
 // Components
 import GIF from "../GIF/GIF";

@@ -2,6 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@/stitches.config";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Hooks
 import { useSocket } from "@/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
@@ -19,20 +22,21 @@ export default function Friends() {
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
 
   async function onUserItemClick(userId: string) {
-    mutate({targetIds: [userId], type: 1});
+    mutate({targetIds: [Number(userId)], type: 1});
   }
 
   function onCreateConversationSuccess(
     conversationId: string,
     {targetIds}: any
   ) {
-    socket.emit("createConversation", conversationId, targetIds);
+    socket.emit(socketEvents.CREATE_CONVERSATION, conversationId, targetIds);
     navigate(`/friends/c/${conversationId}`);
   }
 
   return (
     <Sidebar
       title="Friends"
+      css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
     >
       <ItemContainer direction="column">
         {relationships?.length ?

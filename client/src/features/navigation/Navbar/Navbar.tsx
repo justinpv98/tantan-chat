@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
 import { useParams, Outlet } from "react-router-dom";
+import { useQueryClient } from "react-query";
 import { styled } from "@/stitches.config";
 import { navRoutes } from "@/constants/routes";
-import queryClient from "@/config/queryClient";
+
+// Constants
 import queryKeys from "@/constants/queryKeys";
+import socketEvents from "@/constants/socketEvents";
 
 // Types
 import { ConversationData } from "@/features/chat/hooks/useGetConversations/useGetConversations";
@@ -21,6 +24,7 @@ import Settings from "../Settings/Settings";
 type Props = {};
 
 export default function Navbar({}: Props) {
+  const queryClient = useQueryClient();
   const { id } = useParams();
   const { id: userId } = useAuth();
   const { data: conversations, isSuccess } = useGetConversations(true);
@@ -78,54 +82,44 @@ export default function Navbar({}: Props) {
     }
   }
 
-  async function createGroupDM(conversation: ConversationData){
-    if (conversations !== undefined && conversations.length >= 1){
-      queryClient.setQueryData(
-        queryKeys.GET_CONVERSATIONS,
-        (oldData: any) => {
-          return [conversation, ...oldData];
-        }
-      );
+  async function createGroupDM(conversation: ConversationData) {
+    if (conversations !== undefined && conversations.length >= 1) {
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        return [conversation, ...oldData];
+      });
     } else {
-      queryClient.setQueryData(
-        queryKeys.GET_CONVERSATIONS,
-        (oldData: any) => {
-          return [conversation];
-        }
-      );
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        return [conversation];
+      });
     }
   }
-  
-  function changeConversationName(conversationId: string, name: string){
-    if (conversations !== undefined && conversations.length >= 1){
-      queryClient.setQueryData(
-        queryKeys.GET_CONVERSATIONS,
-        (oldData: any) => {
-          const newData = [...oldData];
-          const conversation = newData.find(conversation => conversation.id == conversationId)
-          conversation.name = name;
-          return newData;
-        }
-      );
+
+  function changeConversationName(conversationId: string, name: string) {
+    if (conversations !== undefined && conversations.length >= 1) {
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        const newData = [...oldData];
+        const conversation = newData.find(
+          (conversation) => conversation.id == conversationId
+        );
+        conversation.name = name;
+        return newData;
+      });
     } else {
       return;
     }
   }
 
-
-
-
   useEffect(() => {
-    socket.on("setStatus", setStatus);
-    socket.on("message", message);
-    socket.on("createGroupDM", createGroupDM)
-    socket.on("changeConversationName", changeConversationName)
+    socket.on(socketEvents.SET_STATUS, setStatus);
+    socket.on(socketEvents.MESSAGE, message);
+    socket.on(socketEvents.CREATE_GROUP_DM, createGroupDM);
+    socket.on(socketEvents.CHANGE_CONVERSATION_NAME, changeConversationName);
 
     return () => {
-      socket.off("setStatus", setStatus);
-      socket.off("message", message);
-      socket.off("createGroupDM", createGroupDM)
-      socket.off("changeConversationName")
+      socket.off(socketEvents.SET_STATUS, setStatus);
+      socket.off(socketEvents.MESSAGE, message);
+      socket.off(socketEvents.CREATE_GROUP_DM, createGroupDM);
+      socket.off(socketEvents.CHANGE_CONVERSATION_NAME);
     };
   }, [socket, isSuccess]);
 
@@ -133,7 +127,7 @@ export default function Navbar({}: Props) {
     <Flex as="nav">
       <SideNavigation>
         <NavigationWrapper>
-          {navRoutes.map((route) => {
+          {navRoutes.map((route, index) => {
             return (
               <SideNavigationItem
                 label={route.label}
@@ -144,11 +138,12 @@ export default function Navbar({}: Props) {
                 }
                 icon={route.icon}
                 key={route.path}
+                showLabel={index === 0}
               />
             );
           })}
           <li>
-            <Settings isMobile />
+            <Settings isMobile side="top" />
           </li>
         </NavigationWrapper>
         <Settings />

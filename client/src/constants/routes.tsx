@@ -4,6 +4,7 @@ import { PrivateRoute, RestrictedRoute } from "@/features/navigation";
 
 /* Elements */
 import { SocketProvider } from "@/features/socket/socket.context";
+import { LayoutProvider } from "@/features/ui/Layout/layout.context";
 import { Friends, Home, Login, Notifications, Register } from "@/pages";
 import { Layout } from "@/features/ui";
 import { IconProps } from "@/features/ui/Icon/Icon";
@@ -13,9 +14,11 @@ const routes = [
     path: "/",
     element: (
       <SocketProvider>
-        <PrivateRoute redirectPath="/login">
-          <Layout />
-        </PrivateRoute>
+        <LayoutProvider>
+          <PrivateRoute redirectPath="/login">
+            <Layout />
+          </PrivateRoute>
+        </LayoutProvider>
       </SocketProvider>
     ),
     children: [

@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
+// Constants
+import socketEvents from "@/constants/socketEvents";
+
 // Types
 import { Relationship } from "@/features/friends/hooks/useGetRelationships/useGetRelationships";
 
 // Hooks
 import { useSocket } from "@/hooks";
+import { useLayout } from "@/features/ui/hooks";
 import { useCreateConversation } from "@/features/chat/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
 
@@ -23,6 +27,7 @@ export default function GroupConversationDialog({}: Props) {
   const navigate = useNavigate();
   const socket = useSocket();
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
+  const { setShowChat} = useLayout();
 
   function onChange(checked: boolean | "indeterminate", value: number) {
     if (checked == true) {
@@ -37,6 +42,7 @@ export default function GroupConversationDialog({}: Props) {
     if (targetIds.length > 0) {
       mutate({ targetIds, type: 2 });
     }
+    setShowChat(true)
   }
 
   function onOpen(){
@@ -47,7 +53,7 @@ export default function GroupConversationDialog({}: Props) {
     conversationId: string,
     { targetIds, type }: any
   ) {
-    socket.emit("createConversation", conversationId, targetIds, type);
+    socket.emit(socketEvents.CREATE_CONVERSATION, conversationId, targetIds, type);
     navigate(`/c/${conversationId}`);
   }
 
