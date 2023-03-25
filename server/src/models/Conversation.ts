@@ -7,14 +7,14 @@ import { MessageSchema as Message, MessageSchema } from "./Message";
 import { array } from "zod";
 
 export type ConversationSchema = {
-  id?: string;
-  type?: string;
-  owner?: string;
+  id?: number;
+  type?: 1 | 2;
+  owner?: number;
   name?: string;
 };
 
 type FoundConversationSchema = {
-  id: string;
+  id: number;
   name: string | null;
   type: "dm" | "group chat";
   participants: Participant[];
@@ -22,15 +22,15 @@ type FoundConversationSchema = {
 };
 
 export class Conversation extends Model<ConversationSchema> {
-  id?: string;
-  type: string;
-  owner?: string;
+  id?: number;
+  type: 1 | 2;
+  owner?: number;
   name?: string;
 
   constructor(config?: ConversationSchema) {
     super("conversation");
     this.id = config?.id;
-    this.type = config?.type || "1";
+    this.type = config?.type || 1;
     this.owner = config?.owner;
     this.name = config?.name;
   }
@@ -49,7 +49,7 @@ export class Conversation extends Model<ConversationSchema> {
     return data;
   }
 
-  async findExistingConversation(conversationId: string) {
+  async findExistingConversation(conversationId: number) {
     const query = format(
       `SELECT 
     to_json(convo) 
@@ -103,7 +103,7 @@ export class Conversation extends Model<ConversationSchema> {
     return data;
   }
 
-  async findExistingConversations(userId: string) {
+  async findExistingConversations(userId: number) {
     // Get existing conversation with messages and participants in one query using
     // Postgres's native json formatting
     const query = format(

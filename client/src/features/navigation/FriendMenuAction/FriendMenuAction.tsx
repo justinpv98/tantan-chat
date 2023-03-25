@@ -26,7 +26,7 @@ type Props = {};
 export default function FriendMenuAction() {
   const queryClient = useQueryClient();
   const { id } = useAuth();
-  const { data, target } = useGetTarget();
+  const { target } = useGetTarget();
   const socket = useSocket();
   const { data: relationships } = useGetRelationships(false);
   const { mutate: sendFriendRequest } = useCreateRelationship(

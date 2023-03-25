@@ -22,7 +22,7 @@ export default function Friends() {
   const { mutate } = useCreateConversation(onCreateConversationSuccess);
 
   async function onUserItemClick(userId: string) {
-    mutate({targetIds: [userId], type: 1});
+    mutate({targetIds: [Number(userId)], type: 1});
   }
 
   function onCreateConversationSuccess(

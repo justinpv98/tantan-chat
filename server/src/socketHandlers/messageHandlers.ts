@@ -16,7 +16,7 @@ export default function messageHandlers(io: any, socket: SocketWithChannels) {
     await message.save();
 
     const conversation = await ConversationModel.findExistingConversation(
-      message.conversation
+      Number(message.conversation)
     );
 
     message.author = socket.user;

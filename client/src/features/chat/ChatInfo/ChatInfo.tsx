@@ -1,15 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useQueryClient } from "react-query";
 import { styled } from "@/stitches.config";
 
-// Constants
-import queryKeys from "@/constants/queryKeys";
-import socketEvents from "@/constants/socketEvents";
-
 // Hooks
-import { useAuth, useSocket, useTheme } from "@/hooks";
-import { useGetTarget, useGetConversations } from "../hooks";
+import { useChatInfo } from "../hooks";
 
 // Components
 import { Avatar, Box, Button, Flex, Heading, Icon } from "@/features/ui";
@@ -19,78 +11,16 @@ type Props = {
 };
 
 export default function ChatInfo({ onClickMore }: Props) {
-  const { id: userId } = useAuth();
-  const { id } = useParams();
-  const queryClient = useQueryClient();
-  const socket = useSocket();
-  const [conversationName, setConversationName] = useState<
-    string | null | undefined
-  >("");
-  const { data: conversation, target } = useGetTarget();
-  const { theme } = useTheme();
-  const { data: conversations, dataUpdatedAt } = useGetConversations();
-
-  useEffect(() => {
-    if (conversation?.type != 1) {
-      setConversationName(conversation?.name);
-    }
-  }, [id, conversation?.name]);
-
-  useEffect(() => {
-    socket.on(socketEvents.CHANGE_CONVERSATION_NAME, changeName);
-
-    return () => {
-      socket.off(socketEvents.CHANGE_CONVERSATION_NAME, changeName);
-    };
-  });
-
-  useEffect(() => {
-    const convoIndex =
-      conversations?.findIndex((obj) => obj.id === Number(id)) || 0;
-    if (
-      target &&
-      !conversation?.participants &&
-      conversations &&
-      convoIndex > 0
-    ) {
-      target.status = conversations[convoIndex].participants[0].status;
-    }
-  }, [dataUpdatedAt]);
-
-  function changeName(name: string) {
-    setConversationName(name);
-
-    queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
-      const data = [...oldData];
-      const currentConversation = data.find(
-        (conversation) => String(conversation.id) == id
-      );
-      currentConversation.name = conversationName;
-      const filteredData = data.filter(
-        (conversation) => conversation.id !== id
-      );
-      return [currentConversation, ...filteredData];
-    });
-  }
-
-  function onConversationNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setConversationName(e.target.value);
-  }
-
-  function onConversationNameBlur(e: React.FocusEvent<HTMLInputElement>) {
-    socket.emit("changeConversationName", {
-      conversationId: id,
-      name: conversationName,
-    });
-  }
-  const themePreference =
-    theme === "dark"
-      ? {
-          boxShadow: "none",
-          borderBottom: "1px solid $sage7",
-        }
-      : undefined;
-
+  const {
+    conversation,
+    conversationName,
+    target,
+    userId,
+    onConversationNameBlur,
+    onConversationNameChange,
+    themePreference,
+  } = useChatInfo();
+  
   return (
     <Container as="header" css={themePreference}>
       <Flex align="center">
@@ -114,7 +44,7 @@ export default function ChatInfo({ onClickMore }: Props) {
           {conversation?.type == 2 && conversation.owner == userId && (
             <DMInput
               maxLength={64}
-              value={conversationName || ""}
+              defaultValue={conversationName || ""}
               onBlur={onConversationNameBlur}
               onChange={onConversationNameChange}
             />
@@ -156,7 +86,7 @@ const ConversationName = styled(Heading, {
   maxWidth: "15.5rem",
   fontSize: "1rem",
   color: "$onBackground",
-  marginLeft: "$025"
+  marginLeft: "$025",
 });
 
 const DMInput = styled("input", {

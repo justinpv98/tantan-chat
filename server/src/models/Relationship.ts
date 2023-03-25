@@ -3,17 +3,17 @@ import pool from "@/db/db";
 import format from "pg-format";
 
 export type RelationshipSchema = {
-  id?: string;
+  id?: number;
   type?: 1 | 2 | 3 | 4;
-  actor?: string;
-  target?: string;
+  actor?: number;
+  target?: number;
 };
 
 export class Relationship extends Model<RelationshipSchema> {
-  id?: string;
+  id?: number;
   type?: 1 | 2 | 3 | 4;
-  actor?: string;
-  target?: string;
+  actor?: number;
+  target?: number;
 
   constructor(config?: RelationshipSchema) {
     super("relationship");

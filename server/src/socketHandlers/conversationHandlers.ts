@@ -38,7 +38,7 @@ export default function messageHandlers(
 
       if (type === 2) {
         const conversation = await ConversationModel.findExistingConversation(
-          conversationId
+          Number(conversationId)
         );
 
         io.in(conversation.id).emit(socketEvents.CREATE_GROUP_DM, conversation);

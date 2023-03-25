@@ -1,5 +1,8 @@
 import { useTheme } from "@/hooks";
 
+// Types
+import { Message } from "@/features/chat/hooks/useGetMessages/useGetMessages";
+
 // Components
 import { Icon, Popover } from "@/features/ui";
 import EmojiPicker, {
@@ -7,8 +10,6 @@ import EmojiPicker, {
   EmojiStyle,
   EmojiClickData,
 } from "emoji-picker-react";
-
-import { Message } from "@/features/chat/hooks/useGetMessages/useGetMessages";
 
 type Props = {
   setMessage: React.Dispatch<React.SetStateAction<any>>;

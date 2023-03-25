@@ -4,7 +4,7 @@ import argon2 from "argon2";
 import Model from "./Model";
 
 export type UserSchema = {
-  id?: string;
+  id?: number;
   email?: string;
   username?: string;
   password?: string;
@@ -13,7 +13,7 @@ export type UserSchema = {
 };
 
 export class User extends Model<UserSchema> {
-  id?: string;
+  id?: number;
   email?: string;
   username?: string;
   password?: string;

@@ -6,7 +6,7 @@ import { useGetTarget } from "@/features/chat/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
 
 // Components
-import { Avatar, Box, Button, Flex, Icon, Sidebar, Text } from "@/features/ui";
+import { Avatar, Flex, Sidebar } from "@/features/ui";
 import { FriendMenuAction } from "@/features/navigation";
 
 export default function ChatRightMenu() {

@@ -1,6 +1,10 @@
 import React from "react";
 import { styled } from "@/stitches.config";
 
+// Types
+import { Message as TMessage } from "../hooks/useGetMessages/useGetMessages";
+import { Props as GIFProps } from "@/features/media/GIF/GIF";
+
 // Components
 import { Avatar, Box, Flex, Image, Text } from "@/features/ui";
 import { GIF } from "@/features/media";
@@ -9,7 +13,7 @@ import { GIF } from "@/features/media";
 import { useAuth } from "@/hooks";
 
 type Props = {
-  message: any;
+  message: TMessage;
   showUsername: boolean;
 };
 
@@ -19,37 +23,38 @@ export default function ChatMessage({ message, showUsername }: Props) {
   const { id } = useAuth();
 
   function isUser() {
-    return message.author.id == id;
+    return message?.author.id == id;
   }
 
   function renderMessage() {
-    switch (message.type) {
+    switch (message?.type) {
       case 1:
-        return <Message isUser={isUser()}>{message.data}</Message>;
+        return <Message isUser={isUser()}>{message?.data}</Message>;
       case 2:
-        return <GIF result={message} />;
+        return (
+          message && <GIF result={message as unknown as GIFProps["result"]} />
+        );
       case 3:
         return (
           <ImageContainer>
             <Image
-            css={{borderRadius: "$050"}}
-            src={message.media_url || ""}
-            alt={message.description || "image"}
-          />
+              css={{ borderRadius: "$050" }}
+              src={message.media_url || ""}
+              alt={message.description || "image"}
+            />
           </ImageContainer>
-          
         );
       default:
         break;
     }
   }
 
-  function renderAvatar(){
-    if(!isUser()){
-      if(showUsername){
-        return <Avatar src={message.author.profile_picture} />
+  function renderAvatar() {
+    if (!isUser()) {
+      if (showUsername) {
+        return <Avatar src={message?.author.profile_picture} />;
       } else {
-        return <Box css={{width: "2.5rem", height: "2.5rem"}} />;
+        return <Box css={{ width: "2.5rem", height: "2.5rem" }} />;
       }
     } else {
       return null;
@@ -64,12 +69,21 @@ export default function ChatMessage({ message, showUsername }: Props) {
       isUser={isUser()}
       className={!isUser() ? "user" : ""}
     >
-      <Flex direction="column" css={{gap: "$025"}}>
-      {!isUser() && showUsername && <Text weight="bold" css={{marginInline: "3.25rem"}} className={'username'}> {message.author.username}</Text>}
-      <Flex css={{gap: "$050"}}>
-      {renderAvatar()}
-      {renderMessage()}
-      </Flex>
+      <Flex direction="column" css={{ gap: "$025" }}>
+        {!isUser() && showUsername && (
+          <Text
+            weight="semibold"
+            css={{ marginInline: "3.25rem" }}
+            className={"username"}
+          >
+            {" "}
+            {message?.author.username}
+          </Text>
+        )}
+        <Flex css={{ gap: "$050" }}>
+          {renderAvatar()}
+          {renderMessage()}
+        </Flex>
       </Flex>
     </MessageContainer>
   );
@@ -123,7 +137,7 @@ const Message = styled("p", {
   },
 });
 
-const ImageContainer = styled('div', {
+const ImageContainer = styled("div", {
   maxHeight: "320px",
   maxWidth: "300px",
-})
+});

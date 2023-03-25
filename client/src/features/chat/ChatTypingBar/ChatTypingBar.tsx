@@ -17,12 +17,6 @@ export default function ChatTypingBar() {
   const {data: conversation, target} = useGetTarget();
 
 
-  function typingListener(username: string){
-    const users = [...usersTyping, username];
-    const filteredUsers = [...new Set(users)];
-    setUsersTyping(filteredUsers);
-  }
-
   useEffect(() => {
     socket.on(socketEvents.TYPING, typingListener);
 
@@ -96,6 +90,14 @@ export default function ChatTypingBar() {
         break;
     }
   }
+
+  function typingListener(username: string){
+    const users = [...usersTyping, username];
+    const filteredUsers = [...new Set(users)];
+    setUsersTyping(filteredUsers);
+  }
+
+  
   return (
     <Box
       css={{

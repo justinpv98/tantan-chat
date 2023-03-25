@@ -111,7 +111,7 @@ async function joinConversations(socket: SocketWithChannels) {
     where: { user: socket.user.id },
   })) as unknown as { conversation_id: string }[];
 
-  socket.join(socket.user.id);
+  socket.join(String(socket.user.id));
 
   if (conversations) {
     conversations.forEach((conversationData) => {
