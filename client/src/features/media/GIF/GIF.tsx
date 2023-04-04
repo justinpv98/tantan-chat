@@ -44,6 +44,8 @@ const ImageContainer = styled("div", {
   maxWidth: "300px",
   cursor: "pointer",
   overflow: "hidden",
+  borderRadius: "$050",
+
 
   overflowWrap: "break-word",
 });

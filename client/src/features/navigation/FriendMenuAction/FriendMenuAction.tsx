@@ -63,7 +63,7 @@ export default function FriendMenuAction() {
         updateRelationshipInCache(relationship)
       );
     };
-  }, []);
+  }, [target?.id]);
 
   function hasRelationship() {
     if (relationships && relationships?.length && target) {
@@ -102,6 +102,8 @@ export default function FriendMenuAction() {
   }
 
   function addRelationshipToCache(newData: any) {
+
+
     queryClient.setQueryData(
       [queryKeys.GET_RELATIONSHIPS, id],
       (oldData: any) => {
@@ -140,7 +142,7 @@ export default function FriendMenuAction() {
     queryClient.setQueryData(
       [queryKeys.GET_RELATIONSHIPS, id],
       (oldData: any) => {
-        console.log(oldData, newData);
+     
         if (oldData && oldData.length) {
           const data = oldData.map((data: Relationship) => {
             if (data.id == newData.id) {
@@ -160,7 +162,6 @@ export default function FriendMenuAction() {
   function renderRelationship() {
     const relationship = hasRelationship();
     if (relationship) {
-      console.log(relationship.type);
       switch (relationship.type) {
         case 1:
           return (

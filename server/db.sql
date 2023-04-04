@@ -121,30 +121,37 @@ CREATE UNIQUE INDEX idx_msg_convo ON "message" (
     conversation
 );
 
--- CREATE TABLE IF NOT EXISTS attachment (
---     id SERIAL PRIMARY KEY,
---     message INT NOT NULL,
---     file_name VARCHAR(255) NOT NULL,
---     url VARCHAR(255) NOT NULL,
---     FOREIGN KEY (message)
---         REFERENCES message (id)
--- );
+CREATE TABLE IF NOT EXISTS notification_type (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(48) NOT NULL
+);
 
--- CREATE UNIQUE INDEX idx_att_msg ON "attachment" (
---     message
--- );
+CREATE TABLE IF NOT EXISTS notification (
+    id SERIAL PRIMARY KEY,
+    type INT NOT NULL,
+    actor INT,
+    target INT NOT NULL,
+    read BOOLEAN DEFAULT false NOT NULL,
+    FOREIGN KEY (type)
+        REFERENCES notification_type (id),
+    FOREIGN KEY (actor)
+        REFERENCES "user" (id),
+    FOREIGN KEY (target)
+        REFERENCES "user" (id)
+);
 
-
--- CREATE TABLE IF NOT EXISTS unread_messages (
---     id SERIAL PRIMARY KEY,
---     message INT NOT NULL,
---     "user" INT NOT NULL,
---     FOREIGN KEY (message)
---         REFERENCES message (id),
---     FOREIGN KEY ("user")
---         REFERENCES "user" (id)
--- );
-
+CREATE TABLE IF NOT EXISTS unread_message (
+    id SERIAL PRIMARY KEY,
+    reader INT NOT NULL,
+    message INT NOT NULL,
+    conversation INT NOT NULL,
+    FOREIGN KEY (reader)
+        REFERENCES "user" (id),
+    FOREIGN KEY (message)
+        REFERENCES message (id),
+    FOREIGN KEY (conversation)
+        REFERENCES conversation (id)
+);
 
 INSERT INTO user_status (
     type
@@ -199,6 +206,10 @@ INSERT INTO message_type (
 INSERT INTO message_type (
     type
 ) VALUES ('image');
+
+INSERT INTO notification_type (
+    type
+) VALUES ('friend request accepted');
 
 CREATE  FUNCTION update_modified_at()
 RETURNS TRIGGER AS $$

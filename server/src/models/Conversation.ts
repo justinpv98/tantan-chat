@@ -4,7 +4,6 @@ import format from "pg-format";
 
 import { ConversationParticipantSchema as Participant } from "./ConversationParticipant";
 import { MessageSchema as Message, MessageSchema } from "./Message";
-import { array } from "zod";
 
 export type ConversationSchema = {
   id?: number;
@@ -19,6 +18,7 @@ type FoundConversationSchema = {
   type: "dm" | "group chat";
   participants: Participant[];
   last_message: Message[] | null;
+  unread_count: number;
 };
 
 export class Conversation extends Model<ConversationSchema> {
@@ -49,7 +49,7 @@ export class Conversation extends Model<ConversationSchema> {
     return data;
   }
 
-  async findExistingConversation(conversationId: number) {
+  async findExistingConversation(conversationId: number, userId: number) {
     const query = format(
       `SELECT 
     to_json(convo) 
@@ -60,6 +60,7 @@ export class Conversation extends Model<ConversationSchema> {
         c.name, 
         c.owner, 
         c.type,
+        ( SELECT COUNT(id) FROM unread_message WHERE unread_message.reader = %L AND unread_message.conversation = %L) AS unread_count,
         (
           SELECT 
             json_agg(participant) 
@@ -94,6 +95,9 @@ export class Conversation extends Model<ConversationSchema> {
         conversation c 
       WHERE 
         c.id = %L) convo `,
+      userId,
+      conversationId,
+      conversationId,
       conversationId
     );
 
@@ -108,7 +112,9 @@ export class Conversation extends Model<ConversationSchema> {
     // Postgres's native json formatting
     const query = format(
       `SELECT
-      json_build_object('id', c.id, 'name', c.name, 'type', c.type, 'participants', (
+      json_build_object('id', c.id, 'name', c.name, 'type', c.type,
+      'unread_count', ( SELECT COUNT(id) FROM unread_message WHERE unread_message.reader = %L AND unread_message.conversation = c.id),
+      'participants', (
               SELECT
                   json_agg(p)
               FROM (
@@ -136,6 +142,7 @@ export class Conversation extends Model<ConversationSchema> {
       c.id
     
      `,
+      userId,
       userId,
       userId
     );

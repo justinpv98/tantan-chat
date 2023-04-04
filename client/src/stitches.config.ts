@@ -142,8 +142,7 @@ export const globalStyles = globalCss({
     position: "absolute !important",
     width: "1px !important",
     whiteSpace: "nowrap !important",
-  },
-  
+  },  
   ".epr-dark-theme": {
     "--epr-bg-color": "transparent !important",
     "--epr-category-icon-active-color": "var(--colors-primary) !important",

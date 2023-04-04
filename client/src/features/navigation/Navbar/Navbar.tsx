@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useParams, Outlet } from "react-router-dom";
 import { useQueryClient } from "react-query";
 import { styled } from "@/stitches.config";
@@ -25,11 +25,14 @@ type Props = {};
 
 export default function Navbar({}: Props) {
   const queryClient = useQueryClient();
-  const { id } = useParams();
+  const { id: conversationId } = useParams();
   const { id: userId } = useAuth();
   const { data: conversations, isSuccess } = useGetConversations(true);
   useGetRelationships(true);
   const socket = useSocket();
+  const notificationSoundRef = useRef<HTMLAudioElement>(null)
+  const notificationPlayerRef = useRef<HTMLButtonElement>(null)
+  const notification = new URL("../../../assets/notification.mp3", import.meta.url).href
 
   function setStatus(userId: string, status: 1 | 2 | 3 | 4) {
     queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
@@ -47,14 +50,19 @@ export default function Navbar({}: Props) {
     });
   }
 
+  function playNotificationSound(){
+    notificationSoundRef.current?.play();
+  }
+
   async function message(message: Message, conversation: ConversationData) {
     if (message?.author.id == userId) return;
 
-    const conversationId = message?.conversation;
+    const messageConversationId = message?.conversation;
 
     const hasConversation = conversations?.find(
-      ({ id }) => id == conversationId
+      ({ id }) => id == messageConversationId
     );
+
 
     if (conversations !== undefined && conversations.length >= 1) {
       if (hasConversation) {
@@ -62,6 +70,15 @@ export default function Navbar({}: Props) {
           queryKeys.GET_CONVERSATIONS,
           (oldData: any) => {
             const idSet = new Set();
+
+            if (Number(conversationId) != hasConversation.id) {
+              hasConversation.unread_count = hasConversation.unread_count + 1 || 1;
+              notificationPlayerRef.current?.click();
+            } else {
+              hasConversation.unread_count = 0;
+              socket.emit(socketEvents.READ_MESSAGES, conversationId)
+            }
+
             const convos = [hasConversation, ...oldData].filter(({ id }) =>
               idSet.has(id) ? false : idSet.add(id)
             );
@@ -70,6 +87,9 @@ export default function Navbar({}: Props) {
           }
         );
       } else {
+        conversation.unread_count = 1;
+        notificationPlayerRef.current?.click();
+
         queryClient.setQueryData(
           queryKeys.GET_CONVERSATIONS,
           (oldData: any) => {
@@ -78,7 +98,10 @@ export default function Navbar({}: Props) {
         );
       }
     } else {
+      conversation.unread_count = 1;
+      notificationPlayerRef.current?.click();
       queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
+
     }
   }
 
@@ -121,7 +144,7 @@ export default function Navbar({}: Props) {
       socket.off(socketEvents.CREATE_GROUP_DM, createGroupDM);
       socket.off(socketEvents.CHANGE_CONVERSATION_NAME);
     };
-  }, [socket, isSuccess]);
+  }, [socket, isSuccess, conversationId]);
 
   return (
     <Flex as="nav">
@@ -134,7 +157,7 @@ export default function Navbar({}: Props) {
                 path={
                   route.path +
                   (route.path === "/" ? "" : "/") +
-                  (id ? `c/${id}` : "")
+                  (conversationId ? `c/${conversationId}` : "")
                 }
                 icon={route.icon}
                 key={route.path}
@@ -148,6 +171,8 @@ export default function Navbar({}: Props) {
         </NavigationWrapper>
         <Settings />
       </SideNavigation>
+      <button className="sr-only" tabIndex={0} ref={notificationPlayerRef} onClick={playNotificationSound}/>
+      <audio className="sr-only" tabIndex={0} src={notification} ref={notificationSoundRef} />
       <Outlet />
     </Flex>
   );

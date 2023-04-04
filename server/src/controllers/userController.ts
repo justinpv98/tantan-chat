@@ -5,6 +5,7 @@ import { Request, Response } from "express-serve-static-core";
 import UserModel from "@/models/User";
 import ConversationParticipantModel from "@/models/ConversationParticipant";
 import RelationshipModel from "@/models/Relationship";
+import socketEvents from "@/config/socketEvents";
 
 // @desc    Search users by username
 // @route   GET /api/users/search
@@ -83,7 +84,8 @@ const createRelationship = asyncHandler(async (req: Request, res: Response) => {
 
   const io = req.app.get("io");
 
-  io.to(Number(targetId)).emit("createRelationship", targetToUserRelationship);
+  io.to(String(targetId)).emit(socketEvents.CREATE_RELATIONSHIP, targetToUserRelationship);
+
 
   res.status(200).json(userToTargetRelationship);
 });
@@ -148,8 +150,8 @@ const updateRelationship = asyncHandler(async (req: Request, res: Response) => {
   );
 
   const io = req.app.get("io");
-  io.to(Number(targetId)).emit(
-    "updateRelationship",
+  io.to(String(targetId)).emit(
+    socketEvents.UPDATE_RELATIONSHIP,
     updatedTargetToUserRelationship
   );
 
@@ -183,7 +185,7 @@ const deleteRelationship = asyncHandler(async (req: Request, res: Response) => {
 
   const io = req.app.get("io");
 
-  io.to(Number(targetId)).emit("removeRelationship", targetToUserRelationships[0].id);
+  io.to(String(targetId)).emit(socketEvents.REMOVE_RELATIONSHIP, targetToUserRelationships[0].id);
   
   res.status(200).json(userToTargetRelationships[0]);
 });

@@ -59,6 +59,7 @@ export default function Home() {
     mutate({targetIds: [userId], type: 1});
     setQuery("");
     setSearching(false);
+  
   }
 
   function onCreateConversationSuccess(

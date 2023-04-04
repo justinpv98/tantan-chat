@@ -57,12 +57,6 @@ export default function ChatInfo({ onClickMore }: Props) {
         </Flex>
       </NameContainer>
       <Box css={{ color: "$sage11" }}>
-        <Button icon="center" transparent>
-          <Icon icon="phone" />
-        </Button>
-        <Button icon="center" transparent>
-          <Icon icon="video-camera" />
-        </Button>
         <Button icon="center" transparent onClick={onClickMore}>
           <Icon icon="ellipsis-vertical" />
         </Button>

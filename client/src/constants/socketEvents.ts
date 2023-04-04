@@ -4,6 +4,7 @@ enum socketEvents {
   CREATE_GROUP_DM = "createGroupDM",
   CREATE_RELATIONSHIP = "createRelationship",
   MESSAGE = "message",
+  READ_MESSAGES = "readMessages",
   REMOVE_RELATIONSHIP = "removeRelationship",
   SET_STATUS = "setStatus",
   TYPING = "typing",
