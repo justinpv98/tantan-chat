@@ -12,7 +12,7 @@ export async function readNotifications(targetId: string | number) {
 }
 
 export default function useReadNotifications(
-  onSuccess?: (targetId: string | number) => void
+  onSuccess: any
 ) {
   const { id } = useAuth();
 

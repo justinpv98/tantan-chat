@@ -28,7 +28,7 @@ export default function Navbar({}: Props) {
     notificationSoundRef.current?.play();
   }
 
-  const { notificationPlayerRef } = useNavbarSocketEvents();
+  const { notificationPlayerRef } = useNavbarSocketEvents(playNotificationSound);
 
   return (
     <Flex as="nav">
@@ -46,6 +46,7 @@ export default function Navbar({}: Props) {
                 icon={route.icon}
                 key={route.path}
                 showLabel={index === 0}
+                isNotifications={route.path === "/notifications"}
               />
             );
           })}

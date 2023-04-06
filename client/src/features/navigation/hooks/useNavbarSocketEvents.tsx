@@ -19,7 +19,7 @@ import { useGetNotifications } from "@/features/notifications/hooks";
 
 type Props = {};
 
-export default function useNavbarSocketEvents() {
+export default function useNavbarSocketEvents(onReceiveNotification: () => {}) {
   const queryClient = useQueryClient();
   const { id: userId } = useAuth();
   const socket = useSocket();
@@ -139,6 +139,7 @@ export default function useNavbarSocketEvents() {
   }
 
   function sendNotification(notification: NotificationData){
+    onReceiveNotification();
     if(notifications !== undefined && notifications.length >= 1){
       queryClient.setQueryData([queryKeys.GET_NOTIFICATIONS, {query: userId}], (oldData: any) => {
         const newData = [notification, ...oldData]

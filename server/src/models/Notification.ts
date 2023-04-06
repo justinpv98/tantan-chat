@@ -30,7 +30,7 @@ export class Notification extends Model<NotificationSchema> {
 
  async getNotifications(targetId: number) {
     const query = format(
-      `SELECT id, type, target, 
+      `SELECT id, type, target, read,
       (SELECT row_to_json("user")::jsonb-'password'-'email' 
       FROM "user" 
       WHERE "user".id = notification.actor) AS actor

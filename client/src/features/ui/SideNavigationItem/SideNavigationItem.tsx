@@ -2,30 +2,54 @@ import React from "react";
 import { styled } from "@/stitches.config";
 import { NavLink } from "react-router-dom";
 
+// Hooks
+import { useGetNotifications } from "@/features/notifications/hooks";
+
+// Components
 import Flex from "../Flex/Flex";
 import Icon, { IconProps } from "../Icon/Icon";
 
 type Props = {
+  [key: string]: any;
   label: string;
   icon?: IconProps["icon"];
   path: string;
   showLabel: boolean;
+  isNotifications?: boolean;
 };
 
-export default function SideNavigationItem({
-  label,
-  icon,
-  path,
-  showLabel,
-}: Props) {
+export default function SideNavigationItem(props: Props) {
+  switch (props.label) {
+    case "Notifications":
+      return <NotificationsNavItem {...props} />;
+    default:
+      return <NavigationItem {...props} />;
+  }
+}
+
+function NavigationItem(props: Props) {
   return (
     <Item>
-      <Link
-        aria-label={label}
-        to={path}
-        end
-      >
-        <Icon icon={icon} />
+      <Link aria-label={props.label} to={props.path} end>
+        <Icon icon={props.icon} />
+      </Link>
+    </Item>
+  );
+}
+
+function NotificationsNavItem(props: Props) {
+  const { data: notifications } = useGetNotifications(false);
+
+  const unreadMessages =
+    notifications && notifications.filter((notification) => !notification.read);
+
+  return (
+    <Item>
+      {unreadMessages && unreadMessages.length > 0 && (
+        <NotificationCounter>{unreadMessages.length}</NotificationCounter>
+      )}
+      <Link aria-label={props.label} to={props.path} end>
+        <Icon icon={props.icon} />
       </Link>
     </Item>
   );
@@ -33,11 +57,12 @@ export default function SideNavigationItem({
 
 export const Item = styled("li", {
   display: "flex",
-  
+  position: "relative",
+
   "@lg": {
-    display: "block"
-  }
-})
+    display: "block",
+  },
+});
 
 export const Link = styled(NavLink, {
   display: "flex",
@@ -80,4 +105,20 @@ export const Label = styled("p", {
   "@lg": {
     display: "none",
   },
+});
+
+export const NotificationCounter = styled("div", {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  color: "white",
+  background: "$error",
+  borderRadius: "$round",
+  aspectRatio: 1,
+  width: "$125",
+  right: 0,
+  bottom: 0,
+  fontSize: "$075",
+  fontWeight: "$bold"
 });

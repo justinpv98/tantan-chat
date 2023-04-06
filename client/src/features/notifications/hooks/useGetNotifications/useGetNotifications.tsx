@@ -13,6 +13,7 @@ export type NotificationData = {
   actor: User;
   target: number;
   type: number;
+  read: boolean;
 };
 
 export async function fetchNotifications({
