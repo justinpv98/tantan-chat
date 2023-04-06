@@ -7,6 +7,8 @@ import {
   getRelationships,
   updateRelationship,
   deleteRelationship,
+  getNotifications,
+  readNotifications,
 } from "@/controllers/userController";
 
 const router = Router();
@@ -22,5 +24,10 @@ router
   .route("/:id/relationships/:targetId")
   .put(isAuthenticated, updateRelationship)
   .delete(isAuthenticated, deleteRelationship);
+
+router
+  .route("/:id/notifications")
+  .get(isAuthenticated, getNotifications)
+  .put(isAuthenticated, readNotifications);
 
 export default router;

@@ -159,6 +159,11 @@ const Button = styled("button", {
       },
     },
     size: {
+      sm: {
+        fontSize: "$087",
+        padding: "$050 $087",
+        borderRadius: "3px"
+      },
       lg: {
         fontSize: "$112",
       },

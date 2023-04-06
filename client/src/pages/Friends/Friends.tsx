@@ -47,6 +47,7 @@ export default function Friends() {
                 key={friendship.id}
                 user={friendship.target}
                 showStatus
+                status={friendship.target}
                 onClick={() => onUserItemClick(friendship.target.id)}
               />
             )): <Text color="lowContrast" css={{paddingInline: "$150"}} >Find friends by searching them up and sending a friend request!</Text>}

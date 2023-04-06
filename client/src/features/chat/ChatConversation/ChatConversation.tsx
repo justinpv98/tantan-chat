@@ -11,7 +11,6 @@ import queryKeys from "@/constants/queryKeys";
 import { Message } from "../hooks/useGetMessages/useGetMessages";
 import { ConversationData } from "../hooks/useGetConversations/useGetConversations";
 
-
 // Hooks
 import { useSocket } from "@/hooks";
 import { useGetMessages } from "@/features/chat/hooks";
@@ -42,7 +41,7 @@ export default function ChatConversation({
 
   useLayoutEffect(() => {
     socket.on(socketEvents.MESSAGE, appendMessage);
-    
+    clearUnreadCount();
     return () => {
       socket.off(socketEvents.MESSAGE, appendMessage);
     };
@@ -50,16 +49,26 @@ export default function ChatConversation({
 
   useEffect(() => {
     setMessages([]);
-    if(id) {
-      socket.emit(socketEvents.READ_MESSAGES, id )
-      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
-        const newData = [...oldData];
-        const conversation = newData.find((conversation: ConversationData) => conversation.id == Number(id))
-        conversation.unread_count = 0;
-        return newData;
-      })
+    if (id) {
+      socket.emit(socketEvents.READ_MESSAGES, id);
+      clearUnreadCount();
     }
   }, [id]);
+
+  function clearUnreadCount() {
+    queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+      if (oldData && oldData.length) {
+        const newData = [...oldData];
+        const conversation = newData.find(
+          (conversation: ConversationData) => conversation.id == Number(id)
+        );
+        conversation.unread_count = 0;
+        return newData;
+      } else {
+        return oldData;
+      }
+    });
+  }
 
   function isPreviousMessageBySameAuthor(index: number) {
     if (index === 0) return false;
@@ -67,10 +76,10 @@ export default function ChatConversation({
   }
 
   function appendMessage(message: Message) {
-    if(message?.conversation == id){
+    if (message?.conversation == id) {
       setMessages([...messages, message]);
     }
-    }
+  }
 
   return (
     <ConversationContainer ref={containerRef}>
@@ -115,6 +124,6 @@ const ConversationContainer = styled("ol", {
   maxWidth: "100vw",
 
   "@lg": {
-    height: "100%"
-  }
+    height: "100%",
+  },
 });

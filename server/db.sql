@@ -209,6 +209,10 @@ INSERT INTO message_type (
 
 INSERT INTO notification_type (
     type
+) VALUES ('friend request received');
+
+INSERT INTO notification_type (
+    type
 ) VALUES ('friend request accepted');
 
 CREATE  FUNCTION update_modified_at()

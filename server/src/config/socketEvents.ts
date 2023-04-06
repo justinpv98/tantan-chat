@@ -6,6 +6,7 @@ enum socketEvents {
   MESSAGE = "message",
   READ_MESSAGES = "readMessages",
   REMOVE_RELATIONSHIP = "removeRelationship",
+  SEND_NOTIFICATION = "sendNotification",
   SET_STATUS = "setStatus",
   TYPING = "typing",
   UPDATE_RELATIONSHIP = "updateRelationship",
