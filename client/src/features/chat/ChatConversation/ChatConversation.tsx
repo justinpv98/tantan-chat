@@ -1,16 +1,19 @@
 import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { styled } from "@/stitches.config";
+import { useQueryClient } from "react-query";
 
 // Constants
 import socketEvents from "@/constants/socketEvents";
+import queryKeys from "@/constants/queryKeys";
 
 // Types
 import { Message } from "../hooks/useGetMessages/useGetMessages";
+import { ConversationData } from "../hooks/useGetConversations/useGetConversations";
 
 // Hooks
 import { useSocket } from "@/hooks";
-import { useCurrentConversation, useGetConversation, useGetMessages } from "@/features/chat/hooks";
+import { useGetMessages } from "@/features/chat/hooks";
 
 // Components
 import ChatInfiniteScroller from "../ChatInfiniteScroller/ChatInfiniteScroller";
@@ -32,19 +35,40 @@ export default function ChatConversation({
   const { id } = useParams();
   const socket = useSocket();
   const containerRef = useRef<HTMLOListElement | null>(null);
+  const queryClient = useQueryClient();
 
   const { messages, setMessages, isLoading, isError } = useGetMessages();
 
   useLayoutEffect(() => {
     socket.on(socketEvents.MESSAGE, appendMessage);
+    clearUnreadCount();
     return () => {
       socket.off(socketEvents.MESSAGE, appendMessage);
     };
-  }, [messages]);
+  }, [messages, id]);
 
   useEffect(() => {
     setMessages([]);
+    if (id) {
+      socket.emit(socketEvents.READ_MESSAGES, id);
+      clearUnreadCount();
+    }
   }, [id]);
+
+  function clearUnreadCount() {
+    queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+      if (oldData && oldData.length) {
+        const newData = [...oldData];
+        const conversation = newData.find(
+          (conversation: ConversationData) => conversation.id == Number(id)
+        );
+        conversation.unread_count = 0;
+        return newData;
+      } else {
+        return oldData;
+      }
+    });
+  }
 
   function isPreviousMessageBySameAuthor(index: number) {
     if (index === 0) return false;
@@ -52,7 +76,9 @@ export default function ChatConversation({
   }
 
   function appendMessage(message: Message) {
-    setMessages([...messages, message]);
+    if (message?.conversation == id) {
+      setMessages([...messages, message]);
+    }
   }
 
   return (
@@ -98,6 +124,6 @@ const ConversationContainer = styled("ol", {
   maxWidth: "100vw",
 
   "@lg": {
-    height: "100%"
-  }
+    height: "100%",
+  },
 });

@@ -6,14 +6,12 @@ import { styled } from "@/stitches.config";
 import { useMediaQuery, useSocket } from "@/hooks";
 import { useLayout } from "../hooks";
 import {
-  useCurrentConversation,
   useGetConversation,
 } from "@/features/chat/hooks";
 
 // Components
 import { Navbar } from "@/features/navigation";
 import { Chat, ChatRightMenu } from "@/features/chat";
-import Flex from "../Flex/Flex";
 import Text from "../Text/Text";
 
 export default function Layout() {

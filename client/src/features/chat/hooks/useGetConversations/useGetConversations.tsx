@@ -16,6 +16,7 @@ export type ConversationData = {
   last_message: number;
   avatar?: string;
   owner: string;
+  unread_count: number;
 };
 
 export async function fetchConversation() {

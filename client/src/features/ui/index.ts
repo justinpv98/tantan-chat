@@ -9,6 +9,7 @@ export {default as Icon} from "./Icon/Icon";
 export {default as Image} from "./Image/Image";
 export {default as Label} from "./FormElements/Label/Label";
 export {default as Layout} from "./Layout/Layout";
+export {default as Loader} from "./Loader/Loader";
 export {default as Link} from "./Link/Link";
 export {default as PasswordInput} from "./FormElements/PasswordInput/PasswordInput";
 export {default as Popover} from "./Popover/Popover";

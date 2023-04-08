@@ -21,7 +21,7 @@ type Options = {
   select?: string[];
   as?: { [key: string]: string };
   where?: WhereClause;
-  set?: { [key: string]: string | number };
+  set?: { [key: string]: string | number | boolean };
   limit?: number | false;
   offset?: number | false;
   orderBy?: OrderByColumn[];

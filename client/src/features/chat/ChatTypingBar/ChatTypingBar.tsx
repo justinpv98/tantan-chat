@@ -25,7 +25,7 @@ export default function ChatTypingBar() {
       socket.off(socketEvents.TYPING, typingListener)
     }
 
-  }, [])
+  }, [conversation?.id])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -91,10 +91,12 @@ export default function ChatTypingBar() {
     }
   }
 
-  function typingListener(username: string){
-    const users = [...usersTyping, username];
-    const filteredUsers = [...new Set(users)];
-    setUsersTyping(filteredUsers);
+  function typingListener(username: string, conversationId: string){
+    if(Number(conversationId) == conversation?.id){
+      const users = [...usersTyping, username];
+      const filteredUsers = [...new Set(users)];
+      setUsersTyping(filteredUsers);
+    }
   }
 
   

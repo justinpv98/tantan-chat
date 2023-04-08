@@ -1,4 +1,5 @@
 import React from "react";
+import { styled } from "@/stitches.config";
 import { useNavigate } from "react-router-dom";
 
 // Types
@@ -6,10 +7,10 @@ import { ConversationData } from "@/features/chat/hooks/useGetConversations/useG
 
 // Hooks
 import { useLayout } from "@/features/ui/hooks";
-import { useCurrentConversation, useGetConversations } from "@/features/chat/hooks";
+import { useGetConversations } from "@/features/chat/hooks";
 
 // Components
-import { Avatar, Flex, Text } from "@/features/ui";
+import { Avatar, Box, Flex, Text } from "@/features/ui";
 
 type Props = {
   conversation: ConversationData;
@@ -18,24 +19,24 @@ type Props = {
 export default function ConversationItem({ conversation }: Props) {
   const navigate = useNavigate();
   const { setCurrentConversation } = useGetConversations(false);
-  const {setShowChat } = useLayout();
+  const { setShowChat } = useLayout();
 
   function onClick() {
     setCurrentConversation(conversation);
     navigate(`/c/${conversation.id}`);
-    setShowChat(true)
+    setShowChat(true);
   }
 
   if (conversation.type === 1) {
     const { username, status } = conversation.participants[0];
     return (
       <Flex
+        justify="between"
         align="center"
         onClick={onClick}
         css={{
           borderRadius: "$050",
           cursor: "pointer",
-          gap: "$050",
           width: "100%",
           paddingBlock: "$050",
           paddingInline: "$050",
@@ -45,8 +46,14 @@ export default function ConversationItem({ conversation }: Props) {
           },
         }}
       >
-        <Avatar size="md" status={status} showStatus/>
-        <Text weight="semibold">{username}</Text>
+        <Flex align="center" css={{ gap: "$050" }}>
+          <Avatar size="md" status={status} showStatus />
+          <Text weight="semibold" overflow="ellipsis">
+            {username}
+          </Text>
+        </Flex>
+
+        {conversation.unread_count > 0  &&  <UnreadMessageCounter>{conversation.unread_count < 9 ? conversation.unread_count : "9+"}</UnreadMessageCounter>}
       </Flex>
     );
   } else {
@@ -67,9 +74,34 @@ export default function ConversationItem({ conversation }: Props) {
           },
         }}
       >
-        <Avatar size="md" src={conversation.avatar || undefined} showStatus={conversation.type !== 2}/>
-        <Text weight="semibold" overflow="ellipsis">{conversation.name}</Text>
+        <Avatar
+          size="md"
+          src={conversation.avatar || undefined}
+          showStatus={conversation.type !== 2}
+        />
+        <Text weight="semibold" overflow="ellipsis">
+          {conversation.name}
+        </Text>
+        {conversation.unread_count > 0  &&  <UnreadMessageCounter>{conversation.unread_count < 9 ? conversation.unread_count : "9+"}</UnreadMessageCounter>}
       </Flex>
     );
   }
 }
+
+const UnreadMessageCounter = styled("div", {
+  borderRadius: "$round",
+  background: "$primary",
+  color: "$onPrimary",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "$087",
+  fontWeight: "$bold",
+maxWidth: "$150",
+maxHeight: "$150",
+  aspectRatio: 1,
+  paddingBottom: "$012",
+  paddingLeft: "0.5px",
+  width: "22px"
+
+});

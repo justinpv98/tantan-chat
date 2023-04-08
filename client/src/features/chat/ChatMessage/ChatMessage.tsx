@@ -41,6 +41,7 @@ export default function ChatMessage({ message, showUsername }: Props) {
               css={{ borderRadius: "$050" }}
               src={message.media_url || ""}
               alt={message.description || "image"}
+              fit="contain"
             />
           </ImageContainer>
         );

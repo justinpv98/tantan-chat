@@ -2,3 +2,4 @@ export {default as useCreateRelationship} from "./useCreateRelationship/useCreat
 export {default as useGetRelationships} from "./useGetRelationships/useGetRelationships";
 export {default as useRemoveRelationship} from "./useRemoveRelationship/useRemoveRelationship";
 export {default as useUpdateRelationship} from "./useUpdateRelationship/useUpdateRelationship";
+export {default as useFriendEvents} from "./useFriendEvents/useFriendEvents";

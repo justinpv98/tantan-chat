@@ -52,7 +52,13 @@ export default function Register() {
         <Image src={image} alt="A message bubble" />
       </ImageContainer>
       <Box as="main" css={{ width: "100%", "@lg": { width: "40vw" } }}>
+      {message && (
+          <ErrorMessage>
+            <Text weight="semibold">{message}</Text>
+          </ErrorMessage>
+        )}
         <FormContainer onSubmit={handleSubmit(onSubmitForm)}>
+          
           <Box css={{ marginBlockEnd: "$150" }}>
             <Heading as="h1" css={{marginBottom: "$012"}}>Sign Up</Heading>
             <Text color="lowContrast">
@@ -147,4 +153,12 @@ const FormContainer = styled("form", {
   margin: "0 auto",
   padding: "1.5rem",
   maxWidth: "27.5rem",
+});
+
+const ErrorMessage = styled(Box, {
+  background: "$error",
+  color: "$onError",
+  display: "flex",
+  justifyContent: "center",
+  paddingBlock: "$100",
 });

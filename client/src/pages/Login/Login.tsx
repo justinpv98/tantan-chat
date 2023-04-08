@@ -37,7 +37,7 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
-      password: ""
+      password: "",
     },
   });
 
@@ -51,9 +51,16 @@ export default function Login() {
         <Image src={image} alt="A message bubble" />
       </ImageContainer>
       <Box as="main" css={{ width: "100%", "@lg": { width: "40vw" } }}>
+        {message && (
+          <ErrorMessage>
+            <Text weight="semibold">{message}</Text>
+          </ErrorMessage>
+        )}
         <FormContainer onSubmit={handleSubmit(onSubmitForm)}>
           <Box css={{ marginBlockEnd: "$150" }}>
-            <Heading as="h1" css={{marginBottom: "$012"}}>Log In</Heading>
+            <Heading as="h1" css={{ marginBottom: "$012" }}>
+              Log In
+            </Heading>
             <Text color="lowContrast">
               Need an account? <Link to="/register">Create one here</Link>
             </Text>
@@ -96,7 +103,7 @@ export default function Login() {
                 value={value}
                 ref={ref}
                 name="password"
-                css={{marginBlockEnd: "$250"}}
+                css={{ marginBlockEnd: "$250" }}
               />
             )}
             name="password"
@@ -123,6 +130,14 @@ const ImageContainer = styled(Box, {
 
 const FormContainer = styled("form", {
   margin: "0 auto",
-  padding: "1.5rem",
+  padding: "$150",
   maxWidth: "27.5rem",
+});
+
+const ErrorMessage = styled(Box, {
+  background: "$error",
+  color: "$onError",
+  display: "flex",
+  justifyContent: "center",
+  paddingBlock: "$100",
 });

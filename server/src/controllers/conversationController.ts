@@ -35,54 +35,54 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
 
   const participants = Array.from(new Set([id, ...targetIds]));
 
-  if (type != "2") {
+  let conversationId;
+
+  if (type == "1") {
     // if conversation exists, send conversation info
-
-    const conversationId =
-      await ConversationParticipantModel.findConversationId(participants);
-
-    if (!conversationId) {
-      res.status(404);
-      throw new Error("Conversation not found");
-    }
-
-    res.status(200).json({ id: conversationId });
-  } else {
-    // If there is no existing conversation between users, create a new one
-
-    let newConversation;
-    if (type == 1) {
-      newConversation = new Conversation({ type: 1 });
-    } else {
-      newConversation = new Conversation({
-        type: 2,
-        owner: id,
-        name: "New Group Chat",
-      });
-    }
-
-    await newConversation.save();
-
-    // Add participants to conversation
-    const populatedParticipants = participants.map(async (participant) => {
-      const newParticipant = new ConversationParticipant({
-        conversation: newConversation.id,
-        user: participant,
-      });
-
-      await newParticipant.save();
-
-      return newParticipant;
-    });
-
-    logger.info(
-      `Conversation #${
-        newConversation.id
-      } created between participants - ${targetIds.sort().map((p) => "#" + p)} `
+    conversationId = await ConversationParticipantModel.findConversationId(
+      participants
     );
 
-    res.status(201).json({ id: newConversation.id });
+    if (conversationId) {
+      res.status(200).json({ id: conversationId });
+      return;
+    }
   }
+
+  // If there is no existing conversation between users, create a new one
+
+  let newConversation;
+  if (type == 1) {
+    newConversation = new Conversation({ type: 1 });
+  } else {
+    newConversation = new Conversation({
+      type: 2,
+      owner: id,
+      name: "New Group Chat",
+    });
+  }
+
+  await newConversation.save();
+
+  // Add participants to conversation
+  const populatedParticipants = participants.map(async (participant) => {
+    const newParticipant = new ConversationParticipant({
+      conversation: newConversation.id,
+      user: participant,
+    });
+
+    await newParticipant.save();
+
+    return newParticipant;
+  });
+
+  logger.info(
+    `Conversation #${
+      newConversation.id
+    } created between participants - ${targetIds.sort().map((p) => "#" + p)} `
+  );
+
+  res.status(201).json({ id: newConversation.id });
 });
 
 // @desc    Post an image to a conversation
@@ -157,7 +157,8 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
   const { id: userId } = req.session.user;
 
   const conversation = await ConversationModel.findExistingConversation(
-    Number(conversationId)
+    Number(conversationId),
+    userId
   );
 
   if (!conversation) {
@@ -174,7 +175,6 @@ const getConversation = asyncHandler(async (req: Request, res: Response) => {
       }
     }
   );
-
 
   if (!userIsInConversation) {
     res.status(401);
