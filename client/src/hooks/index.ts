@@ -3,6 +3,7 @@ export {default as useAuth } from "./useAuth/useAuth";
 export {default as useDebouncedValue } from "./useDebouncedValue/useDebouncedValue";
 export {default as useFileHandler } from "./useFileHandler/useFileHandler";
 export {default as useInfiniteScroll } from "./useInfiniteScroll/useInfiniteScroll";
+export {default as useLocalStorage } from "./useLocalStorage/useLocalStorage";
 export {default as useMediaQuery } from "./useMediaQuery/useMediaQuery";
 export {default as useSocket } from "./useSocket/useSocket";
 export {default as useTheme } from "./useTheme/useTheme";

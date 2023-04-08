@@ -10,12 +10,13 @@ import useNavbarSocketEvents from "../hooks/useNavbarSocketEvents";
 
 // Components
 import { Flex, SideNavigation, SideNavigationItem } from "@/features/ui";
-import Settings from "../Settings/Settings";
+import { Settings, useSettings } from "@/features/settings";
 
 type Props = {};
 
 export default function Navbar({}: Props) {
   const { id: conversationId } = useParams();
+  const {muteNotifications} = useSettings();
   useGetRelationships(true);
   useGetNotifications(true);
   const notificationSoundRef = useRef<HTMLAudioElement>(null);
@@ -25,7 +26,7 @@ export default function Navbar({}: Props) {
   ).href;
 
   function playNotificationSound() {
-    notificationSoundRef.current?.play();
+    !muteNotifications && notificationSoundRef.current?.play();
   }
 
   const { notificationPlayerRef } = useNavbarSocketEvents(playNotificationSound);

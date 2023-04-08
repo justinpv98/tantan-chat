@@ -19,7 +19,7 @@ import { useGetNotifications } from "@/features/notifications/hooks";
 
 type Props = {};
 
-export default function useNavbarSocketEvents(onReceiveNotification: () => {}) {
+export default function useNavbarSocketEvents(onReceiveNotification: () => void) {
   const queryClient = useQueryClient();
   const { id: userId } = useAuth();
   const socket = useSocket();
