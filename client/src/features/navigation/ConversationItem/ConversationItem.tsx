@@ -28,7 +28,7 @@ export default function ConversationItem({ conversation }: Props) {
   }
 
   if (conversation.type === 1) {
-    const { username, status } = conversation.participants[0];
+    const { username, status, profile_picture } = conversation.participants[0];
     return (
       <Flex
         justify="between"
@@ -47,7 +47,7 @@ export default function ConversationItem({ conversation }: Props) {
         }}
       >
         <Flex align="center" css={{ gap: "$050" }}>
-          <Avatar size="md" status={status} showStatus />
+          <Avatar size="md" status={status} src={profile_picture || ""} showStatus />
           <Text weight="semibold" overflow="ellipsis">
             {username}
           </Text>

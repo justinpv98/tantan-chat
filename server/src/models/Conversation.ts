@@ -16,6 +16,7 @@ type FoundConversationSchema = {
   id: number;
   name: string | null;
   type: "dm" | "group chat";
+  avatar: string | null;
   participants: Participant[];
   last_message: Message[] | null;
   unread_count: number;
@@ -26,6 +27,7 @@ export class Conversation extends Model<ConversationSchema> {
   type: 1 | 2;
   owner?: number;
   name?: string;
+  avatar?: string;
 
   constructor(config?: ConversationSchema) {
     super("conversation");
@@ -60,6 +62,7 @@ export class Conversation extends Model<ConversationSchema> {
         c.name, 
         c.owner, 
         c.type,
+        c.avatar,
         ( SELECT COUNT(id) FROM unread_message WHERE unread_message.reader = %L AND unread_message.conversation = %L) AS unread_count,
         (
           SELECT 
@@ -112,7 +115,7 @@ export class Conversation extends Model<ConversationSchema> {
     // Postgres's native json formatting
     const query = format(
       `SELECT
-      json_build_object('id', c.id, 'name', c.name, 'type', c.type,
+      json_build_object('id', c.id, 'name', c.name, 'type', c.type, 'avatar', c.avatar,
       'unread_count', ( SELECT COUNT(id) FROM unread_message WHERE unread_message.reader = %L AND unread_message.conversation = c.id),
       'participants', (
               SELECT
@@ -158,6 +161,16 @@ export class Conversation extends Model<ConversationSchema> {
     } else {
       data = null;
     }
+    return data;
+  }
+
+  async findOwner(conversationId: string) {
+    const query = format(
+      `SELECT owner FROM conversation WHERE conversation.id = %L`,
+      conversationId
+    );
+    const { rows } = await pool.query(query);
+    const data: { owner: string } = rows.length ? rows[0] : null;
     return data;
   }
 }

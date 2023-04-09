@@ -109,7 +109,7 @@ export default function Login() {
             name="password"
             control={control}
           />
-          <Button color="primaryGradient" fluid>
+          <Button color="primary" fluid>
             Log In
           </Button>
         </FormContainer>

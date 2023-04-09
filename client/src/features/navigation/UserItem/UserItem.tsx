@@ -28,7 +28,7 @@ export default function UserItem({ user, onClick, showStatus }: Props) {
       }}
     >
       <Box>
-        <Avatar size="md" />
+        <Avatar size="md" src={user.profile_picture || ""} />
       </Box>
       <Text weight="semibold" overflow="ellipsis">{user.username}</Text>
     </Flex>

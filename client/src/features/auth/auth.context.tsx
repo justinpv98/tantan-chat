@@ -11,47 +11,50 @@ interface ProviderProps {
 }
 
 export interface AuthState {
-    id: string;
-    email: string;
-    username: string;
-    avatar: string;
-    status: 1 | 2 | 3 | 4;
-    message: string;
-    loading: boolean;
-    login: (data: LoginData) => void;
-    register: (data: RegisterData) => void;
-    logout: () => void;
-    load: () => void;
-    checkSession: () => void;
-  }
+  id: string;
+  email: string;
+  username: string;
+  profile_picture: string;
+  status: 1 | 2 | 3 | 4;
+  message: string;
+  loading: boolean;
+  login: (data: LoginData) => void;
+  register: (data: RegisterData) => void;
+  logout: () => void;
+  load: () => void;
+  checkSession: () => void;
+  changeProfilePicture: (picture: File) => void;
+}
 
-  export enum AuthActionTypes {
-    REGISTER_SUCCESS,
-    LOGIN_SUCCESS,
-    CHECK_SESSION_SUCCESS,
-    REGISTER_FAIL,
-    LOGIN_FAIL,
-    CHECK_SESSION_FAIL,
-    LOGOUT,
-    LOAD
-  }
+export enum AuthActionTypes {
+  REGISTER_SUCCESS,
+  LOGIN_SUCCESS,
+  CHECK_SESSION_SUCCESS,
+  REGISTER_FAIL,
+  LOGIN_FAIL,
+  CHECK_SESSION_FAIL,
+  LOGOUT,
+  CHANGE_PROFILE_PICTURE_SUCCESS,
+  CHANGE_PROFILE_PICTURE_FAIL,
+  LOAD,
+}
 
-  export type RegisterData = {
-    email: string;
-    username: string;
-    password: string;
-  };
-  
-  export type LoginData = {
-    email: string;
-    password: string;
-  };
+export type RegisterData = {
+  email: string;
+  username: string;
+  password: string;
+};
+
+export type LoginData = {
+  email: string;
+  password: string;
+};
 
 const initialState: AuthState = {
   id: "",
   email: "",
   username: "",
-  avatar: "",
+  profile_picture: "",
   status: 2,
   message: "",
   loading: false,
@@ -59,7 +62,8 @@ const initialState: AuthState = {
   register: () => {},
   logout: () => {},
   load: () => {},
-  checkSession: () => {}
+  checkSession: () => {},
+  changeProfilePicture: () => {}
 };
 
 export const AuthContext = createContext(initialState);
@@ -112,27 +116,46 @@ export const AuthProvider = ({ children }: ProviderProps) => {
     }
   }
 
+  async function changeProfilePicture(picture: File): Promise<void> {
+    try {
+      const formData = new FormData();
+      formData.append('file', picture);
+      const res = await axios.post(`/users/${authState.id}/profile_picture`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      dispatch({
+        type: AuthActionTypes.CHANGE_PROFILE_PICTURE_SUCCESS,
+        payload: res.data,
+      });
+    } catch (error: any) {
+      dispatch({
+        type: AuthActionTypes.CHANGE_PROFILE_PICTURE_FAIL,
+        payload: error.response.data.message,
+      });
+    }
+  }
+
   async function checkSession(): Promise<void> {
     load();
     try {
-      const res = await axios.get(BASE_URL + "/check-session")
+      const res = await axios.get(BASE_URL + "/check-session");
       dispatch({
         type: AuthActionTypes.CHECK_SESSION_SUCCESS,
-        payload: res.data
-      })
+        payload: res.data,
+      });
     } catch (error: any) {
       dispatch({
         type: AuthActionTypes.CHECK_SESSION_FAIL,
-        payload: null
-      })
+        payload: null,
+      });
     }
   }
 
   function load(): void {
     dispatch({
       type: AuthActionTypes.LOAD,
-      payload: null
-    })
+      payload: null,
+    });
   }
 
   return (
@@ -142,7 +165,8 @@ export const AuthProvider = ({ children }: ProviderProps) => {
         login,
         register,
         logout,
-        checkSession
+        checkSession,
+        changeProfilePicture
       }}
     >
       {children}

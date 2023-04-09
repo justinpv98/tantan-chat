@@ -1,5 +1,6 @@
 enum socketEvents {
   CHANGE_CONVERSATION_NAME = "changeConversationName",
+  CHANGE_CONVERSATION_AVATAR = "changeConversationAvatar",
   CREATE_CONVERSATION = "createConversation",
   CREATE_GROUP_DM = "createGroupDM",
   CREATE_RELATIONSHIP = "createRelationship",

@@ -11,7 +11,6 @@ import { ConversationData } from "@/features/chat/hooks/useGetConversations/useG
 import { Message } from "@/features/chat/hooks/useGetMessages/useGetMessages";
 import { NotificationData } from "@/features/notifications/hooks/useGetNotifications/useGetNotifications";
 
-
 // Hooks
 import { useAuth, useSocket } from "@/hooks";
 import { useGetConversations } from "@/features/chat/hooks";
@@ -19,13 +18,15 @@ import { useGetNotifications } from "@/features/notifications/hooks";
 
 type Props = {};
 
-export default function useNavbarSocketEvents(onReceiveNotification: () => void) {
+export default function useNavbarSocketEvents(
+  onReceiveNotification: () => void
+) {
   const queryClient = useQueryClient();
   const { id: userId } = useAuth();
   const socket = useSocket();
   const { id: conversationId } = useParams();
   const { data: conversations, isSuccess } = useGetConversations(true);
-  const {data: notifications} = useGetNotifications(true);;
+  const { data: notifications } = useGetNotifications(true);
   const notificationPlayerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -33,15 +34,16 @@ export default function useNavbarSocketEvents(onReceiveNotification: () => void)
     socket.on(socketEvents.MESSAGE, message);
     socket.on(socketEvents.CREATE_GROUP_DM, createGroupDM);
     socket.on(socketEvents.CHANGE_CONVERSATION_NAME, changeConversationName);
-    socket.on(socketEvents.SEND_NOTIFICATION, sendNotification)
+    socket.on(socketEvents.CHANGE_CONVERSATION_AVATAR, changeConversationAvatar);
+    socket.on(socketEvents.SEND_NOTIFICATION, sendNotification);
 
     return () => {
       socket.off(socketEvents.SET_STATUS, setStatus);
       socket.off(socketEvents.MESSAGE, message);
       socket.off(socketEvents.CREATE_GROUP_DM, createGroupDM);
       socket.off(socketEvents.CHANGE_CONVERSATION_NAME, changeConversationName);
-      socket.off(socketEvents.SEND_NOTIFICATION, sendNotification)
-
+      socket.off(socketEvents.CHANGE_CONVERSATION_AVATAR, changeConversationAvatar);
+      socket.off(socketEvents.SEND_NOTIFICATION, sendNotification);
     };
   }, [socket, isSuccess, conversationId]);
 
@@ -97,6 +99,10 @@ export default function useNavbarSocketEvents(onReceiveNotification: () => void)
         conversation.unread_count = 1;
         notificationPlayerRef.current?.click();
 
+        conversation.participants = conversation.participants.filter(
+          (participant) => participant.id != userId
+        );
+
         queryClient.setQueryData(
           queryKeys.GET_CONVERSATIONS,
           (oldData: any) => {
@@ -107,6 +113,10 @@ export default function useNavbarSocketEvents(onReceiveNotification: () => void)
     } else {
       conversation.unread_count = 1;
       notificationPlayerRef.current?.click();
+      conversation.participants = conversation.participants.filter(
+        (participant) => participant.id != userId
+      );
+
       queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, [conversation]);
     }
   }
@@ -114,10 +124,12 @@ export default function useNavbarSocketEvents(onReceiveNotification: () => void)
   async function createGroupDM(conversation: ConversationData) {
     if (conversations !== undefined && conversations.length >= 1) {
       queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        conversation.unread_count = 0;
         return [conversation, ...oldData];
       });
     } else {
       queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        conversation.unread_count = 0;
         return [conversation];
       });
     }
@@ -138,20 +150,41 @@ export default function useNavbarSocketEvents(onReceiveNotification: () => void)
     }
   }
 
-  function sendNotification(notification: NotificationData){
-    onReceiveNotification();
-    if(notifications !== undefined && notifications.length >= 1){
-      queryClient.setQueryData([queryKeys.GET_NOTIFICATIONS, {query: userId}], (oldData: any) => {
-        const newData = [notification, ...oldData]
+  function changeConversationAvatar(avatar: string, conversationId: string) {
+    if (conversations !== undefined && conversations.length >= 1) {
+      queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+        const newData = [...oldData];
+        const conversation = newData.find(
+          (conversation) => conversation.id == conversationId
+        );
+        conversation.avatar = avatar;
         return newData;
-      })
+      });
     } else {
-      queryClient.setQueryData([queryKeys.GET_NOTIFICATIONS, {query: userId}], (oldData: any) => {
-        const newData = [notification]
-        return newData;
-      })
+      return;
     }
   }
 
-  return {notificationPlayerRef};
+  function sendNotification(notification: NotificationData) {
+    onReceiveNotification();
+    if (notifications !== undefined && notifications.length >= 1) {
+      queryClient.setQueryData(
+        [queryKeys.GET_NOTIFICATIONS, { query: userId }],
+        (oldData: any) => {
+          const newData = [notification, ...oldData];
+          return newData;
+        }
+      );
+    } else {
+      queryClient.setQueryData(
+        [queryKeys.GET_NOTIFICATIONS, { query: userId }],
+        (oldData: any) => {
+          const newData = [notification];
+          return newData;
+        }
+      );
+    }
+  }
+
+  return { notificationPlayerRef };
 }

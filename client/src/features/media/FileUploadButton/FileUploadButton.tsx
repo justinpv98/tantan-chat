@@ -16,7 +16,7 @@ export default function FileUploadButton({ onChange }: Props) {
         className="sr-only"
         id="attachments-btn"
         name="attachments-btn"
-        onChange={onChange}
+        onInput={onChange}
       />
       <Button icon="center" transparent>
         <Label htmlFor="attachments-btn">
