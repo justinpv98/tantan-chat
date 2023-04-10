@@ -9,6 +9,7 @@ import {
   getConversations,
   getMessages,
   postImage,
+  changeGroupAvatar,
 } from "@/controllers/conversationController";
 
 const router = Router();
@@ -19,6 +20,10 @@ router
   .post(isAuthenticated, createConversation);
 
 router.route("/:id").get(isAuthenticated, getConversation);
+
+router
+  .route("/:id/avatar")
+  .post(isAuthenticated, upload.single("file"), changeGroupAvatar);
 
 router.route("/:id/messages").get(isAuthenticated, getMessages);
 

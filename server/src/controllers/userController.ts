@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import logger from "@/logger";
 import { Request, Response } from "express-serve-static-core";
+import { uploadImage } from "@/storage/cloudinary";
 
 import UserModel from "@/models/User";
 import RelationshipModel from "@/models/Relationship";
@@ -68,6 +69,47 @@ const getNotifications = asyncHandler(async (req: Request, res: Response) => {
 
   res.status(200).json(notifications);
 });
+
+// @desc    Change a user's profile picture
+// @route   POST /api/users/:id/profile_picture
+// @access  Private
+const changeProfilePicture = asyncHandler(async (req: Request & {file: any}, res: Response) => {
+  const {id} = req.params;
+  const {id: userId, username} = req.session.user;
+  const { file } = req;
+
+  if(userId !== Number(id)){
+    res.status(409)
+    throw new Error("User is not authorized to change profile picture")
+  }
+
+  try {
+    const storedImage = await uploadImage(file, `/${username}`, {eager: "w_128,h_128,c_thumb,g_auto"});
+    const profile_picture = (storedImage as any).secure_url;
+
+    const updatedUser = await  UserModel.updateById(id, {
+      set: {
+        profile_picture
+      },
+      returning: ["id", "username", "profile_picture", "status"]
+    })
+
+    req.session.user.profile_picture = updatedUser.profile_picture;
+    await req.session.save();
+
+    if(!updatedUser){
+      res.status(400)
+      throw new Error("User could not be updated.")
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500);
+    throw new Error("Server error.");
+  }
+} 
+)
+
 // @desc    Create a relationship (e.g. send a friend request)
 // @route   POST /api/users/:id/relationships
 // @access  Private
@@ -137,6 +179,7 @@ const createRelationship = asyncHandler(async (req: Request, res: Response) => {
 // @access  Private
 const readNotifications = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
 
   if (req.session.user.id != Number(id)) {
     res.status(401);
@@ -284,6 +327,7 @@ const deleteRelationship = asyncHandler(async (req: Request, res: Response) => {
 
 export {
   createRelationship,
+  changeProfilePicture,
   searchUsers,
   getRelationships,
   getNotifications,

@@ -1,5 +1,6 @@
 enum queryKeys {
     CREATE_CONVERSATION = "createConversation",
+    CHANGE_GROUP_AVATAR = "changeGroupAvatar",
     GET_CONVERSATION = "getConversation",
     GET_CONVERSATIONS = "getConvesations",
     GET_RELATIONSHIPS = "getRelationships",

@@ -39,9 +39,8 @@ export default function Friends() {
       css={{ borderLeft: "none", maxHeight: "100vh", overflow: "scroll" }}
     >
       <ItemContainer direction="column">
-        {relationships?.length ?
+        {relationships?.filter((relationship) => relationship.type === 3).length ?
           relationships
-            ?.filter((relationship) => relationship.type === 3)
             .map((friendship) => (
               <UserItem
                 key={friendship.id}

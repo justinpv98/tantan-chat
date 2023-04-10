@@ -62,7 +62,9 @@ export default function ChatConversation({
         const conversation = newData.find(
           (conversation: ConversationData) => conversation.id == Number(id)
         );
-        conversation.unread_count = 0;
+        if (conversation) {
+          conversation.unread_count = 0;
+        }
         return newData;
       } else {
         return oldData;

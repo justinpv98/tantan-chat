@@ -1,17 +1,22 @@
+import { Fragment } from "react";
 import { styled } from "@/stitches.config";
 
 // Hooks
+import { useAuth } from "@/hooks";
 import { useGetTarget } from "@/features/chat/hooks";
 import { useGetRelationships } from "@/features/friends/hooks";
 
 // Components
-import { Avatar, Button, Flex, Icon, Sidebar } from "@/features/ui";
-import { FriendMenuAction } from "@/features/navigation";
+import { Avatar, Button, Flex, Heading, Icon, Sidebar } from "@/features/ui";
+import { FriendMenuAction } from "@/features/friends";
+import { GroupAvatarMenuAction } from "@/features/chat";
+import { UserItem } from "@/features/navigation";
 
 type Props = {
   toggleRightMenu: () => void;
-}
-export default function ChatRightMenu({toggleRightMenu}: Props) {
+};
+export default function ChatRightMenu({ toggleRightMenu }: Props) {
+  const { id: userId } = useAuth();
   const { data: conversation, target } = useGetTarget();
   const { data: relationships } = useGetRelationships(false);
 
@@ -19,9 +24,14 @@ export default function ChatRightMenu({toggleRightMenu}: Props) {
     <Sidebar
       title={conversation?.type == 1 ? target?.username : conversation?.name}
       titleAlignment="center"
-      css={{zIndex: 200}}
+      css={{ zIndex: 200 }}
     >
-      <ArrowButton icon="center" transparent css={{ color: "$sage11" }} onClick={toggleRightMenu}>
+      <ArrowButton
+        icon="center"
+        transparent
+        css={{ color: "$sage11" }}
+        onClick={toggleRightMenu}
+      >
         <Icon icon="arrow-left" />
       </ArrowButton>
       <Flex
@@ -29,10 +39,27 @@ export default function ChatRightMenu({toggleRightMenu}: Props) {
         align="center"
         css={{ width: "100%", paddingInline: "$050" }}
       >
-        <Avatar size="lg" css={{ marginBlock: "$100" }} />
+        <Avatar
+          size="lg"
+          src={conversation?.avatar || ""}
+          css={{ marginBlock: "$100" }}
+        />
 
-        <Flex direction="column" css={{ width: "100%" }}>
-          {conversation?.type == 1 &&<FriendMenuAction />}
+        <Flex direction="column" css={{ width: "100%", paddingInline: "$025" }}>
+          {conversation?.type == 1 && <FriendMenuAction />}
+          {conversation?.type == 2 && <GroupAvatarMenuAction />}
+          {conversation?.type == 2 && (
+            <Fragment>
+              <Heading css={{ paddingInline: "$050" }} size="h4" as="h4">
+                Group Members
+              </Heading>
+              {conversation?.participants
+                .filter((participant) => participant.id != userId)
+                .map((participant) => (
+                  <UserItem key={participant.id} user={participant} />
+                ))}
+            </Fragment>
+          )}
         </Flex>
       </Flex>
     </Sidebar>

@@ -130,7 +130,7 @@ export default function Register() {
             name="password"
             control={control}
           />
-          <Button color="primaryGradient" fluid>
+          <Button color="primary" fluid>
             Sign Up
           </Button>
         </FormContainer>

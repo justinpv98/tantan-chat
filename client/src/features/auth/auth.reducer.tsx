@@ -16,6 +16,7 @@ export default (state: State, action: Action<AuthActionTypes>) => {
     case AuthActionTypes.REGISTER_SUCCESS:
     case AuthActionTypes.LOGIN_SUCCESS:
     case AuthActionTypes.CHECK_SESSION_SUCCESS:
+    case AuthActionTypes.CHANGE_PROFILE_PICTURE_SUCCESS:
       return {
         ...state,
         message: "",
@@ -25,8 +26,8 @@ export default (state: State, action: Action<AuthActionTypes>) => {
     case AuthActionTypes.LOAD:
       return {
         ...state,
-        loading: true
-      }
+        loading: true,
+      };
     case AuthActionTypes.REGISTER_FAIL:
     case AuthActionTypes.LOGIN_FAIL:
       return {
@@ -36,7 +37,7 @@ export default (state: State, action: Action<AuthActionTypes>) => {
         email: "",
         profile_picture: "",
         status: "",
-        message: action.payload
+        message: action.payload,
       };
     case AuthActionTypes.LOGOUT:
     case AuthActionTypes.CHECK_SESSION_FAIL:
@@ -48,8 +49,10 @@ export default (state: State, action: Action<AuthActionTypes>) => {
         profile_picture: "",
         status: "",
         message: "",
-        loading: false
+        loading: false,
       };
+    case AuthActionTypes.CHANGE_PROFILE_PICTURE_FAIL:
+
     default:
       return state;
   }

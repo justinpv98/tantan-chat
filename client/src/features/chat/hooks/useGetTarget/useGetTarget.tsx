@@ -9,7 +9,8 @@ export default function useGetTarget() {
   // Used to get person or group that is being talked to
   const { id } = useParams();
   const { id: userId } = useAuth();
-  const { data } = useGetConversation(id || "", !!id);
+  const { data, isSuccess } = useGetConversation(id || "", !!id);
+
 
   let target: Participant | undefined;
 
@@ -19,5 +20,5 @@ export default function useGetTarget() {
     )[0];
   }
 
-  return {data, target}
+  return {data, target, isSuccess}
 }

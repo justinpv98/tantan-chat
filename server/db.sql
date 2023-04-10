@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     email VARCHAR (255) UNIQUE NOT NULL,
     username VARCHAR (32) UNIQUE NOT NULL,
     password VARCHAR (128) NOT NULL,
-    profile_picture VARCHAR (80) DEFAULT NULL,
+    profile_picture VARCHAR (255) DEFAULT NULL,
     status INT DEFAULT 1 NOT NULL REFERENCES user_status (id), 
     created_at TIMESTAMP DEFAULT now() NOT NULL
 );
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS conversation (
     owner INT CONSTRAINT is_dm CHECK (type = 1 OR owner IS NOT NULL),
     type INT DEFAULT 1 NOT NULL,
     name VARCHAR(64),
-    avatar VARCHAR(80),
+    avatar VARCHAR(255),
     FOREIGN KEY (owner)
         REFERENCES "user" (id),
     FOREIGN KEY (type)

@@ -41,7 +41,7 @@ function NotificationsNavItem(props: Props) {
   const { data: notifications } = useGetNotifications(false);
 
   const unreadMessages =
-    notifications && notifications.filter((notification) => !notification.read);
+    notifications ? notifications?.filter((notification) => !notification.read) : null;
 
   return (
     <Item>

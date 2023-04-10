@@ -2,6 +2,9 @@ import asyncHandler from "express-async-handler";
 import logger from "@/logger";
 import { Request, Response } from "express-serve-static-core";
 
+// Constants
+import socketEvents from "@/config/socketEvents";
+
 // Models
 import ConversationModel, { Conversation } from "@/models/Conversation";
 import ConversationParticipantModel, {
@@ -85,6 +88,50 @@ const createConversation = asyncHandler(async (req: Request, res: Response) => {
   res.status(201).json({ id: newConversation.id });
 });
 
+// @desc    Change a user's profile picture
+// @route   POST /api/conversations/:id/avatar
+// @access  Private
+const changeGroupAvatar = asyncHandler(async (req: Request & {file: any}, res: Response) => {
+  const {id} = req.params;
+  const {id: userId } = req.session.user;
+  const { file } = req;
+
+  const {owner} = await ConversationModel.findOwner(id);
+  
+  if(Number(owner) != userId){
+    res.status(409)
+    throw new Error("User is not allowed to alter conversation")
+  }
+
+  try {
+    const storedImage = await uploadImage(file, `/${id}`, {eager: "w_128,h_128,c_thumb,g_auto"});
+    const avatar = (storedImage as any).secure_url;
+
+    const updatedConversation = await  ConversationModel.updateById(id, {
+      set: {
+        avatar
+      },
+      returning: ["id", "avatar"]
+    })
+
+
+    if(!updatedConversation){
+      res.status(400)
+      throw new Error("Conversation could not be updated.")
+    }
+
+    const io = req.app.get("io");
+    io.in(Number(id)).emit(socketEvents.CHANGE_CONVERSATION_AVATAR, avatar, id);
+
+    res.status(200).json(updatedConversation);
+  } catch (err) {
+    res.status(500);
+    throw new Error("Server error.");
+  }
+} 
+)
+
+
 // @desc    Post an image to a conversation
 // @route   GET /api/conversations/:id/images
 // @access  Private
@@ -122,7 +169,7 @@ const postImage = asyncHandler(
       delete message.author.password;
 
       const io = req.app.get("io");
-      io.in(Number(conversationId)).emit("message", message, conversationId);
+      io.in(Number(conversationId)).emit(socketEvents.MESSAGE, message, conversationId);
     } catch (err) {
       res.status(500);
       throw new Error("Server error.");
@@ -229,4 +276,5 @@ export {
   getConversations,
   getMessages,
   postImage,
+  changeGroupAvatar
 };

@@ -27,10 +27,25 @@ export default function Avatar({ css, name, size = "sm", showStatus = false, sta
     fallbackSize = "5rem"
   }
 
+  const splitSrc = src ? src.split("/") : ""
+  if(splitSrc){
+    if(size === "lg"){
+      splitSrc.splice(splitSrc.length - 3, 1, "w_128,h_128,c_thumb,g_auto")
+
+    } else if( size === "sm") {
+      splitSrc.splice(splitSrc.length - 3, 1, "w_40,h_40,c_thumb,g_auto")
+
+    } else {
+      splitSrc.splice(splitSrc.length - 3, 1, "w_48,h_48,c_thumb,g_auto")
+
+    }
+    }
+  const imageUrl = splitSrc ? splitSrc.join("/") : ""
+
   return (
     <Box css={{position: 'relative'}}>
     <Root css={css} size={size}>
-      <AvatarPrimitive.Image src={src} alt={name} />
+      <Image src={imageUrl} alt={name} />
       <Fallback delayMs={50}>
         <Icon icon="user" size={fallbackSize} />
       </Fallback>
@@ -39,6 +54,10 @@ export default function Avatar({ css, name, size = "sm", showStatus = false, sta
     </Box>
   );
 }
+
+const Image = styled(AvatarPrimitive.Image, {
+  objectFit: "cover"
+})
 
 const Fallback = styled(AvatarPrimitive.Fallback, {
   width: "100%",
