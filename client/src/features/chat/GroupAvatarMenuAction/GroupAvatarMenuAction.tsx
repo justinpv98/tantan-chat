@@ -37,7 +37,7 @@ export default function GroupAvatarMenuAction({}: Props) {
   }
 
   function onChangeGroupAvatarSuccess(data: { id: number; avatar: string }) {
-    queryClient.setQueriesData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
+    queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
       let newData: any;
       if (oldData && oldData.length) {
         newData = [...oldData];

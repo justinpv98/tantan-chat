@@ -106,7 +106,7 @@ export default function useNavbarSocketEvents(
         queryClient.setQueryData(
           queryKeys.GET_CONVERSATIONS,
           (oldData: any) => {
-            return [conversation, ...oldData];
+            conversation.id == oldData[0]?.id ? [conversation] : [conversation, ...oldData]
           }
         );
       }
@@ -135,12 +135,12 @@ export default function useNavbarSocketEvents(
     }
   }
 
-  function changeConversationName(conversationId: string, name: string) {
+  function changeConversationName(targetedConversationId: string, name: string) {
     if (conversations !== undefined && conversations.length >= 1) {
       queryClient.setQueryData(queryKeys.GET_CONVERSATIONS, (oldData: any) => {
         const newData = [...oldData];
         const conversation = newData.find(
-          (conversation) => conversation.id == conversationId
+          (conversation) => conversation.id == targetedConversationId
         );
         conversation.name = name;
         return newData;
