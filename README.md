@@ -35,14 +35,13 @@
 - Send real-time messages with a friend, or find users to chat with
 - Choose to send text messages, images under 2mb, or gifs
 - Chat with more than one user at a time with group chat
+- Customize your group chat name or avatar
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Screenshots <a name="screenshots"></a>
 
 <img src="./images/image1.png" width="100%" />
-
-<img src="./images/cart.gif" width="100%" />
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -58,7 +57,7 @@ VITE_TENOR_API_KEY = [api key from google cloud console]
 VITE_TENOR_CLIENT_KEY = [custom client key you make up]
 ```
 
-Then, create an .env.local file in the server folder, and input your API key as such:
+Then, create an .env file in the server folder, and input your API key as such:
 
 ```
 CLOUDINARY_CLOUD_NAME = [cloud name provided by cloudinary]
@@ -79,8 +78,8 @@ PGPORT=[port postgres is running on]
 Clone the repo and install through your method of choice.
 
 ```
-$ git clone https://github.com/justinpv98/metzinger-ecommerce.git
-$ cd metzinger-ecommerce
+$ git clone https://github.com/justinpv98/tantan-chat.git
+$ cd tantan-chat
 $ npm install
 ```
 
