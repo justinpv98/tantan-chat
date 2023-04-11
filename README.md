@@ -2,7 +2,7 @@
 
 <img src="./images/banner.svg" width="100%" />
 
-<h2 align="center"><a href="https://metzinger.onrender.com/">Click for Live Demo</a></h2>
+<h2 align="center"><a href="https://www.tt.justinvirella.com/">Click for Live Demo</a></h2>
 
 **Tantan** is a chat application that implements most of the features one would expect ranging from image uploads to gifs to emojis. 
 
