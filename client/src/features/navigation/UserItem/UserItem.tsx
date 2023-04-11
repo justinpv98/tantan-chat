@@ -9,6 +9,7 @@ import { Avatar, Box, Flex, Text } from "@/features/ui";
 type Props = {
   onClick?: () => any;
   user: UserData;
+  status?: 1 | 2 | 3 | 4;
   showStatus?: boolean;
 };
 

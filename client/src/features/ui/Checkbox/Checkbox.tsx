@@ -36,7 +36,7 @@ export default function Checkbox({ label, onChange, value }: Props) {
         className={theme === "dark" ? darkTheme : undefined}
         value={value}
         onCheckedChange={(checked) => onCheckedChange(checked)}
-        isChecked={checked}
+        isChecked={checked === 'indeterminate' ? false : !!checked}
       >
         <CheckboxIndicator>
           <Icon size={20} icon="checkbox" />
